@@ -1,0 +1,92 @@
+site_name:
+  scikit-portfolio
+site_url: https://scikit-portfolio.github.io
+repo_url: https://github.com/CarloNicolini/scikit-portfolio
+
+
+theme:
+  name: readthedocs
+  # name: material
+  logo: 'imgs/scikit_portfolio.png'
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to light mode
+      primary: teal
+      accent: 'deep orange'
+  feature:
+    - toc.integrate
+    - navigation.top
+
+extra_javascript:
+  - javascripts/config.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+markdown_extensions:
+  - attr_list
+  - admonition
+  - footnotes
+  - codehilite:
+      guess_lang: true
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.pathconverter
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      base_path: docs
+      check_paths: true
+  - pymdownx.tabbed
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+plugins:
+  - search
+  - mkdocstrings
+  - autorefs
+  - include
+  - mkapi
+#  - gallery:
+#      examples_dirs: docs/examples
+#      gallery_dirs: docs/generated/gallery
+
+nav:
+  - Home: index.md
+  - Basics:
+    - Installation: installation.md
+    - Getting started: getting_started.md
+    - Portfolio optimization theory: portfolio_optimization_theory.md
+  - Algorithms:
+    - Efficient frontier:
+      - Classical Mean-Variance: efficient_frontier.md
+      - Mean-Semivariance: efficient_semivariance.md
+      - Conditional Value At Risk: efficient_cvar.md
+      - Conditional Drawdown At Risk: efficient_cdar.md
+      - Omega ratio: efficient_omega.md
+      - Mean Absolute Deviation (MAD): efficient_mad.md
+    - Information theory:
+      - REPO: efficient_repo.md
+    - Ensemble methods: ensemble.md
+    - Miscellaneous: miscellaneous.md
+  - Risk and returns:
+    - Returns estimators: returns.md
+    - Risk estimators: risk.md
+  - Model selection:
+    - Metrics and scorers: metrics.md
+    - Cross validation: splitters.md
+    - Hyperparameters optimization: hyperparameters.md
+  - Developing new methods:
+    - Estimators: portfolio_estimator.md
+#  - generated/gallery
+  - Datasets: datasets.md
