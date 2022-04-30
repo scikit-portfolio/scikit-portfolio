@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/efficient_mad/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Mean Absolute Deviation (MAD) - scikit-portfolio</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet" />
+        <link href="../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../css/mkapi-readthedocs.css" rel="stylesheet" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Mean Absolute Deviation (MAD)";
+        var mkdocs_page_input_path = "efficient_mad.md";
+        var mkdocs_page_url = "/efficient_mad/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../imgs/scikit_portfolio.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting started</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_optimization_theory/">Portfolio optimization theory</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Algorithms</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Efficient frontier</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_frontier/">Classical Mean-Variance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_semivariance/">Mean-Semivariance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cvar/">Conditional Value At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cdar/">Conditional Drawdown At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_omega/">Omega ratio</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="./">Mean Absolute Deviation (MAD)</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#minimum-mad-portfolio-minimummad">🔴 Minimum MAD Portfolio MinimumMAD</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-return-optimization-on-mad-frontier">🟢 Efficient return optimization on MAD frontier</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-risk-optimization-on-mad-frontier">🟣 Efficient risk optimization on MAD frontier</a>
+    </li>
+    </ul>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Information theory</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_repo/">REPO</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ensemble/">Ensemble methods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../miscellaneous/">Miscellaneous</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Risk and returns</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns/">Returns estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk/">Risk estimators</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Model selection</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../metrics/">Metrics and scorers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../splitters/">Cross validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developing new methods</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">scikit-portfolio</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Algorithms &raquo;</li>
+          <li>Efficient frontier &raquo;</li><li>Mean Absolute Deviation (MAD)</li>
+    <li class="wy-breadcrumbs-aside">
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/efficient_mad.md"
+          class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="mad-mean-absolute-deviation-portfolio">MAD: Mean Absolute Deviation portfolio<a class="headerlink" href="#mad-mean-absolute-deviation-portfolio" title="Permanent link">&para;</a></h1>
+<p>The portfolio estimators in the efficient MAD frontier implement what is known as mean-absolute deviation portfolio optimization (Konno and Yamazaki, 1993 <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> ), which is generally referred to as MAD portfolio optimization.
+MAD portfolio optimization works with the same return proxies and portfolio sets as mean-variance portfolio optimization but uses <strong>mean-absolute deviation</strong> or <strong>L1-risk</strong> as the risk proxy, rather than portfolio volatility <span class="arithmatex">\(\sqrt{\mathbf{w}^T\mathbf{C}\mathbf{w}}\)</span>.</p>
+<p>The <strong>L1-risk model</strong> involves no quadratic forms, hence it does not scale quadratically with the number of assets, but rather it scales linearly with the number of historical samples. It can be expressed as the average of the excess returns weighted by <span class="arithmatex">\(\mathbf{w}\)</span>, as follows:</p>
+<p>\begin{equation}
+\textrm{L1 risk} = \mathbb{E} \left \lbrack \left| (\mathbf{R}  - \boldsymbol \mu)^T \mathbf{w} \right| \right\rbrack = \frac{1}{T} \sum_{t=1}^T \sum_{i=1}^N \bigl| (R_{t,i} - \mu_i) w_i \bigr|
+\end{equation}
+where <span class="arithmatex">\(\mathbf{R} \in \mathbb{R}^{T \times N}\)</span> is the asset returns matrix of <span class="arithmatex">\(N\)</span> assets over <span class="arithmatex">\(T\)</span> historical samples, and <span class="arithmatex">\(\boldsymbol \mu\)</span> are the <em>expected returns</em>.</p>
+<p>In more general terms, the optimization problem solved by the MAD portfolio in the standard settings is the following:</p>
+<div class="arithmatex">\[\begin{split}\begin{equation}
+\begin{aligned}
+\underset{\mathbf{w}}{\text{minimize}} &amp; &amp;  \mathbb{E} \left \lbrack \left| (\mathbf{R}  - \boldsymbol \mu)^T \mathbf{w} \right| \right\rbrack \\
+\text{subject to} &amp; &amp; \mathbf{w}^T \boldsymbol \mu \geq r^\star \\
+&amp; &amp; \mathbf{w}^T \mathbf{1} = 1\\
+&amp; &amp; w_{\textrm{min}} \leq w_i \leq w_{\textrm{max}}
+\end{aligned}
+\end{equation}\end{split}\]</div>
+<p>The above problem is linear, and can be implemented in any linear solver.
+The main advantage of MAD over the classical Markowitz frontier is that, being linear, it exhibits less dependency on small fluctuations of the expected returns.</p>
+<p>The MAD model is in fact used to solve huge portfolio optimization models including the internationally diversified investment model, the long-term asset liability management (ALM) model and the mortgage-backed security portfolio optimization model. 
+It was recently shown that the MAD model possess several advantageous theoretical properties. In particular, all capital asset pricing model (CAPM)-type relations for the mean-variance model also hold for the MAD model.
+Furthermore, the MAD model is more compatible with the fundamental principle of rational decision-making<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><img alt="MAD_efficient_frontier" src="../imgs/mad_efficient_frontier.svg" /></p>
+<p>In this picture above we show the efficient frontier for the MAD portfolio.   <br />
+On the x-axis the <span class="arithmatex">\(L1\)</span> risk measure, on the <span class="arithmatex">\(y\)</span>-axis the portfolio return. 
+The <span style="color:purple">purple lines</span> indicate the efficient risk portfolio 🟣.
+The solid line is the target risk <span class="arithmatex">\(\approx 0.035\)</span>  with the resulting return of <span class="arithmatex">\(\approx 0.09\)</span>.
+The <span style="color:darkgreen">green lines</span> indicate the efficient return portfolio 🟢.
+The solid line is the target return <span class="arithmatex">\(\approx 0.011\)</span> with the resulting risk of <span class="arithmatex">\(\approx 0.05\)</span>.
+The black dot ⚫️indicates the asset with the highest return and highest risk. 
+The <span style="text-color:red">red</span> dot 🔴️ indicates the minimum MAD portfolio.</p>
+</div>
+<h2 id="minimum-mad-portfolio-minimummad">🔴 Minimum MAD Portfolio <code>MinimumMAD</code><a class="headerlink" href="#minimum-mad-portfolio-minimummad" title="Permanent link">&para;</a></h2>
+<p>It calculates the portfolio minimizing the above L1-risk model, with the weight constraints.</p>
+<p>The optimization problem is the following:</p>
+<div class="arithmatex">\[\begin{split}\begin{equation*}
+\begin{aligned}
+&amp; \underset{\mathbf{w}}{\text{minimize}} &amp; &amp; \mathbb{E} \left \lbrack \left| (\mathbf{R}  - \boldsymbol \mu)^T \mathbf{w} \right| \right\rbrack \\
+&amp; \text{subject to} &amp; &amp; \mathbf{w}^T \mathbf{1} = 1\\
+&amp; &amp; &amp; w_{\textrm{min}} \leq w_i \leq w_{\textrm{max}}
+\end{aligned}
+\end{equation*}\end{split}\]</div>
+<hr>
+
+<h2 id="efficient-return-optimization-on-mad-frontier">🟢 Efficient return optimization on MAD frontier<a class="headerlink" href="#efficient-return-optimization-on-mad-frontier" title="Permanent link">&para;</a></h2>
+<p>It calculates the MAD efficient return portfolio, by minimizing the above L1-risk model, subject to a minimum portfolio return above the target return.
+The optimization problem is the following:</p>
+<div class="arithmatex">\[\begin{split}\begin{equation*}
+\begin{aligned}
+&amp; \underset{\mathbf{w}}{\text{minimize}} &amp; &amp; \mathbb{E} \left \lbrack \left| (\mathbf{R}  - \boldsymbol \mu)^T \mathbf{w} \right| \right\rbrack \\
+&amp; \text{subject to} &amp; &amp; \mathbf{w}^T \boldsymbol \mu \geq r^\star \\
+&amp;&amp;&amp; \mathbf{w}^T \mathbf{1} = 1\\
+&amp;&amp;&amp; w_{\textrm{min}} \leq w_i \leq w_{\textrm{max}}
+\end{aligned}
+\end{equation*}\end{split}\]</div>
+<hr>
+
+<h2 id="efficient-risk-optimization-on-mad-frontier">🟣 Efficient risk optimization on MAD frontier<a class="headerlink" href="#efficient-risk-optimization-on-mad-frontier" title="Permanent link">&para;</a></h2>
+<p>It calculates the MAD efficient risk portfolio, by maximizing the portfolio return, subject to a L1-risk above the target risk. The optimization problem is the following:</p>
+<div class="arithmatex">\[\begin{split}\begin{equation*}
+\begin{aligned}
+&amp; \underset{\mathbf{w}}{\text{maximize}} &amp; &amp; \mathbf{w}^T \boldsymbol \mu \\
+&amp; \text{subject to} &amp; &amp;  \mathbb{E} \left \lbrack \left| (\mathbf{R}  - \boldsymbol \mu)^T \mathbf{w} \right| \right\rbrack \leq r^\star \\
+&amp;&amp;&amp; \mathbf{w}^T \mathbf{1} = 1\\
+&amp;&amp;&amp; w_{\textrm{min}} \leq w_i \leq w_{\textrm{max}}
+\end{aligned}
+\end{equation*}\end{split}\]</div>
+<hr>
+
+<h1 id="comparison-of-results-with-matlabtm-portfoliomad-class">Comparison of results with MATLAB™ <code>PortfolioMAD</code> class.<a class="headerlink" href="#comparison-of-results-with-matlabtm-portfoliomad-class" title="Permanent link">&para;</a></h1>
+<p>You can compare the construction of the efficient frontier of the MAD portfolio in <code>scikit-portfolio</code> with the ones obtained with an expensive commercial software like Matlab.
+Here we check that the results are the same up to a <strong><em>very small</em></strong> rounding error.
+This is likely caused  by slight differences between the ECOS solver in <code>scikit-portfolio</code> and the internal <code>linprog</code> solver by MATLAB.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>To reproduce this result you need the Matlab Financial Toolbox. This example has been run on Matlab 2021b.</p>
+</div>
+<div class="highlight"><pre><span></span><code><span class="n">m</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.05</span><span class="p">;</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span><span class="w"> </span><span class="mf">0.12</span><span class="p">;</span><span class="w"> </span><span class="mf">0.18</span><span class="w"> </span><span class="p">];</span><span class="w"></span>
+<span class="n">C</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.0064</span><span class="w"> </span><span class="mf">0.00408</span><span class="w"> </span><span class="mf">0.00192</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span>
+<span class="w">    </span><span class="mf">0.00408</span><span class="w"> </span><span class="mf">0.0289</span><span class="w"> </span><span class="mf">0.0204</span><span class="w"> </span><span class="mf">0.0119</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="mf">0.00192</span><span class="w"> </span><span class="mf">0.0204</span><span class="w"> </span><span class="mf">0.0576</span><span class="w"> </span><span class="mf">0.0336</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">0</span><span class="w"> </span><span class="s">0.0119</span><span class="w"> </span><span class="s">0.0336</span><span class="w"> </span><span class="s">0.1225</span><span class="w"> </span><span class="s">]</span><span class="p">;</span><span class="w"></span>
+<span class="n">m</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">m</span><span class="o">/</span><span class="mi">12</span><span class="p">;</span><span class="w"></span>
+<span class="n">C</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">C</span><span class="o">/</span><span class="mi">12</span><span class="p">;</span><span class="w"></span>
+
+<span class="n">AssetScenarios</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">mvnrnd</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="mi">20000</span><span class="p">);</span><span class="w"></span>
+<span class="n">NumPortfolios</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">10</span><span class="w"></span>
+<span class="c">% the output of estimateFrontier is a 10 assets x 4 portfolio weights</span><span class="w"></span>
+<span class="n">weights</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">estimateFrontier</span><span class="p">(</span><span class="n">setDefaultConstraints</span><span class="p">(</span><span class="n">PortfolioMAD</span><span class="p">(</span><span class="s">&#39;AssetScenarios&#39;</span><span class="p">,</span><span class="n">AssetScenarios</span><span class="p">)),</span><span class="n">NumPortfolios</span><span class="p">)</span><span class="w"></span>
+<span class="n">weights</span><span class="o">&#39;</span><span class="w"></span>
+</code></pre></div>
+<p>The result are the following weights, a 10 by 4 matrix, whose rows sum to 1, with the first row representing the minimum MAD portfolio, and the last row the riskiest portfolio composed by a single asset.</p>
+<div class="highlight"><pre><span></span><code>ans =
+
+    0.8924    0.0365    0.0374    0.0337
+    0.7235    0.1323    0.0413    0.1029
+    0.5571    0.2263    0.0427    0.1739
+    0.3903    0.3205    0.0447    0.2445
+    0.2207    0.4184    0.0473    0.3136
+    0.0534    0.5074    0.0566    0.3827
+         0    0.4406    0.0437    0.5157
+         0    0.3076    0.0123    0.6801
+         0    0.1588         0    0.8412
+         0         0         0    1.0000
+</code></pre></div>
+<p>Now verify the results by manually reconstructing the frontier by returns with <code>scikit-portfolio</code>.
+It is very easy to generate the efficient frontier together with its weights with the <code>.estimate_frontier</code> method</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span>  <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="c1"># here the same parameters as those from MATLAB example</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">0.05</span><span class="p">,</span>  <span class="mf">0.1</span><span class="p">,</span>  <span class="mf">0.12</span><span class="p">,</span>  <span class="mf">0.18</span> <span class="p">])</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mf">0.0064</span><span class="p">,</span> <span class="mf">0.00408</span><span class="p">,</span> <span class="mf">0.00192</span><span class="p">,</span> <span class="mi">0</span><span class="p">,],</span> <span class="p">[</span><span class="mf">0.00408</span><span class="p">,</span> <span class="mf">0.0289</span><span class="p">,</span> <span class="mf">0.0204</span><span class="p">,</span> <span class="mf">0.0119</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.00192</span><span class="p">,</span> <span class="mf">0.0204</span><span class="p">,</span> <span class="mf">0.0576</span><span class="p">,</span> <span class="mf">0.0336</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.0119</span><span class="p">,</span> <span class="mf">0.0336</span><span class="p">,</span> <span class="mf">0.1225</span><span class="p">,]])</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">m</span><span class="o">/</span><span class="mi">12</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">C</span><span class="o">/</span><span class="mi">12</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">m</span><span class="p">,</span><span class="n">cov</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20000</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">MinimumMAD</span>
+<span class="n">MinimumMAD</span><span class="p">(</span><span class="n">returns_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">set_n_jobs</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">estimate_frontier</span><span class="p">(</span><span class="n">r</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+</code></pre></div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>portfolio</th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.8916</td>
+      <td>0.0370</td>
+      <td>0.0373</td>
+      <td>0.0340</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.7229</td>
+      <td>0.1328</td>
+      <td>0.0411</td>
+      <td>0.1032</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.5560</td>
+      <td>0.2268</td>
+      <td>0.0436</td>
+      <td>0.1736</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.3899</td>
+      <td>0.3203</td>
+      <td>0.0450</td>
+      <td>0.2447</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.2210</td>
+      <td>0.4172</td>
+      <td>0.0477</td>
+      <td>0.3141</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.0526</td>
+      <td>0.5077</td>
+      <td>0.0572</td>
+      <td>0.3825</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>0.0000</td>
+      <td>0.4419</td>
+      <td>0.0418</td>
+      <td>0.5163</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>0.0000</td>
+      <td>0.3074</td>
+      <td>0.0124</td>
+      <td>0.6803</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>0.0000</td>
+      <td>0.1588</td>
+      <td>0.0000</td>
+      <td>0.8412</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>0.0000</td>
+      <td>0.0000</td>
+      <td>0.0000</td>
+      <td>1.0000</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The resulting output is shown above following, and it only takes 4 seconds!
+Given the large number of samples (<span class="arithmatex">\(T=20,000\)</span>) we converge to the same result as from MATLAB, but <strong>twice as fast</strong>!</p>
+<p>For completeness here we also report the entire self-explaining code for the generation of 10 points along the efficient frontier.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span>  <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">skportfolio.frontier._mad</span> <span class="kn">import</span> <span class="n">EfficientMeanAbsoluteDeviation</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="c1"># here the same parameters as those from MATLAB example</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">0.05</span><span class="p">,</span>  <span class="mf">0.1</span><span class="p">,</span>  <span class="mf">0.12</span><span class="p">,</span>  <span class="mf">0.18</span> <span class="p">])</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mf">0.0064</span><span class="p">,</span> <span class="mf">0.00408</span><span class="p">,</span> <span class="mf">0.00192</span><span class="p">,</span> <span class="mi">0</span><span class="p">,],</span> <span class="p">[</span><span class="mf">0.00408</span><span class="p">,</span> <span class="mf">0.0289</span><span class="p">,</span> <span class="mf">0.0204</span><span class="p">,</span> <span class="mf">0.0119</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.00192</span><span class="p">,</span> <span class="mf">0.0204</span><span class="p">,</span> <span class="mf">0.0576</span><span class="p">,</span> <span class="mf">0.0336</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.0119</span><span class="p">,</span> <span class="mf">0.0336</span><span class="p">,</span> <span class="mf">0.1225</span><span class="p">,]])</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">m</span><span class="o">/</span><span class="mi">12</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">C</span><span class="o">/</span><span class="mi">12</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">m</span><span class="p">,</span><span class="n">cov</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20000</span><span class="p">)</span>
+<span class="c1"># creates a well-formed dataframe</span>
+<span class="n">returns</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;D&#39;</span><span class="p">])</span>
+<span class="n">mu</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="c1"># minimum risk portfolio, frontier starts here</span>
+<span class="n">w_min</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+    <span class="n">EfficientMeanAbsoluteDeviation</span><span class="p">(</span>
+        <span class="n">expected_returns</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span>
+        <span class="n">returns</span><span class="o">=</span><span class="n">returns</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">min_risk</span><span class="p">(),</span>
+    <span class="n">index</span><span class="o">=</span><span class="n">returns</span><span class="o">.</span><span class="n">columns</span>
+<span class="p">)</span>
+<span class="n">NumPortfolios</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="c1"># minimum MAD risk proxy </span>
+<span class="n">min_risk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">w_min</span><span class="o">@</span><span class="p">(</span><span class="n">returns</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+<span class="c1"># minimum portfolio return of the corresponding weight</span>
+<span class="n">min_ret</span> <span class="o">=</span> <span class="n">w_min</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">mu</span>
+<span class="c1"># compute frontier from efficient returns</span>
+<span class="c1"># the 1E-6 is needed to help converge nicely to the highest risk portfolio</span>
+<span class="n">rets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">min_ret</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span><span class="o">-</span><span class="mf">1E-6</span><span class="p">,</span> <span class="n">NumPortfolios</span><span class="p">)</span>
+<span class="n">risks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span><span class="o">*</span><span class="n">NumPortfolios</span><span class="p">)</span>
+<span class="n">all_weights</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rets</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">MAD</span> <span class="o">=</span> <span class="n">EfficientMeanAbsoluteDeviation</span><span class="p">(</span>
+            <span class="n">expected_returns</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span>
+            <span class="n">returns</span><span class="o">=</span><span class="n">returns</span>
+        <span class="p">)</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+            <span class="n">MAD</span><span class="o">.</span><span class="n">efficient_return</span><span class="p">(</span><span class="n">target_return</span><span class="o">=</span><span class="n">r</span><span class="p">),</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">returns</span><span class="o">.</span><span class="n">columns</span>
+        <span class="p">)</span>
+        <span class="n">risks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">weights</span><span class="o">@</span><span class="p">(</span><span class="n">returns</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+        <span class="n">all_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span> <span class="c1">## in case some solver error is raised, we simply print a warning</span>
+
+<span class="n">risks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">risks</span><span class="p">)</span>
+<span class="n">all_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">all_weights</span><span class="p">)</span>
+<span class="n">all_weights</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</code></pre></div>
+<p>It is great to see that <code>scikit-portfolio</code> results are highly consistent with those from Matlab's  🎉️🎉️🎉️
+<div class="highlight"><pre><span></span><code>array([[0.8916, 0.037 , 0.0373, 0.034 ],
+       [0.7228, 0.1328, 0.0412, 0.1032],
+       [0.5559, 0.2269, 0.0436, 0.1736],
+       [0.3899, 0.3204, 0.045 , 0.2447],
+       [0.221 , 0.4172, 0.0477, 0.3141],
+       [0.0526, 0.5077, 0.0572, 0.3825],
+       [0.    , 0.4419, 0.0418, 0.5163],
+       [0.    , 0.3074, 0.0124, 0.6803],
+       [0.    , 0.1588, 0.    , 0.8412],
+       [0.    , 0.    , 0.    , 1.    ]])
+</code></pre></div>
+As you can see the portfolio weights are almost equal among the two systems, certifying the goodness of the <code>scikit-portfolio</code> implementation.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><img alt="mad_matlab_vs_skportfolio" src="../imgs/mad_matlab_vs_skportfolio.svg" /></p>
+<p>In figure above the difference in basis points (1 BP = 0.01%) between the results of Matlab and results of <code>EfficientMeanAbsoluteDeviation</code>. As you can see the two are highly consistent.
+Colors are the assets in the portfolio, named <code>0,1,2,3</code>, while on the x-axis each integer represent the portfolio along the efficient frontier, with 0 being the minimum MAD portfolio and 9 the maximum MAD portfolio, hence 
+the one with the maximum risk. The two efficient frontiers are also shown in the figure below:
+<img alt="mad_frontier_matlab" src="../imgs/mad_matlab_efficient_frontier.svg" /></p>
+</div>
+<h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Konno, Hiroshi, and Hiroaki Yamazaki. "Mean-absolute deviation portfolio optimization model and its applications to Tokyo stock market." Management science 37.5 (1991): 519-531. <a href="https://pubsonline.informs.org/doi/pdf/10.1287/mnsc.37.5.519">https://pubsonline.informs.org/doi/pdf/10.1287/mnsc.37.5.519</a>&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Hiroshi Konno &amp; Tomoyuki Koshizuka (2005) Mean-absolute deviation model, IIE Transactions, 37:10, 893-900, DOI: 10.1080/07408170591007786&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>MATLAB reference manual, for MAD portfolio. <a href="https://it.mathworks.com/help/finance/portfoliomad.html">https://it.mathworks.com/help/finance/portfoliomad.html</a>&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../efficient_omega/" class="btn btn-neutral float-left" title="Omega ratio"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../efficient_repo/" class="btn btn-neutral float-right" title="REPO">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/CarloNicolini/scikit-portfolio" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../efficient_omega/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../efficient_repo/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/mkapi.js" defer></script>
+      <script src="../javascripts/config.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

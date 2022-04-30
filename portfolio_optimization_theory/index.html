@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/portfolio_optimization_theory/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Portfolio optimization theory - scikit-portfolio</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet" />
+        <link href="../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../css/mkapi-readthedocs.css" rel="stylesheet" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Portfolio optimization theory";
+        var mkdocs_page_input_path = "portfolio_optimization_theory.md";
+        var mkdocs_page_url = "/portfolio_optimization_theory/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../imgs/scikit_portfolio.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting started</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Portfolio optimization theory</a>
+    <ul class="current">
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Algorithms</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Efficient frontier</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_frontier/">Classical Mean-Variance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_semivariance/">Mean-Semivariance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cvar/">Conditional Value At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cdar/">Conditional Drawdown At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_omega/">Omega ratio</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_mad/">Mean Absolute Deviation (MAD)</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Information theory</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_repo/">REPO</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ensemble/">Ensemble methods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../miscellaneous/">Miscellaneous</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Risk and returns</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns/">Returns estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk/">Risk estimators</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Model selection</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../metrics/">Metrics and scorers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../splitters/">Cross validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developing new methods</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">scikit-portfolio</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Basics &raquo;</li><li>Portfolio optimization theory</li>
+    <li class="wy-breadcrumbs-aside">
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/portfolio_optimization_theory.md"
+          class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="notation">Notation<a class="headerlink" href="#notation" title="Permanent link">&para;</a></h1>
+<ul>
+<li>There are <span class="arithmatex">\(N\)</span> assets and <span class="arithmatex">\(T\)</span> temporal samples.</li>
+<li>The asset prices are encoded in a <span class="arithmatex">\(T\)</span> rows, <span class="arithmatex">\(N\)</span> columns array <span class="arithmatex">\(\mathbf{P} \in \mathbb{R}^{T \times N} = \{ P_{ti} \}\)</span></li>
+<li>The asset returns are encoded in a <span class="arithmatex">\(T\)</span> rows, <span class="arithmatex">\(N\)</span> columns array <span class="arithmatex">\(\mathbf{R} \in \mathbb{R}^{T \times N} = \{ R_{ti} \}\)</span></li>
+<li>We denote the <span class="arithmatex">\(i\)</span>-th asset price at time <span class="arithmatex">\(t\)</span> as <span class="arithmatex">\(P_{ti}\)</span>.</li>
+<li>We denote the <span class="arithmatex">\(i\)</span>-th asset historical return at time <span class="arithmatex">\(t\)</span> as <span class="arithmatex">\(R_{ti}\)</span>.</li>
+<li>The demeaned <span class="arithmatex">\(i\)</span>-th asset return matrix is <span class="arithmatex">\(\mathbf{Z} = \mathbf{R} - \frac{1}{T}(\mathbf{R}^T\mathbf{1}) = \{ Z_{ti} \} = \{ R_{ti} - \langle R_{ti} \rangle_t \}\)</span>.</li>
+<li>The temporal average operator is <span class="arithmatex">\(\langle \cdot_{ti} \rangle_t\)</span> takes a <span class="arithmatex">\(T \times N\)</span> array and calculates a <span class="arithmatex">\(N\)</span> dimensional array with the temporal averages. It is equivalent to <span class="arithmatex">\(\mathbf{A}^T\mathbf{1}/T\)</span> where <span class="arithmatex">\(\mathbf{A} \in \mathbb{R}^{T \times N}\)</span> and <span class="arithmatex">\(\mathbf{1} \in \mathbb{T}\)</span>.</li>
+<li>The covariance matrices are denoted by uppercase bold symbol <span class="arithmatex">\(\boldsymbol \Sigma\)</span> and are <span class="arithmatex">\(N \times N\)</span> matrices.</li>
+</ul>
+<h1 id="problem-background-and-historical-introduction">Problem background and historical introduction<a class="headerlink" href="#problem-background-and-historical-introduction" title="Permanent link">&para;</a></h1>
+<p>Probability, statistics, and optimization are appropriate mathematical foundations for quantitative analysis of investment decisions.
+As a result, a vast number of financial theories and models addressing this process have been developed.
+Harry Markowitz established the field of portfolio theory in 1952<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>, when he proposed a model that became known as Modern Portfolio Theory (MPT).
+The model implies that an investor wants to maximize the expected return on a portfolio while taking a certain degree of risk.
+Portfolios that match these characteristics are referred to be efficient portfolios, while those with the same projected return but more risk are referred to as sub-optimal portfolios.
+This approach encouraged investment experts to reconsider their asset allocations, and model adopters to shift their holdings in accordance with Markowitz (1952) and his successors' theories and models.
+As time has passed, various flaws in MPT have been discovered (some of which had been identified by Markowitz since the beginning<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>), prompting the development of new models that aim to address these flaws.</p>
+<p>The risk measure in MPT, the standard deviation of asset returns, was deemed to be an unwise choice by Rom &amp; Ferguson (1994)<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>.
+They proposed the Post-Modern Portfolio Theory (PMPT) model, which uses the standard deviation of negative asset returns as the risk measure, which tends to better reflect reality, instead of the standard deviation of positive asset returns.</p>
+<p>In contrast to Markowitz (1952)<sup id="fnref2:1"><a class="footnote-ref" href="#fn:1">1</a></sup> and Rom &amp; Ferguson (1994)<sup id="fnref2:3"><a class="footnote-ref" href="#fn:3">3</a></sup>, who employed quadratic models, Konno &amp; Yamazaki (1991)<sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup> proposed a linear model that used the mean-absolute deviation as a risk measure.
+The model was found to operate similarly to the previous quadratic model, but because of its linearity, it significantly decreased the complexity of the mathematical procedures.</p>
+<p>Black &amp; Litterman (1991)<sup id="fnref:7"><a class="footnote-ref" href="#fn:7">7</a></sup> solved MPT's problem of requiring asset expected returns input by devising a methodology that allows the portfolio manager to supply a relative perspective of specified sub-groups rather than projected returns.</p>
+<p>Indeed, there have been numerous attempts to improve portfolio optimization algorithms.
+Digitalization has had an impact on the practical work of investment professionals, in addition to mathematical development in the field of portfolio theory.
+Optimization software appeared on the market as computing power grew, and it quickly became popular.
+Portfolio management is available through programs like <strong>Bloomberg</strong>, <strong>Axioma</strong>, and <strong>Barra</strong>, as well as the possibility to optimize your portfolio in terms of asset weights.</p>
+<p>These systems, on the other hand, are often sophisticated and come with a significant monthly charge.
+Both of these characteristics could make it difficult for a retail user, or a person interested in portfolio optimization to perform simple experiments.</p>
+<h2 id="portfolio-optimization">Portfolio optimization<a class="headerlink" href="#portfolio-optimization" title="Permanent link">&para;</a></h2>
+<p>Portfolio optimization is the process of selecting asset weights in order to achieve an optimal portfolio, based on an objective function. 
+Typically, the objective is to maximize expected return or to minimize financial risk. It can also be a combination of the two.</p>
+<h2 id="modern-portfolio-theory">Modern portfolio theory<a class="headerlink" href="#modern-portfolio-theory" title="Permanent link">&para;</a></h2>
+<p>MPT (Modern Portfolio Theory), or <strong>mean-variance</strong> analysis, is a theory pioneered by Harry Markowitz in 1952.
+It assumes that investors make rational decisions and expect a higher return for increased risk.
+According to the theory, it is possible to construct a portfolio which maximizes the expected return, given a certain level of risk.
+Such portfolio is said to be on the <em>efficient frontier</em>. 
+An investor would not take on extra risk if it does not mean larger returns. 
+Conversely, the investor must take on more risk if the goal is to achieve higher returns.
+A key insight in this theory is that the return and risk of an asset should not be viewed separately, since the two factors together affect a portfolios
+overall risk and return (Markowitz, 1952). </p>
+<p>Despite its groundbreaking theories, MPT has faced criticism. To begin with, it requires the input of expected returns, which requires the investor to predict future outcomes. In practice, this is often done by extrapolating historical data. 
+Such predictions often fail to take new circumstances into account, which results in predictions that are flawed. 
+Also, as the risk measure of MPT is variance, the optimization model become quadratic, since variance is quadratic.
+For large portfolios, this implies heavy computations, which can make the model inefficient in a computational sense.</p>
+<p>Additionally, MPT assumes that the asset returns follow a Gaussian distribution, which has two serious implications. 
+Firstly, it underestimates the probability of large and important movements in the price of an asset. 
+Secondly, by relying on the correlation matrix, it fails to capture the relevant dependence structure among the assets.
+This limits the practical usefulness of MPT (Rachev &amp; Mittnik, 2006).</p>
+<p>Nevertheless, MPT has contributed with strong theoretical value. The findings of Markowitz can be formulated in three different ways.
+The three different views can be seen below, equation 1, 3 and 5.</p>
+<ul>
+<li>Maximization of portfolio return</li>
+<li>Minimization of portfolio risk</li>
+<li>Optimization of a combination of return and risk</li>
+</ul>
+<h2 id="the-efficient-frontier">The Efficient Frontier<a class="headerlink" href="#the-efficient-frontier" title="Permanent link">&para;</a></h2>
+<p>Markowitz introduced the efficient frontier, which is a cornerstone of MPT (1952).
+It's the set of optimal portfolios that provides the highest expected return for a given level of risk, or the lowest risk for a given level of expected return.
+Portfolios that do not correspond with the efficient frontier are sub-optimal by definition.
+The efficient frontier is commonly depicted as a hyperbola, with the portfolio return on the vertical axis and risk or volatility on the horizontal axis, like in the following figure:</p>
+<p><img alt="efficient_frontier" src="../imgs/efficient_frontier.svg" /></p>
+<h2 id="purpose-and-problematization">Purpose and problematization<a class="headerlink" href="#purpose-and-problematization" title="Permanent link">&para;</a></h2>
+<p>Decisions to invest, keep, decrease or dispose of holdings are based on information and conclusions derived from a collaborative fundamental process.</p>
+<p>The implementation of ideas and the portfolio construction process is however, within relevant constraints, delegated to the manager responsible for the portfolio.
+In this process a variety of tools are being used today to assist and support the portfolio managers, most prominently <strong>Bloomberg’s</strong> portfolio function.
+This approach has historically worked well for the fund management company, based on their returns. 
+The tools that are used today are however described as somewhat cumbersome and complicated to use. 
+The company believes that quantitative input in the portfolio construction process is an important decision support for the portfolio managers and wants to find a more comprehensive tool to use in the day-to-day decisions.</p>
+<p>The key characteristics of <code>scikit-portfolio</code> are: </p>
+<ol>
+<li><strong>Simplicity</strong></li>
+<li><strong>Speed</strong></li>
+<li><strong>Accuracy</strong></li>
+<li><strong>Usability</strong></li>
+</ol>
+<p>To improve <strong>simplicity</strong>, we wanted to create a tool with a straightforward API and a small number of input parameters. 
+Despite this, users have a plethora of fine-tuning choices at their disposal, the majority of which may be determined automatically at runtime via hyperparameters optimization.
+The <code>fit</code>-<code>transform</code>-<code>predict</code> paradigma from <em>scikit-learn</em> is used to interface with other libraries in the data science toolkit.
+The API was chosen to be the same as the one available in <em>scikit-learn</em> because of its widespread use among non-financial sector practitioners.
+This choice makes portfolio optimization accessible to a wide range of users, including data scientists, machine learning engineers, and researchers.
+This is likely to increase the utility of the optimization tool.</p>
+<p>The request for speed has influenced our choice of optimization algorithm and the implementation of it.
+For this reason we largely rely on the excellent <code>cvxpy</code> which with its highly flexible interface but accurate routines is becoming the <em>de-facto</em> standard in convex optimization for Python.
+Moreover, <code>cvxpy</code> not being a library of optimization routine, but rather a <em>lingua-franca</em> for specifying complex convex problems, makes it possible for the final user to specify the solver of choice. By default, the ECOS<sup id="fnref:6"><a class="footnote-ref" href="#fn:6">6</a></sup> solver, covers a large domain of problems, but commercial and more performant solvers are available to <code>cvxpy</code> such as the excellent Gurobi solver<sup id="fnref:5"><a class="footnote-ref" href="#fn:5">5</a></sup>.</p>
+<p>The third and final requested characteristic, <em>accuracy</em>, is proven through testing and comparison of <code>scikit-portfolio</code> solutions with other commercial packages, such as Matlab Financial Toolbox.</p>
+<p>Quantitative investment managers and risk managers use portfolio optimization to determine the proportions of 
+various assets in a portfolio. The goal of portfolio optimization is to maximize a measure of a portfolio's return 
+as a function of a measure of portfolio's risk, or viceversa, to minimize risk given some minimum level of return. </p>
+<p><strong><code>scikit-portfolio</code></strong>  provides a large set of portfolio optimization methods to perform capital allocation, asset 
+allocation, and risk assessment, as well as a backtesting framework for portfolio allocation backtesting strategies</p>
+<p>Portfolio optimization is a problem that requires to satisfy three <strong>conflicting 💣️ criteria</strong>:</p>
+<ul>
+<li><strong>Minimize a measure of risk ⚠️</strong></li>
+<li><strong>Match or exceed a measure of return 😎️</strong></li>
+<li><strong>Satisfy additional constraints, such as minimum allocations in certain assets.👨‍🎓️️</strong></li>
+</ul>
+<p>A portfolio is completely specified by asset weights, specifying  the proportion of individual assets to be held  in 
+terms of total capital invested.</p>
+<p>A proxy for <strong>risk</strong> is a function that characterizes either the variability or losses associated with portfolio 
+choices. Typically, higher risk mean higher chance of losing the capital.
+Portfolio returns measures are instead a way to quantify the gross or net benefits associated with portfolio choices. </p>
+<p>It is now clear that risk and returns are conflicting objectives, in the sense that there must exist for each 
+combination of them, a certain point such that increases in one optimization dimension (return) does not lead to 
+further  decreases in the other dimension (risk), and viceversa.
+The locus of those points is called the <code>efficient frontier</code> on a risk-satisfaction cartesian plot.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Markowitz H., "Portfolio selection", J. Fin, Vol. 7, No. 1. (1952), pp. 77-91 <a href="https://www.math.hkust.edu.hk/~maykwok/courses/ma362/07F/markowitz_JF.pdf">url</a>&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Markowitz itself noted that the average portfolio return and standard deviation were not good measures. Cited from its 1952 paper: <em>"One suggestion as to tentative <span class="arithmatex">\(\mu_i\)</span>, <span class="arithmatex">\(\sigma_{ij}\)</span> to use the observed <span class="arithmatex">\(\mu_i\)</span>, <span class="arithmatex">\(\sigma_{ii}\)</span> for some period of the past. I believe that better methods, which take
+into account more information, can be found."</em>&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>Rom, Brian M., and Kathleen W. Ferguson. "Post-modern portfolio theory comes of age." Journal of investing 3.3 (1994): 11-17.&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>Konno, H, Yamazaki H. "Mean-absolute deviation portfolio optimization model and its applications to Tokyo stock market." Management science 37.5 (1991): 519-531.&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:5">
+<p>Various authors, "Gurobi Optimizer Reference Manual", (2022), <a href="https://www.gurobi.com">https://www.gurobi.com</a>&#160;<a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn:6">
+<p>Domahidi, A., Chu E., and Boyd S. "ECOS: An SOCP solver for embedded systems." 2013 European Control Conference (ECC). IEEE, 2013.&#160;<a class="footnote-backref" href="#fnref:6" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+</li>
+<li id="fn:7">
+<p>Black, Fischer, and Robert Litterman. "Asset allocation: combining investor views with market equilibrium." Goldman Sachs Fixed Income Research 115 (1990).&#160;<a class="footnote-backref" href="#fnref:7" title="Jump back to footnote 7 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../getting_started/" class="btn btn-neutral float-left" title="Getting started"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../efficient_frontier/" class="btn btn-neutral float-right" title="Classical Mean-Variance">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/CarloNicolini/scikit-portfolio" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../getting_started/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../efficient_frontier/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/mkapi.js" defer></script>
+      <script src="../javascripts/config.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

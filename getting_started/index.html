@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/getting_started/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Getting started - scikit-portfolio</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet" />
+        <link href="../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../css/mkapi-readthedocs.css" rel="stylesheet" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Getting started";
+        var mkdocs_page_input_path = "getting_started.md";
+        var mkdocs_page_url = "/getting_started/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../imgs/scikit_portfolio.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Getting started</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#optimize-a-minimum-volatility-portfolio-on-real-prices-data">Optimize a minimum volatility portfolio on real prices data</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#should-i-feed-returns-or-prices-to-fit-method">Should I feed returns or prices to .fit method?</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#plotting-the-efficient-frontier">Plotting the efficient frontier</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#faster-parallel-evaluation-of-the-efficient-frontier">Faster, parallel evaluation of the efficient frontier</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#returns-and-risk-estimators">Returns and risk estimators</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#backtesting-and-model-selection">Backtesting and model selection</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#automatic-parameters-search-hyperparameters-optimization">Automatic parameters search (hyperparameters optimization)</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_optimization_theory/">Portfolio optimization theory</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Algorithms</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Efficient frontier</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_frontier/">Classical Mean-Variance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_semivariance/">Mean-Semivariance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cvar/">Conditional Value At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cdar/">Conditional Drawdown At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_omega/">Omega ratio</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_mad/">Mean Absolute Deviation (MAD)</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Information theory</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_repo/">REPO</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ensemble/">Ensemble methods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../miscellaneous/">Miscellaneous</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Risk and returns</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns/">Returns estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk/">Risk estimators</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Model selection</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../metrics/">Metrics and scorers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../splitters/">Cross validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developing new methods</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">scikit-portfolio</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Basics &raquo;</li><li>Getting started</li>
+    <li class="wy-breadcrumbs-aside">
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/getting_started.md"
+          class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h1>
+<h2 id="optimize-a-minimum-volatility-portfolio-on-real-prices-data">Optimize a minimum volatility portfolio on real prices data<a class="headerlink" href="#optimize-a-minimum-volatility-portfolio-on-real-prices-data" title="Permanent link">&para;</a></h2>
+<p><code>scikit-portfolio</code> offers dozens of built-in portfolio optimization algorithsm and models called <a href="../portfolio_estimator/">PortfolioEstimators</a>.
+Each estimator can be fitted to either equity prices or returns using its <code>.fit</code> method.</p>
+<p>Here is a simple example where we fit a <code>MinimumVolatility</code>  portfolio to some technological stock prices.
+The asset prices are the adjusted daily close prices of Apple, Tesla, Amazon, Microsoft and Microstrategy, sampled over a 5 years period from 2016 to 2021.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">MinimumVolatility</span>
+<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MinimumVolatility</span><span class="p">(</span>
+    <span class="n">returns_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">risk_free_rate</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
+    <span class="n">frequency</span><span class="o">=</span><span class="mi">252</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
+<span class="c1"># print model weights</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">weights_</span><span class="p">)</span>
+<span class="c1"># print model annualized sharpe ratio</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Portfolio annualized Sharpe ratio =  </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>The <code>.fit</code> method generally accepts 2 inputs:</p>
+<ul>
+<li>The prices or returns pandas dataframe <code>X</code>.</li>
+<li>Additional data contained in <code>y</code>. However, this parameter is always ignored and kept for compatibility reasons.
+The size of X is typically (n_temporal_samples, n_equities), which means that samples are represented as rows and prices or returns are represented as columns.</li>
+</ul>
+<p>Differently from <code>sklearn</code>, here we require the variable <code>X</code> to be pandas dataframe with an arbitrary number of columns but indexed by a <code>pd.DateTimeIndex</code>.
+Once the portfolio is <strong>fitted</strong>, it can be used to see how its weights work on out-of-sample 
+data with the <code>.predict</code>  method:</p>
+<div class="highlight"><pre><span></span><code><span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>2016-08-22     266.255828
+2016-08-23     267.384265
+2016-08-24     265.692214
+2016-08-25     266.492617
+2016-08-26     269.143623
+                 ...     
+2021-08-16    1178.257286
+2021-08-17    1157.389918
+2021-08-18    1142.985767
+2021-08-19    1143.877199
+2021-08-20    1152.573843
+Name: MinimumVolatility, Length: 1259, dtype: float64
+</code></pre></div>
+<p>The time series from <code>.predict</code> can be directly visualized with Pandas plotting methods:
+<img alt="portfolio_minvol" src="../imgs/min_vol_portfolio.svg" /></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The output of the <code>.predict</code> method is <strong>always</strong> a <code>pd.Series</code> with the same name as the model class and the 
+values obtained by the dot product of prices with the portfolio weights.
+In other words, the value of the portfolio evaluated if you bought the equities with the specified weights.</p>
+</div>
+<p>Internally the portfolio weights are contained as <code>pd.Series</code> attribute with the name <code>model.weights_</code>.
+Under most of the standard circumstances, we deal with long portfolios, meaning that all weights are set to be positive numbers in the <span class="arithmatex">\([0,1]\)</span> interval.
+It is very simple to access the <code>.weights_</code> attribute. When no <code>.fit</code> method is called, the <code>model.weights_</code> attribute is set to <code>None</code></p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">weights_</span><span class="p">)</span>
+<span class="n">AAPL</span>    <span class="mf">0.19389</span>
+<span class="n">MSTR</span>    <span class="mf">0.10545</span>
+<span class="n">TSLA</span>    <span class="mf">0.00000</span>
+<span class="n">MSFT</span>    <span class="mf">0.41142</span>
+<span class="n">AMZN</span>    <span class="mf">0.28924</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">MinimumVolatility</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">float64</span>
+</code></pre></div>
+<p>It is easy also to visualize weights portfolio with the <code>.plot.bar()</code> method:</p>
+<div class="highlight"><pre><span></span><code><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span><span class="o">.</span><span class="n">weights_</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
+</code></pre></div>
+<p><img alt="min_vol_weights" src="../imgs/min_vol_weights.svg" /></p>
+<h3 id="should-i-feed-returns-or-prices-to-fit-method">Should I feed returns or prices to <code>.fit</code> method?<a class="headerlink" href="#should-i-feed-returns-or-prices-to-fit-method" title="Permanent link">&para;</a></h3>
+<p>TL;DR: it depends. If you initialize the portfolio estimator with <code>returns_data=False</code> you should <code>.fit</code> the portfolio using prices, otherwise if you set <code>returns_data=True</code> you should <code>.fit</code> the portfolio using returns.</p>
+<p>This code produce the same allocation:</p>
+<div class="highlight"><pre><span></span><code><span class="n">MinimumVolatility</span><span class="p">(</span><span class="n">returns_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">weights_</span>
+</code></pre></div>
+<p>as this one</p>
+<div class="highlight"><pre><span></span><code><span class="n">returns</span> <span class="o">=</span> <span class="n">prices</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<span class="n">MinimumVolatility</span><span class="p">(</span><span class="n">returns_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">weights_</span>
+</code></pre></div>
+<p>Moreover, all portfolio estimators s can modify the <code>returns_data</code> parameter via the method <code>.set_returns_data</code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Differently from the <code>fit</code> method, remember that the <code>.predict</code> function must be fed with <strong>prices</strong> and <strong>not returns</strong> ⚠️. 
+You can always <code>.fit</code> on prices <strong>or</strong> returns, but <strong>always predict on prices</strong> to get meaningful results.
+There is a mathematical reason for this. Given asset prices at time t as a <span class="arithmatex">\(N\)</span>-dimensional vector <span class="arithmatex">\(\mathbf{P}(t)\)</span>, the portfolio total wealth <span class="arithmatex">\(W(t)\)</span> is the <strong>dot product</strong> of asset prices and portfolio weights:
+\begin{equation}
+W(t) =\sum_{i=1}^N  w_i P_i(t).
+\end{equation}
+By taking the portfolio return <span class="arithmatex">\(r_P(t)\)</span> of portfolio wealth <span class="arithmatex">\(W(t)\)</span> we get the following expression:
+\begin{equation}r_P(t) = \frac{W(t)-W(t-1)}{W(t)} = \frac{\sum_{i=1}^N w_i \left\lbrack P_i(t) - P_i(t-1)\right\rbrack } {\sum_{i=1}^N  w_i P_i (t-1)}.
+\end{equation}
+which is instead <strong>very different</strong> from the weighted sum of the <strong>individual asset returns</strong> <span class="arithmatex">\(r_i(t)\)</span>:
+\begin{equation}
+\sum_{i=1}^N w_i r_i(t) = \sum_{i=1}^N w_i \frac{P_i(t)-P_i(t-1)}{P_i(t-1)}
+\end{equation}
+This is the reason why the <code>PortfolioEstimator</code> class <strong>does not have</strong> a <code>.fit_predict</code> method.</p>
+</div>
+<p>You can fit a model with both prices or returns, but remember to predict <strong>always</strong> on prices and not on returns ⚠️.</p>
+<p><div class="highlight"><pre><span></span><code><span class="n">MinimumVolatility</span><span class="p">(</span><span class="n">returns_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
+</code></pre></div>
+is equivalent to:</p>
+<div class="highlight"><pre><span></span><code><span class="n">returns</span> <span class="o">=</span> <span class="n">prices</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<span class="n">MinimumVolatility</span><span class="p">(</span><span class="n">returns_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
+</code></pre></div>
+<hr>
+
+<h2 id="plotting-the-efficient-frontier">Plotting the efficient frontier<a class="headerlink" href="#plotting-the-efficient-frontier" title="Permanent link">&para;</a></h2>
+<p>For portfolio estimators supporting the functionality, it is possible to explore the efficient frontier. Moreover, it is easy to draw multiple fitted portfolios along the efficient frontier, specifying also colors.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">MinimumVolatility</span><span class="p">,</span> <span class="n">MeanVarianceEfficientReturn</span>
+<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+
+<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">MinimumVolatility</span><span class="p">(</span><span class="n">returns_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">plot_frontier</span><span class="p">(</span>
+        <span class="n">prices</span><span class="p">,</span>
+        <span class="n">num_portfolios</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">risk_return_color</span><span class="o">=</span><span class="s1">&#39;#777777&#39;</span><span class="p">,</span>
+        <span class="n">show_only_portfolio</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="p">(</span>
+    <span class="n">MeanVarianceEfficientReturn</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">set_target_return</span><span class="p">(</span><span class="mf">0.6</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">plot_frontier</span><span class="p">(</span>
+        <span class="n">prices</span><span class="p">,</span>
+        <span class="n">num_portfolios</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">risk_return_color</span><span class="o">=</span><span class="s1">&#39;#348ABD&#39;</span><span class="p">,</span>
+        <span class="n">show_only_portfolio</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="p">(</span>
+    <span class="n">MeanVarianceEfficientReturn</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">set_target_return</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">plot_frontier</span><span class="p">(</span>
+        <span class="n">prices</span><span class="p">,</span>
+        <span class="n">num_portfolios</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">risk_return_color</span><span class="o">=</span><span class="s1">&#39;#E24A33&#39;</span><span class="p">,</span>
+        <span class="n">show_only_portfolio</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Every portfolio estimator depicts the complete frontier for the underlying model, with an additional colored dot  indicating where the fitted portfolio falls in terms of risk-reward coordinates along the frontier, if the data has previously been fit.</p>
+<p><img alt="efficient_frontier" src="../imgs/multiple_frontier_plot.svg" /></p>
+<h3 id="faster-parallel-evaluation-of-the-efficient-frontier">Faster, parallel evaluation of the efficient frontier<a class="headerlink" href="#faster-parallel-evaluation-of-the-efficient-frontier" title="Permanent link">&para;</a></h3>
+<p>Furthermore, if you require high precision in your efficient frontier reconstruction, you can take advantage of parallelization of the optimization problem for each portfolio on the frontier, by setting <code>n_jobs</code> higher than 1. See the example below:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">MinimumVolatility</span><span class="p">,</span> <span class="n">MeanVarianceEfficientReturn</span>
+<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">MinimumVolatility</span><span class="p">(</span><span class="n">returns_data</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">set_n_jobs</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">plot_frontier</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">num_portfolios</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">risk_return_color</span><span class="o">=</span><span class="s1">&#39;darkblue&#39;</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">MeanVarianceEfficientReturn</span><span class="p">()</span><span class="o">.</span><span class="n">set_target_return</span><span class="p">(</span><span class="mf">0.6</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">plot_frontier</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">frontier_line_color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">risk_return_color</span><span class="o">=</span><span class="s1">&#39;darkgreen&#39;</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="returns-and-risk-estimators">Returns and risk estimators<a class="headerlink" href="#returns-and-risk-estimators" title="Permanent link">&para;</a></h2>
+<p>In general, when we talk about expected returns, we mean a variety of statistical estimators of the expected value of equity returns, such as mean historical returns, whereas when we talk about risk, we usually mean volatility estimators like sample <a href="../efficient_frontier/">standard deviation of portfolio returns</a>, or other more complex measures like the <a href="../efficient_cvar/">conditional value at risk</a>.</p>
+<p><code>scikit-portfolio</code> has devised a method to cope with the problem of assessing expected returns and or risk, using the same API as the <code>PortfolioEstimator</code>. </p>
+<p>All returns estimators are based on the <code>BaseReturnsEstimator</code>, containing the <code>.expected_returns_</code> attribute.
+On the other hand, all risk estimators are based on the <code>BaseRiskEstimator</code> whose main attribute is the <code>.risk_matrix_</code>.
+While these two kind of classes are very general, all the returns and risk estimators are based on these, and they all 
+implement different ways of providing statistically valid estimates to these two.</p>
+<p>Please note that almost every single <code>PortfolioEstimator</code> object requires the returns or risk estimators, or both as arguments in its <code>__init__</code> method.
+By default, they are initialized to <code>MeanHistoricalLinearReturns</code> and <code>SampleCovariance</code> when not specified.</p>
+<p>The annualization constants are by default set to 252, but you can change to the <code>frequency</code> of the <code>PortfolioEstimator</code> when manually modified with the <code>.set_frequency</code> method.
+For example here we modifiy the standard <code>SampleCovariance</code> estimator of the <code>MinimumVolatility</code> portfolio estimator
+with the <code>CovarianceExp</code> estimator, a way to calculate covariance based on exponential moving averages of returns, 
+rather than all data.</p>
+<p>We can also modify the default <code>MeanHistoricalLinearReturns</code> estimator with the <code>MedianHistoricalLinearReturns</code>, an estimator 
+of expected returns putting more emphasis on most frequent data, thus weighting outlier returns:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">MinimumVolatility</span><span class="p">,</span> <span class="n">CovarianceExp</span><span class="p">,</span> <span class="n">MedianHistoricalLinearReturns</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MinimumVolatility</span><span class="p">(</span><span class="n">rets_estimator</span><span class="o">=</span><span class="n">MedianHistoricalLinearReturns</span><span class="p">(),</span> <span class="n">cov_estimator</span><span class="o">=</span><span class="n">CovarianceExp</span><span class="p">())</span>
+</code></pre></div>
+<p>If you have already initialized a <code>PortfolioEstimator</code>, but you need to feed different risk or returns estimators to the subsequent calls, you can always modify the returns or risk estimators
+through the two methods:</p>
+<ul>
+<li><code>.set_returns_estimator</code></li>
+<li><code>.set_risk_estimator</code></li>
+</ul>
+<p>like in the following code snippet:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">MinimumVolatility</span><span class="p">,</span> <span class="n">CovarianceExp</span><span class="p">,</span> <span class="n">MedianHistoricalLinearReturns</span>
+<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+
+<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MinimumVolatility</span><span class="p">(</span><span class="n">returns_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">set_returns_data</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span><span class="o">.</span><span class="n">weights_</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">set_returns_estimator</span><span class="p">(</span><span class="n">MedianHistoricalLinearReturns</span><span class="p">())</span><span class="o">.</span><span class="n">set_risk_estimator</span><span class="p">(</span><span class="n">CovarianceExp</span><span class="p">())</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span><span class="o">.</span><span class="n">weights_</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="backtesting-and-model-selection">Backtesting and model selection<a class="headerlink" href="#backtesting-and-model-selection" title="Permanent link">&para;</a></h2>
+<p>Fitting a portfolio model to some price data does not entail that it will perform well on unseen data.
+Here the difference with classical machine learning algorithms is subtle. </p>
+<p>Our goal here is not to predict anything, but to fit internal parameters of a portfolio to extrapolate it to new data, measuring its performance in terms of some specific metrics.</p>
+<p>Imagine in the previous example we have fitted the minimum volatility portfolio over 4 years of data and want to compute its performance of providing good returns to the investor over 1 year of unseen equity data.
+How do we measure which portfolio method performs best out-of-sample, without getting trapped into the overfitting problem, or mixing training and testing data?</p>
+<p>This is known in the financial investment domain as the <a href="https://www.investopedia.com/terms/b/backtesting.asp">backtesting</a> phase of the investment portfolio.
+The <code>scikit-portfolio</code> library, leaning on the well-established <code>scikit-learn</code> module for model selection, provides different methdos to split the data into <code>train</code> and <code>test</code>, adding new tools such as the very smart <a href="../hyperparameters/"><code>CombinatorialPurgedCrossValidation</code></a> methods.</p>
+<p>We here briefly show how to perform a 5-fold backtesting procedure, with the <code>portfolio_cross_validate</code> helper:  </p>
+<ul>
+<li>We use a total of 8 cpus</li>
+<li>We calculate <a href="https://www.investopedia.com/terms/s/sharperatio.asp"><strong>Sharpe ratio</strong></a> and <a href="https://en.wikipedia.org/wiki/Omega_ratio"><strong>Omega ratio</strong></a> for each one of the 5 test folds of a minimum volatility portfolio optimized on the remaining 4 train folds.  </li>
+<li>The CV method is the classical <code>KFold</code> from <code>scikit-learn</code>.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">portfolio_cross_validate</span><span class="p">,</span> <span class="n">MinimumVolatility</span><span class="p">,</span> <span class="n">sharpe_ratio_scorer</span><span class="p">,</span> <span class="n">omega_ratio_scorer</span>
+<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">KFold</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">MinimumVolatility</span><span class="p">()</span>
+<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
+<span class="n">portfolio_cross_validate</span><span class="p">(</span>
+    <span class="n">estimator</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">prices_or_returns</span><span class="o">=</span><span class="n">prices</span><span class="p">,</span>
+    <span class="n">cv</span><span class="o">=</span><span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
+    <span class="n">scoring</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;sharpe_ratio&quot;</span><span class="p">:</span> <span class="n">sharpe_ratio_scorer</span><span class="p">,</span>
+        <span class="s2">&quot;omega_ratio&quot;</span><span class="p">:</span> <span class="n">omega_ratio_scorer</span>
+    <span class="p">},</span> 
+    <span class="n">n_jobs</span><span class="o">=</span><span class="mi">8</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>As a result we obtain a <code>pd.DataFrame</code> with all the relevant information, fit time and scoring time in seconds over all folds, together with the two portfolio metrics</p>
+<table>
+<thead>
+<tr><th style="text-align: right;">  fold</th><th style="text-align: right;">  fit_time</th><th style="text-align: right;">  score_time</th><th style="text-align: right;">  test_sharpe_ratio</th><th style="text-align: right;">  test_omega_ratio</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align: right;">     0</td><td style="text-align: right;"> 0.0263493</td><td style="text-align: right;">  0.00355029</td><td style="text-align: right;">          1.25578  </td><td style="text-align: right;">           1.24039</td></tr>
+<tr><td style="text-align: right;">     1</td><td style="text-align: right;"> 0.0191877</td><td style="text-align: right;">  0.00233126</td><td style="text-align: right;">          1.48821  </td><td style="text-align: right;">           1.29355</td></tr>
+<tr><td style="text-align: right;">     2</td><td style="text-align: right;"> 0.0255792</td><td style="text-align: right;">  0.00363684</td><td style="text-align: right;">          0.0513611</td><td style="text-align: right;">           1.00932</td></tr>
+<tr><td style="text-align: right;">     3</td><td style="text-align: right;"> 0.0245926</td><td style="text-align: right;">  0.0121238 </td><td style="text-align: right;">          1.20801  </td><td style="text-align: right;">           1.27315</td></tr>
+<tr><td style="text-align: right;">     4</td><td style="text-align: right;"> 0.023535 </td><td style="text-align: right;">  0.00933957</td><td style="text-align: right;">          0.672825 </td><td style="text-align: right;">           1.12108</td></tr>
+</tbody>
+</table>
+
+<p>Alternatively we could have fitted all the <code>skportfolio</code> score estimators to get a complete breakdown of all the 
+metrics of the aforementioned portfolio estimator based on minimum volatility.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">all_scorers</span>
+<span class="n">portfolio_cross_validate</span><span class="p">(</span>
+    <span class="n">estimator</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">prices_or_returns</span><span class="o">=</span><span class="n">prices</span><span class="p">,</span>
+    <span class="n">cv</span><span class="o">=</span><span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">),</span>
+    <span class="n">scoring</span><span class="o">=</span><span class="n">all_scorers</span><span class="p">,</span>
+    <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_cpus</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>To have an idea of the current train-test split scheme you can use the nice utility function <code>make_split_df</code> from the <code>skportfolio.model_selection</code> module that prints a green circle for the train samples and a red circle for the test samples</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+<span class="kn">from</span> <span class="nn">skportfolio.model_selection</span> <span class="kn">import</span> <span class="n">make_split_df</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">KFold</span>
+<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">15</span><span class="p">,:]</span>
+<span class="n">make_split_df</span><span class="p">(</span><span class="n">KFold</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">prices</span><span class="p">),</span> <span class="n">titles</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">))</span>
+</code></pre></div>
+<p>This produces a dataframe where the columns are the temporal samples and the rows denote the fold number of the cross-validation.
+Here we limit the results to only 15 days of data. The 🔴 dots represent testing, while the 🟢 dots represent training.
+The total number of samples for both training and test is counted in the last two columns.</p>
+<table>
+<thead>
+<tr><th>Folds  </th><th>0  </th><th>1  </th><th>2  </th><th>3  </th><th>4  </th><th>5  </th><th>6  </th><th>7  </th><th>8  </th><th>9  </th><th>10  </th><th>11  </th><th>12  </th><th>13  </th><th>14  </th><th style="text-align: right;">  train</th><th style="text-align: right;">  test</th><th style="text-align: right;">  cv_train</th><th style="text-align: right;">  cv_test</th></tr>
+</thead>
+<tbody>
+<tr><td>Fold(1)</td><td>🔴 </td><td>🔴 </td><td>🔴 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢  </td><td>🟢  </td><td>🟢  </td><td>🟢  </td><td>🟢  </td><td style="text-align: right;">     12</td><td style="text-align: right;">     3</td><td style="text-align: right;">         0</td><td style="text-align: right;">        0</td></tr>
+<tr><td>Fold(2)</td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🔴 </td><td>🔴 </td><td>🔴 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢  </td><td>🟢  </td><td>🟢  </td><td>🟢  </td><td>🟢  </td><td style="text-align: right;">     12</td><td style="text-align: right;">     3</td><td style="text-align: right;">         0</td><td style="text-align: right;">        0</td></tr>
+<tr><td>Fold(3)</td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🔴 </td><td>🔴 </td><td>🔴 </td><td>🟢 </td><td>🟢  </td><td>🟢  </td><td>🟢  </td><td>🟢  </td><td>🟢  </td><td style="text-align: right;">     12</td><td style="text-align: right;">     3</td><td style="text-align: right;">         0</td><td style="text-align: right;">        0</td></tr>
+<tr><td>Fold(4)</td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🔴 </td><td>🔴  </td><td>🔴  </td><td>🟢  </td><td>🟢  </td><td>🟢  </td><td style="text-align: right;">     12</td><td style="text-align: right;">     3</td><td style="text-align: right;">         0</td><td style="text-align: right;">        0</td></tr>
+<tr><td>Fold(5)</td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢 </td><td>🟢  </td><td>🟢  </td><td>🔴  </td><td>🔴  </td><td>🔴  </td><td style="text-align: right;">     12</td><td style="text-align: right;">     3</td><td style="text-align: right;">         0</td><td style="text-align: right;">        0</td></tr>
+</tbody>
+</table>
+
+<p>Note that it is also possible to manually iterate over the folds, use different data splitting strategies,  and use
+custom scoring functions, all provided in the <a href="../metrics/">metrics</a> submodule.
+If interested, please refer to the <code>skportfolio</code> and <code>sklearn</code> API for more details.</p>
+<h2 id="automatic-parameters-search-hyperparameters-optimization">Automatic parameters search (hyperparameters optimization)<a class="headerlink" href="#automatic-parameters-search-hyperparameters-optimization" title="Permanent link">&para;</a></h2>
+<p>All portfolio estimators have a number of internal parameters also called <strong>hyper-parameters</strong> that can be tuned to
+modify the algorithm results, and to tune one or another specific behaviour. 
+It is important to note that most of the portfolio estimators come with default choices for their internal parameters, 
+but in order to generalize well on unseen data, it is important to tune them via sound statistical methods.</p>
+<p>Following the above example of the <code>MinimumVolatility</code> portfolio algorithm, we see that a number of internal parameters 
+can be chosen via the <code>.get_params()</code> method, similarly to the classical <code>sklearn.Estimator</code> object:</p>
+<p><div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">MinimumVolatility</span>
+<span class="n">MinimumVolatility</span><span class="p">()</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span>
+</code></pre></div>
+with the following result of internal parameters:
+<div class="highlight"><pre><span></span><code>{
+ &#39;cov_estimator__frequency&#39;: 252,
+ &#39;cov_estimator__returns_data&#39;: False,
+ &#39;cov_estimator&#39;: SampleCovariance(),
+ &#39;frequency&#39;: 252,
+ &#39;l2_gamma&#39;: 0,
+ &#39;max_weight&#39;: 1,
+ &#39;min_weight&#39;: 0,
+ &#39;rets_estimator__frequency&#39;: 252,
+ &#39;rets_estimator__returns_data&#39;: False,
+ &#39;rets_estimator&#39;: MeanHistoricalLinearReturns(),
+ &#39;returns_data&#39;: False,
+ &#39;risk_free_rate&#39;: 0.0
+}
+</code></pre></div>
+Quite often among all these parameters it is not clear what the best value is, hence this has to be found through
+hyperparamenters selection via cross-validation.</p>
+<p>As <code>scikit-learn</code> already provides tools to automatically find the best parameter combinations, we can randomly search
+over the parameter space of the portfolio optimization algorithm with a <code>GridSearchCV</code> object.
+When the search is over, the RandomizedSearchCV behaves as a <code>skportfolio.PortfolioEstimator</code>, but with internal values 
+fitted with the best set of parameters:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">GridSearchCV</span><span class="p">,</span> <span class="n">KFold</span><span class="p">,</span> <span class="n">train_test_split</span>
+<span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">MinimumVolatility</span><span class="p">,</span> <span class="n">sharpe_ratio_scorer</span>
+<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+
+<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
+<span class="n">prices_validation</span><span class="p">,</span> <span class="n">prices_out_of_sample</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">prices</span><span class="p">,</span> <span class="n">train_size</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MinimumVolatility</span><span class="p">()</span>
+<span class="n">n_cpus</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">n_iter</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">best_model</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span>
+    <span class="n">estimator</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+    <span class="n">param_grid</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">grid_parameters</span><span class="p">(),</span>
+    <span class="n">cv</span><span class="o">=</span><span class="n">KFold</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>
+    <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_cpus</span><span class="p">,</span>
+    <span class="n">scoring</span><span class="o">=</span><span class="n">sharpe_ratio_scorer</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices_validation</span><span class="p">)</span>
+</code></pre></div>
+<p>The refitted portfolio estimator is made available at the <code>best_estimator_</code> attribute and permits using the <code>.predict</code> 
+method directly from the <code>GridSearchCV</code> fitted object, taking care in using the out of sample data for the portfolio 
+prediction in order to fairly compare different methods.</p>
+<div class="highlight"><pre><span></span><code><span class="n">best_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">prices_out_of_sample</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best model Sharpe ratio = </span><span class="si">{</span><span class="n">best_model</span><span class="o">.</span><span class="n">best_estimator_</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">prices_out_of_sample</span><span class="p">)</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>You can access the optimized parameters of the best estimator with <code>.best_model</code> and check their internal parameters 
+still with the <code>.get_params()</code> method:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">best_model</span><span class="o">.</span><span class="n">best_estimator_</span><span class="o">.</span><span class="n">info</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">best_model</span><span class="o">.</span><span class="n">best_params_</span><span class="p">)</span>
+</code></pre></div>
+<p>You can also access the cross-validation results using the <code>.cv_result_</code> attribute of the <code>GridSearchCV</code> estimator:</p>
+<div class="highlight"><pre><span></span><code><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">best_model</span><span class="o">.</span><span class="n">cv_results_</span><span class="p">)</span>
+</code></pre></div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../installation/" class="btn btn-neutral float-left" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../portfolio_optimization_theory/" class="btn btn-neutral float-right" title="Portfolio optimization theory">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/CarloNicolini/scikit-portfolio" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../installation/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../portfolio_optimization_theory/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/mkapi.js" defer></script>
+      <script src="../javascripts/config.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

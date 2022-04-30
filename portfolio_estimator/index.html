@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/portfolio_estimator/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Estimators - scikit-portfolio</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet" />
+        <link href="../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../css/mkapi-readthedocs.css" rel="stylesheet" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Estimators";
+        var mkdocs_page_input_path = "portfolio_estimator.md";
+        var mkdocs_page_url = "/portfolio_estimator/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../imgs/scikit_portfolio.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting started</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_optimization_theory/">Portfolio optimization theory</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Algorithms</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Efficient frontier</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_frontier/">Classical Mean-Variance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_semivariance/">Mean-Semivariance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cvar/">Conditional Value At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cdar/">Conditional Drawdown At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_omega/">Omega ratio</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_mad/">Mean Absolute Deviation (MAD)</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Information theory</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_repo/">REPO</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ensemble/">Ensemble methods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../miscellaneous/">Miscellaneous</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Risk and returns</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns/">Returns estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk/">Risk estimators</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Model selection</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../metrics/">Metrics and scorers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../splitters/">Cross validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developing new methods</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Estimators</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#portfolio-estimator">Portfolio Estimator</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#instantiation">Instantiation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#fitting">Fitting</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#estimated-attributes">Estimated Attributes</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#optional-arguments">Optional Arguments</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#get_params-and-set_params">get_params and set_params</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#parameters-and-init">Parameters and init</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">scikit-portfolio</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Developing new methods &raquo;</li><li>Estimators</li>
+    <li class="wy-breadcrumbs-aside">
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/portfolio_estimator.md"
+          class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="estimators-in-scikit-portfolio-class">Estimators in <code>scikit-portfolio</code> class<a class="headerlink" href="#estimators-in-scikit-portfolio-class" title="Permanent link">&para;</a></h1>
+<p>At the very core of <code>skportfolio</code> lies the <code>PortfolioEstimator</code> class which borrows many of the ideas of the well-known scikit-learn estimators.</p>
+<p>Begin an <code>Estimator</code> object, the <code>PortfolioEstimator</code> follows all the best-practices suggested when developing new estimators. 
+As from the official scikit-learn documentation:</p>
+<blockquote>
+<p>To have a uniform API, we try to have a common basic API for all the objects. In addition, to avoid the proliferation of framework code, we try to adopt simple conventions and limit to a minimum the number of methods an object must implement.</p>
+</blockquote>
+<p>Here we have strictly followed this suggestion.</p>
+<h2 id="portfolio-estimator">Portfolio Estimator<a class="headerlink" href="#portfolio-estimator" title="Permanent link">&para;</a></h2>
+<p>The API has one predominant object: the estimator.
+An estimator is an object that fits a model based on some training data and is capable of inferring some properties on new data. All portfolio estimators implement the <code>.fit</code> method:</p>
+<div class="highlight"><pre><span></span><code>estimator.fit(X, y)
+</code></pre></div>
+<p>All built-in portfolio estimators also have a <code>.set_params</code> method, which sets data-independent parameters (overriding previous parameter values passed to <code>__init__</code>).</p>
+<p>All portfolio estimators in the <code>skportfolio</code> codebase should inherit from <code>skportfolio._base.PortfolioEstimator</code>.</p>
+<h2 id="instantiation">Instantiation<a class="headerlink" href="#instantiation" title="Permanent link">&para;</a></h2>
+<p>This concerns the creation of an object. The object’s <code>__init__</code> method might accept constants as arguments that determine the estimator’s behavior. It should <strong>not</strong>, however, take the actual training data as an argument, as this is left to the <code>fit()</code> method:</p>
+<p>The arguments accepted by <code>__init__</code> should all be keyword arguments with a default value.
+In other words, a user should be able to instantiate an estimator without passing any arguments to it.</p>
+<p>The arguments should all correspond to hyperparameters describing the portfolio model or the class tries to solve.
+These initial arguments (or parameters) are always remembered by the estimator.
+Also note that they should not be documented under the “Attributes” section, but rather under the “Parameters” section for that estimator.</p>
+<p>In addition, every keyword argument accepted by <code>__init__</code> should correspond to an attribute on the instance.
+<code>Scikit-learn</code> and <code>skportfolio</code> relies on this to find the relevant attributes to set on an estimator when doing model selection.</p>
+<p>To summarize, an <code>__init__</code> should look like:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">param2</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">param1</span> <span class="o">=</span> <span class="n">param1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">param2</span> <span class="o">=</span> <span class="n">param2</span>
+</code></pre></div>
+<p><strong>There should be no logic, not even input validation, and the parameters should not be changed.</strong>
+The corresponding logic should be put where the parameters are used, typically in <code>.fit</code>.
+The following <strong>is wrong</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">param2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">param3</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="c1"># WRONG: parameters should not be modified</span>
+    <span class="k">if</span> <span class="n">param1</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">param2</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">param1</span> <span class="o">=</span> <span class="n">param1</span>
+    <span class="c1"># WRONG: the object&#39;s attributes should have exactly the name of</span>
+    <span class="c1"># the argument in the constructor</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">param3</span> <span class="o">=</span> <span class="n">param2</span>
+</code></pre></div>
+<p>The reason for postponing the validation is that the same validation would have to be performed in <code>set_params</code>, which is used in algorithms like GridSearchCV.</p>
+<h2 id="fitting">Fitting<a class="headerlink" href="#fitting" title="Permanent link">&para;</a></h2>
+<p>The next thing you will probably want to do is to estimate some parameters in the portfolio model.
+This is implemented in the <code>fit()</code> method.</p>
+<p>The <code>fit()</code> method takes the training data as arguments, which can be one array in the case of unsupervised learning, or two arrays in the case of supervised learning.</p>
+<p>Note that the model is fitted using <code>X</code> and <code>y</code>, but the object <strong>holds no reference to X and y</strong>.</p>
+<p>|Parameters|
+|X| array-like of shape (n_timesteps, n_assets)|
+|y| array-like of shape (n_samples,)|
+|kwargs| optional data-dependent parameters|</p>
+<p><code>X.shape[0]</code> should be the same as <code>y.shape[0]</code> whenever <code>y</code> is necessary. Most portfolio methods don't need it.
+If this requisite is not met, an exception of type ValueError should be raised.
+<code>y</code> is almost always ignored. However, to make it possible to use the estimator as part of a pipeline.
+For the same reason, <code>fit_predict</code>, <code>fit_transform</code>, <code>score</code> and <code>partial_fit</code> methods need to accept a y argument in the second place if they are implemented.</p>
+<p>The method should return the object (<code>self</code>). This pattern is useful to be able to implement quick <strong>one liners</strong> in an IPython session such as:</p>
+<div class="highlight"><pre><span></span><code><span class="n">prices_test_predicted</span> <span class="o">=</span> <span class="n">MinimumVolatility</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices_train</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">prices_test</span><span class="p">)</span>
+</code></pre></div>
+<p>Depending on the nature of the algorithm, fit can sometimes also accept additional keywords arguments. However, any parameter that can have a value assigned prior to having access to the data should be an <code>__init__</code> keyword argument.
+<code>fit</code> parameters should be restricted to directly data dependent variables. A tolerance stopping criterion <code>tol</code> is not directly data dependent (although the optimal value according to some scoring function probably is).</p>
+<p>When fit is called, any previous call to fit should be ignored. 
+In general, calling <code>estimator.fit(X1)</code> and then <code>estimator.fit(X2)</code> should be the same as only calling <code>estimator.fit(X2)</code>.
+However, this may not be true in practice when fit depends on some random process, see <code>random_state</code>.
+Another exception to this rule is when the hyper-parameter warm_start is set to True for estimators that support it. warm_start=True means that the previous state of the trainable parameters of the estimator are reused instead of using the default initialization strategy.</p>
+<h2 id="estimated-attributes">Estimated Attributes<a class="headerlink" href="#estimated-attributes" title="Permanent link">&para;</a></h2>
+<p>Attributes that have been estimated from the data must always have a name ending with trailing underscore <code>_', for example the portfolio weights would be stored in a</code>weight_<code>attribute after</code>fit` has been called.</p>
+<p>The estimated attributes are expected to be overridden when you call fit a second time.</p>
+<h2 id="optional-arguments">Optional Arguments<a class="headerlink" href="#optional-arguments" title="Permanent link">&para;</a></h2>
+<p>In iterative algorithms, the number of iterations should be specified by an integer called n_iter.</p>
+<h2 id="get_params-and-set_params">get_params and set_params<a class="headerlink" href="#get_params-and-set_params" title="Permanent link">&para;</a></h2>
+<p>All scikit-learn estimators have <code>get_params</code> and <code>set_params</code> functions.
+The <code>get_params</code> function takes no arguments and returns a dict of the
+<code>__init__</code> parameters of the estimator, together with their values.</p>
+<p>It must take one keyword argument, <code>deep</code>, which receives a boolean value
+that determines whether the method should return the parameters of
+sub-estimators (for most estimators, this can be ignored). The default value
+for <code>deep</code> should be <code>True</code>. For instance considering the following
+estimator::</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">MyEstimator</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
+<span class="o">...</span>     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subestimator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">my_extra_param</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
+<span class="o">...</span>         <span class="bp">self</span><span class="o">.</span><span class="n">subestimator</span> <span class="o">=</span> <span class="n">subestimator</span>
+<span class="o">...</span>         <span class="bp">self</span><span class="o">.</span><span class="n">my_extra_param</span> <span class="o">=</span> <span class="n">my_extra_param</span>
+</code></pre></div>
+<p>The parameter <code>deep</code> will control whether or not the parameters of the
+<code>subsestimator</code> should be reported. Thus when <code>deep=True</code>, the output will be::</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">my_estimator</span> <span class="o">=</span> <span class="n">MyEstimator</span><span class="p">(</span><span class="n">subestimator</span><span class="o">=</span><span class="n">LogisticRegression</span><span class="p">())</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">my_estimator</span><span class="o">.</span><span class="n">get_params</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">my_extra_param</span> <span class="o">-&gt;</span> <span class="n">random</span>
+<span class="n">subestimator__C</span> <span class="o">-&gt;</span> <span class="mf">1.0</span>
+<span class="n">subestimator__class_weight</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<span class="n">subestimator__dual</span> <span class="o">-&gt;</span> <span class="kc">False</span>
+<span class="n">subestimator__fit_intercept</span> <span class="o">-&gt;</span> <span class="kc">True</span>
+<span class="n">subestimator__intercept_scaling</span> <span class="o">-&gt;</span> <span class="mi">1</span>
+<span class="n">subestimator__l1_ratio</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<span class="n">subestimator__max_iter</span> <span class="o">-&gt;</span> <span class="mi">100</span>
+<span class="n">subestimator__multi_class</span> <span class="o">-&gt;</span> <span class="n">auto</span>
+<span class="n">subestimator__n_jobs</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<span class="n">subestimator__penalty</span> <span class="o">-&gt;</span> <span class="n">l2</span>
+<span class="n">subestimator__random_state</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<span class="n">subestimator__solver</span> <span class="o">-&gt;</span> <span class="n">lbfgs</span>
+<span class="n">subestimator__tol</span> <span class="o">-&gt;</span> <span class="mf">0.0001</span>
+<span class="n">subestimator__verbose</span> <span class="o">-&gt;</span> <span class="mi">0</span>
+<span class="n">subestimator__warm_start</span> <span class="o">-&gt;</span> <span class="kc">False</span>
+<span class="n">subestimator</span> <span class="o">-&gt;</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+</code></pre></div>
+<p>Often, the <code>subestimator</code> has a name (as e.g. named steps in a
+<code>~sklearn.pipeline.Pipeline</code> object), in which case the key should
+become <code>&lt;name&gt;__C</code>, <code>&lt;name&gt;__class_weight</code>, etc.</p>
+<p>While when <code>deep=False</code>, the output will be::</p>
+<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">for</span><span class="w"> </span><span class="n">param</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">my_estimator</span><span class="p">.</span><span class="n">get_params</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kr">False</span><span class="p">).</span><span class="n">items</span><span class="p">()</span><span class="o">:</span><span class="w"></span>
+<span class="p">...</span><span class="w">     </span><span class="n">print</span><span class="p">(</span><span class="n">f</span><span class="s">&quot;{param} -&gt; {value}&quot;</span><span class="p">)</span><span class="w"></span>
+<span class="n">my_extra_param</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nf">random</span><span class="w"></span>
+<span class="n">subestimator</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">LogisticRegression</span><span class="p">()</span><span class="w"></span>
+</code></pre></div>
+
+<p>The <code>set_params</code> on the other hand takes as input a dict of the form
+<code>'parameter': value</code> and sets the parameter of the estimator using this dict.
+Return value must be estimator itself.</p>
+<p>While the <code>get_params</code> mechanism is not essential (see :ref:<code>cloning</code> below),
+the <code>set_params</code> function is necessary as it is used to set parameters during
+grid searches.</p>
+<p>The easiest way to implement these functions, and to get a sensible
+<code>__repr__</code> method, is to inherit from <code>sklearn.base.BaseEstimator</code>. If you
+do not want to make your code dependent on scikit-learn, the easiest way to
+implement the interface is::</p>
+<div class="codehilite"><pre><span></span><code><span class="nv">def</span> <span class="nv">get_params</span><span class="ss">(</span><span class="nv">self</span>, <span class="nv">deep</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>:
+    # <span class="nv">suppose</span> <span class="nv">this</span> <span class="nv">estimator</span> <span class="nv">has</span> <span class="nv">parameters</span> <span class="s2">&quot;</span><span class="s">alpha</span><span class="s2">&quot;</span> <span class="nv">and</span> <span class="s2">&quot;</span><span class="s">recursive</span><span class="s2">&quot;</span>
+    <span class="k">return</span> {<span class="s2">&quot;</span><span class="s">alpha</span><span class="s2">&quot;</span>: <span class="nv">self</span>.<span class="nv">alpha</span>, <span class="s2">&quot;</span><span class="s">recursive</span><span class="s2">&quot;</span>: <span class="nv">self</span>.<span class="nv">recursive</span>}
+
+<span class="nv">def</span> <span class="nv">set_params</span><span class="ss">(</span><span class="nv">self</span>, <span class="o">**</span><span class="nv">parameters</span><span class="ss">)</span>:
+    <span class="k">for</span> <span class="nv">parameter</span>, <span class="nv">value</span> <span class="nv">in</span> <span class="nv">parameters</span>.<span class="nv">items</span><span class="ss">()</span>:
+        <span class="nv">setattr</span><span class="ss">(</span><span class="nv">self</span>, <span class="nv">parameter</span>, <span class="nv">value</span><span class="ss">)</span>
+    <span class="k">return</span> <span class="nv">self</span>
+</code></pre></div>
+
+<h2 id="parameters-and-init">Parameters and init<a class="headerlink" href="#parameters-and-init" title="Permanent link">&para;</a></h2>
+<p>As <code>model_selection.GridSearchCV</code> uses <code>set_params</code>
+to apply parameter setting to estimators,
+it is essential that calling <code>set_params</code> has the same effect
+as setting parameters using the <code>__init__</code> method.
+The easiest and recommended way to accomplish this is to
+<strong>not do any parameter validation in</strong> <code>__init__</code>.
+All logic behind estimator parameters,
+like translating string arguments into functions, should be done in <code>fit</code>.</p>
+<p>Also it is expected that parameters with trailing <code>_</code> are <strong>not to be set
+inside the</strong> <code>__init__</code> <strong>method</strong>. All and only the public attributes set by
+fit have a trailing <code>_</code>. As a result the existence of parameters with
+trailing <code>_</code> is used to check if the estimator has been fitted.</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../hyperparameters/" class="btn btn-neutral float-left" title="Hyperparameters optimization"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../datasets/" class="btn btn-neutral float-right" title="Datasets">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/CarloNicolini/scikit-portfolio" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../hyperparameters/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../datasets/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/mkapi.js" defer></script>
+      <script src="../javascripts/config.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

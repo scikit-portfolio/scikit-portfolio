@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/efficient_cdar/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Conditional Drawdown At Risk - scikit-portfolio</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet" />
+        <link href="../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../css/mkapi-readthedocs.css" rel="stylesheet" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Conditional Drawdown At Risk";
+        var mkdocs_page_input_path = "efficient_cdar.md";
+        var mkdocs_page_url = "/efficient_cdar/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../imgs/scikit_portfolio.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting started</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_optimization_theory/">Portfolio optimization theory</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Algorithms</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Efficient frontier</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_frontier/">Classical Mean-Variance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_semivariance/">Mean-Semivariance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cvar/">Conditional Value At Risk</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="./">Conditional Drawdown At Risk</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#minimum-cdar-portfolio">Minimum CDar portfolio</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-return-on-mean-cdar-frontier">Efficient return on mean-cdar frontier</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-risk-on-mean-cdar-frontier">Efficient risk on mean-cdar frontier</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_omega/">Omega ratio</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_mad/">Mean Absolute Deviation (MAD)</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Information theory</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_repo/">REPO</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ensemble/">Ensemble methods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../miscellaneous/">Miscellaneous</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Risk and returns</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns/">Returns estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk/">Risk estimators</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Model selection</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../metrics/">Metrics and scorers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../splitters/">Cross validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developing new methods</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">scikit-portfolio</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Algorithms &raquo;</li>
+          <li>Efficient frontier &raquo;</li><li>Conditional Drawdown At Risk</li>
+    <li class="wy-breadcrumbs-aside">
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/efficient_cdar.md"
+          class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="efficient-conditional-drawdown-at-risk-frontier">Efficient Conditional Drawdown At Risk Frontier<a class="headerlink" href="#efficient-conditional-drawdown-at-risk-frontier" title="Permanent link">&para;</a></h1>
+<p>Conditional drawdown at risk is a measure often used in portfolio optimization for <strong>effective risk management</strong> introduced by Cheklov, Uryasev and Zabarankin in 2000 <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>,<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>.
+The CDar (conditional drawdown-at-risk) is the average of all drawdowns for all the instances that drawdown exceeded a certain threshold.
+Drawdown is a measure of downside risk.</p>
+<p>Conditional drawdown is the average of all drawdowns, or cumulative losses, in excess of a certain threshold.
+That threshold is referred to as drawdown-at-risk. It is very similar to how expected shortfall is defined.</p>
+<p>CDar in the context of portfolio optimization was first proposed by Alexeei Chekhlov, Stanislav Uryasev and Michael Zabarankin in 2003. 
+The main goal of their paper was to show that the optimization of CDar can be solved using linear programming, a kind of problems that <code>cvxpy</code> is very good at solving.</p>
+<p>The portfolio <em>conditional drawdown at risk</em> is based on using portoflio drawdowns rathar than returns.
+For the definition <a href="https://en.wikipedia.org/wiki/Drawdown_(economics)">look here</a> and the original <a href="https://pyportfolioopt.readthedocs.io/en/latest/GeneralEfficientFrontier.html#efficientcdar"><code>PyPortfolioOpt</code> version</a>.</p>
+<p>Here we offer three specific classes to handle the efficient CDar frontier, namely the portfolio with the Minimum CDar, and the portfolios of lowest CDar given target return or the highest return given CDar. </p>
+<h2 id="minimum-cdar-portfolio">Minimum CDar portfolio<a class="headerlink" href="#minimum-cdar-portfolio" title="Permanent link">&para;</a></h2>
+<p>The minimum CDar portfolio identifies the point with the least Conditional Drawdown at risk along the CDar efficient frontier.</p>
+<h2 id="efficient-return-on-mean-cdar-frontier">Efficient return on mean-cdar frontier<a class="headerlink" href="#efficient-return-on-mean-cdar-frontier" title="Permanent link">&para;</a></h2>
+<h2 id="efficient-risk-on-mean-cdar-frontier">Efficient risk on mean-cdar frontier<a class="headerlink" href="#efficient-risk-on-mean-cdar-frontier" title="Permanent link">&para;</a></h2>
+<h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
+<hr>
+
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Chekhlov, Alexei, Stanislav Uryasev, and Michael Zabarankin. "Portfolio optimization with drawdown constraints." Supply chain and finance. 2004. 209-228.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Chekhlov, Alexei, Stanislav Uryasev, and Michael Zabarankin. "Drawdown measure in portfolio optimization." International Journal of Theoretical and Applied Finance 8.01 (2005): 13-58.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../efficient_cvar/" class="btn btn-neutral float-left" title="Conditional Value At Risk"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../efficient_omega/" class="btn btn-neutral float-right" title="Omega ratio">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/CarloNicolini/scikit-portfolio" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../efficient_cvar/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../efficient_omega/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/mkapi.js" defer></script>
+      <script src="../javascripts/config.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

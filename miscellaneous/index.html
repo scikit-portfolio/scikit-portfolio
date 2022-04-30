@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/miscellaneous/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Miscellaneous - scikit-portfolio</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet" />
+        <link href="../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../css/mkapi-readthedocs.css" rel="stylesheet" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Miscellaneous";
+        var mkdocs_page_input_path = "miscellaneous.md";
+        var mkdocs_page_url = "/miscellaneous/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../imgs/scikit_portfolio.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting started</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_optimization_theory/">Portfolio optimization theory</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Algorithms</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="#">Efficient frontier</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_frontier/">Classical Mean-Variance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_semivariance/">Mean-Semivariance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cvar/">Conditional Value At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cdar/">Conditional Drawdown At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_omega/">Omega ratio</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_mad/">Mean Absolute Deviation (MAD)</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Information theory</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_repo/">REPO</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ensemble/">Ensemble methods</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Miscellaneous</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#equally-weighted-portfolio">Equally weighted portfolio</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#single-asset-portfolio">Single Asset portfolio</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#inverse-variance-portfolio">Inverse variance portfolio</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#inverse-volatility-portfolio">Inverse volatility portfolio</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#capitalization-weighted">Capitalization weighted</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Risk and returns</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns/">Returns estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk/">Risk estimators</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Model selection</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../metrics/">Metrics and scorers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../splitters/">Cross validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developing new methods</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">scikit-portfolio</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Algorithms &raquo;</li><li>Miscellaneous</li>
+    <li class="wy-breadcrumbs-aside">
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/miscellaneous.md"
+          class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="miscellanous-portfolio">Miscellanous portfolio<a class="headerlink" href="#miscellanous-portfolio" title="Permanent link">&para;</a></h1>
+<p>Not all portfolio methods require hard mathematical optimization. Some of them are much simpler and require very simple calculations.
+Here we list the simple portfolio optimization methods implemented in <code>scikit-portfolio</code>.
+Some of them which are only useful for coding convenience, and to maintain beautiful optimization pipelines.</p>
+<h2 id="equally-weighted-portfolio">Equally weighted portfolio<a class="headerlink" href="#equally-weighted-portfolio" title="Permanent link">&para;</a></h2>
+<p>The equally weighted portfolio. Absolutely the simplest portfolio strategy to adopt. Interestingly, many authors claim that this portfolio achieves the best risk-reward ratio most of the time.
+It is documented in the literature that due to estimation errors, mean-variance efficient portfolios often deliver no higher out-of-sample Sharpe ratios than does the naïve equally-weighted portfolio (EWP).
+DeMiguel, Garlappi, and Uppal, (2007) <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> is commonly cited to dismiss optimization based methods, in favor of equally weighted portfolios.</p>
+<p>The proportion of weights given to each asset in the portfolio is equal to <span class="arithmatex">\(1/N\)</span>.</p>
+<div class="arithmatex">\[\begin{split}
+\begin{equation}
+\begin{aligned}
+w_i &amp;= \frac{1}{N} &amp; &amp; \forall i = 1,\ldots,N
+\end{aligned}
+\end{equation}
+\end{split}\]</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Other authors (see Kritzman <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>) instead have contrasting views about the better efficiency of the 1/N portfolio and say that the minimum volatility portfolio yields better out-of-sample results .
+Please do your own research to convince yourself which of the two are right.</p>
+</div>
+<h2 id="single-asset-portfolio">Single Asset portfolio<a class="headerlink" href="#single-asset-portfolio" title="Permanent link">&para;</a></h2>
+<p>Here for coding convenience. A portfolio where 100% of weight is given to a specific asset <span class="arithmatex">\(i^\star\)</span>, chosen in the initialization phase.</p>
+<div class="arithmatex">\[\begin{split}
+\begin{equation}
+\begin{aligned}
+\begin{cases}
+w_i = N^{-1} &amp; i = i^\star \\
+w_i =0 &amp; \textrm{otherwise}
+\end{cases}
+\end{aligned}
+\end{equation}
+\end{split}\]</div>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">SingleAsset</span>
+<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">SingleAsset</span><span class="p">(</span><span class="n">asset</span><span class="o">=</span><span class="s2">&quot;TSLA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">load_tech_stock_prices</span><span class="p">())</span><span class="o">.</span><span class="n">weights_</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="inverse-variance-portfolio">Inverse variance portfolio<a class="headerlink" href="#inverse-variance-portfolio" title="Permanent link">&para;</a></h2>
+<p>In this portfolio, asset weights are specified inversely proportional to asset returns variance.</p>
+<div class="arithmatex">\[\begin{equation}
+w_i = \frac{1/\sigma^2 \lbrack r_i  \rbrack}{\sum_{j=1}^N 1/\sigma^2 \lbrack r_j \rbrack}
+\end{equation}\]</div>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">InverseVariance</span>
+<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">InverseVariance</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">load_tech_stock_prices</span><span class="p">())</span><span class="o">.</span><span class="n">weights_</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="inverse-volatility-portfolio">Inverse volatility portfolio<a class="headerlink" href="#inverse-volatility-portfolio" title="Permanent link">&para;</a></h2>
+<p>In this portfolio, asset weights are specified inversely proportional to asset returns volatility <span class="arithmatex">\(\sigma=\sqrt{\sigma^2}\)</span>.
+Very similar to Inverse Variance Portfolio.</p>
+<div class="arithmatex">\[\begin{equation}
+w_i = \frac{1/\sigma \lbrack r_i  \rbrack}{\sum_{j=1}^N 1/\sigma \lbrack r_j \rbrack}
+\end{equation}\]</div>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">InverseVolatility</span>
+<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">InverseVolatility</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">load_tech_stock_prices</span><span class="p">())</span><span class="o">.</span><span class="n">weights_</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="capitalization-weighted">Capitalization weighted<a class="headerlink" href="#capitalization-weighted" title="Permanent link">&para;</a></h2>
+<p>First the market capitalization is calculated as the prices of the asset times the number of outstanding shares, then weights are obtained as the sum-one normalized average of the market capitalization over time.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">CapWeighted</span>
+<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+
+<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
+<span class="n">shares</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Dataframe</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">prices</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">prices</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="mi">1_000_000</span><span class="p">)</span>  <span class="c1"># fake shares, 1M outstanding shares for each stock</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">CapWeighted</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">prices</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">shares</span><span class="p">)</span><span class="o">.</span><span class="n">weights_</span><span class="p">)</span>
+</code></pre></div>
+<h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>DeMiguel, Victor, Lorenzo Garlappi, and Raman Uppal. "Optimal versus naive diversification: How inefficient is the 1/N portfolio strategy?." The review of Financial studies 22.5 (2009): 1915-1953 <a href="http://faculty.london.edu/avmiguel/DeMiguel-Garlappi-Uppal-RFS.pdf">http://faculty.london.edu/avmiguel/DeMiguel-Garlappi-Uppal-RFS.pdf</a>&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Kritzman, Page &amp; Turkington (2010) "In defense of optimization: The fallacy of 1/N". Financial Analysts Journal, 66(2), 31-39.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../ensemble/" class="btn btn-neutral float-left" title="Ensemble methods"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../returns/" class="btn btn-neutral float-right" title="Returns estimators">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/CarloNicolini/scikit-portfolio" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../ensemble/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../returns/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/mkapi.js" defer></script>
+      <script src="../javascripts/config.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

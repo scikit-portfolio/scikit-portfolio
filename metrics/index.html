@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/metrics/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Metrics and scorers - scikit-portfolio</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet" />
+        <link href="../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../css/mkapi-readthedocs.css" rel="stylesheet" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Metrics and scorers";
+        var mkdocs_page_input_path = "metrics.md";
+        var mkdocs_page_url = "/metrics/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../imgs/scikit_portfolio.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting started</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_optimization_theory/">Portfolio optimization theory</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Algorithms</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Efficient frontier</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_frontier/">Classical Mean-Variance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_semivariance/">Mean-Semivariance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cvar/">Conditional Value At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cdar/">Conditional Drawdown At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_omega/">Omega ratio</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_mad/">Mean Absolute Deviation (MAD)</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Information theory</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_repo/">REPO</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ensemble/">Ensemble methods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../miscellaneous/">Miscellaneous</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Risk and returns</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns/">Returns estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk/">Risk estimators</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Model selection</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Metrics and scorers</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#aggregate-returns-aggregate_returns">Aggregate Returns (aggregate_returns)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#annualized-returns-annualize_rets">Annualized Returns (annualize_rets)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#annualized-volatility-annualize_vol">Annualized Volatility (annualize_vol)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#calmar-ratio-calmar_ratio">Calmar Ratio (calmar_ratio)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#conditional-drawdown-at-risk-cdar">Conditional Drawdown at Risk (cdar)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#conditional-value-at-risk-cvar">Conditional Value At Risk (cvar)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#corrected-sharpe-ratio-corrected_sharpe_ratio">Corrected Sharpe Ratio (corrected_sharpe_ratio)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#cumulative-returns-cumulative_returns">Cumulative Returns (cumulative_returns)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#downside-risk-downside_risk">Downside Risk (downside_risk)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#drawdown-drawdown">Drawdown (drawdown)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#final-cumulative-return-final_cum_returns">Final cumulative return (final_cum_returns)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#kurtosis-kurtosis">Kurtosis (kurtosis)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#maximum-drawdown-maxdrawdown">Maximum drawdown (maxdrawdown)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#number-of-effective-assets-number_effective_assets">Number of Effective Assets (number_effective_assets)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#omega-ratio-omega_ratio">Omega Ratio (omega_ratio)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#portfolio-return-portfolio_return">Portfolio Return (portfolio_return)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#portfolio-volatility-portfolio_vol">Portfolio Volatility (portfolio_vol)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#semi-volatility-semistd">Semi-volatility (semistd)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#sharpe-ratio-sharpe_ratio">Sharpe Ratio (sharpe_ratio)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#skewness-skewness">Skewness (skewness)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#sortino-ratio-sortino_ratio">Sortino Ratio (sortino_ratio)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#tail-ratio-tail_ratio">Tail Ratio (tail_ratio)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#value-at-risk-value_at_risk">Value At Risk (value_at_risk)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#var-gaussian-var_gaussian">Var Gaussian (var_gaussian)</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../splitters/">Cross validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developing new methods</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">scikit-portfolio</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Model selection &raquo;</li><li>Metrics and scorers</li>
+    <li class="wy-breadcrumbs-aside">
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/metrics.md"
+          class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="portfolio-metrics">Portfolio metrics<a class="headerlink" href="#portfolio-metrics" title="Permanent link">&para;</a></h1>
+<p>There are a large number of metrics to evaluate the post-hoc goodness of your portfolio.
+Analyzing investment performance can help quantify the overall quality of investments in a portfolio, identify successful strategies, or highlight areas that need improvement.</p>
+<h2 id="aggregate-returns-aggregate_returns">Aggregate Returns (<code>aggregate_returns</code>)<a class="headerlink" href="#aggregate-returns-aggregate_returns" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.aggregate_returns">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">aggregate_returns</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns</code>, <code class="mkapi-object-signature">convert_to</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Aggregates returns by week, month, or year.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">returns</code>
+<span class="mkapi-item-type">(pd.Series)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Daily returns of the strategy, noncumulative.</span></li>
+
+<li><code class="mkapi-item-name">convert_to</code>
+<span class="mkapi-item-type">(str)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Can be 'weekly', 'monthly', or 'yearly'.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="annualized-returns-annualize_rets">Annualized Returns (<code>annualize_rets</code>)<a class="headerlink" href="#annualized-returns-annualize_rets" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.annualize_rets">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">annualize_rets</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">frequency=252</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; float</span></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Compunded annual growth rate, also called cagr</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="annualized-volatility-annualize_vol">Annualized Volatility (<code>annualize_vol</code>)<a class="headerlink" href="#annualized-volatility-annualize_vol" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.annualize_vol">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">annualize_vol</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">levy_alpha=2.0</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; float</span></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Annualizes the volatility of a set of returns</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="calmar-ratio-calmar_ratio">Calmar Ratio (<code>calmar_ratio</code>)<a class="headerlink" href="#calmar-ratio-calmar_ratio" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.calmar_ratio">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">calmar_ratio</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">frequency=252</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; float</span></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Determines the Calmar ratio, a measure of risk-adjusted returns for investment funds based on
+the maximum drawdown. The Calmar ratio is a modified version of the Sterling ratio.</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="conditional-drawdown-at-risk-cdar">Conditional Drawdown at Risk (<code>cdar</code>)<a class="headerlink" href="#conditional-drawdown-at-risk-cdar" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.cdar">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">cdar</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">level=0.05</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Calculate the conditional drawdown of risk (CDaR) of a portfolio/asset.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">r</code>
+<span class="mkapi-item-type">(pd.Series)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Historical returns for an asset / portfolio</span></li>
+
+<li><code class="mkapi-item-name">level</code>
+<span class="mkapi-item-type">(float)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Confidence level (alpha)</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="conditional-value-at-risk-cvar">Conditional Value At Risk (<code>cvar</code>)<a class="headerlink" href="#conditional-value-at-risk-cvar" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.cvar">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">cvar</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">level=0.05</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; float</span></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Calculates the conditional value at risk, with cutoff level of 5%</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">r</code>
+<span class="mkapi-item-type">(pd.Series)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Returns</span></li>
+
+<li><code class="mkapi-item-name">level</code>
+<span class="mkapi-item-type">(float)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">percentile cutoff tail value</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="corrected-sharpe-ratio-corrected_sharpe_ratio">Corrected Sharpe Ratio (<code>corrected_sharpe_ratio</code>)<a class="headerlink" href="#corrected-sharpe-ratio-corrected_sharpe_ratio" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.corrected_sharpe_ratio">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">corrected_sharpe_ratio</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">riskfree_rate=0.0</code>, <code class="mkapi-object-signature">period=&#39;DAILY&#39;</code>, <code class="mkapi-object-signature">frequency=252</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; float</span></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Computes the annualizatin correction of the sharpe ratio of a set of returns.
+Sharpe Ratio:
+Estimation, Confidence Intervals, and Hypothesis Testing
+<a href="https://www.twosigma.com/wp-content/uploads/sharpe-tr-1.pdf">https://www.twosigma.com/wp-content/uploads/sharpe-tr-1.pdf</a> Equation 10</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="cumulative-returns-cumulative_returns">Cumulative Returns (<code>cumulative_returns</code>)<a class="headerlink" href="#cumulative-returns-cumulative_returns" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.cumulative_returns">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">cumulative_returns</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns</code>, <code class="mkapi-object-signature">starting_value=1000</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; Series</span></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Computes (1+r).prod() * starting_value</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="downside-risk-downside_risk">Downside Risk (<code>downside_risk</code>)<a class="headerlink" href="#downside-risk-downside_risk" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.downside_risk">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">downside_risk</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">target_return=0.0</code>, <code class="mkapi-object-signature">frequency=252</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; float</span></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Calculates downside risk</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="drawdown-drawdown">Drawdown (<code>drawdown</code>)<a class="headerlink" href="#drawdown-drawdown" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.drawdown">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">drawdown</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Takes a time series of asset returns.
+returns a DataFrame with columns for the wealth index,
+the previous peaks and the percentage drawdown</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="final-cumulative-return-final_cum_returns">Final cumulative return (<code>final_cum_returns</code>)<a class="headerlink" href="#final-cumulative-return-final_cum_returns" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.final_cum_returns">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">final_cum_returns</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns</code>, <code class="mkapi-object-signature">starting_value=0</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Compute total returns from simple returns.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">returns</code>
+<span class="mkapi-item-type">(pd.DataFrame, pd.Series, or np.ndarray)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Noncumulative simple returns of one or more timeseries.</span></li>
+
+<li><code class="mkapi-item-name">starting_value</code>
+<span class="mkapi-item-type">(float, optional)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The starting returns.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(total_returns : pd.Series, np.ndarray, or float)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>If input is 1-dimensional (a Series or 1D numpy array), the result is a
+scalar.</p>
+<p>If input is 2-dimensional (a DataFrame or 2D numpy array), the result
+is a 1D array containing cumulative returns for each column of input.</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="kurtosis-kurtosis">Kurtosis (<code>kurtosis</code>)<a class="headerlink" href="#kurtosis-kurtosis" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.kurtosis">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">kurtosis</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; float</span></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Alternative to scipy.stats.kurtosis</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="maximum-drawdown-maxdrawdown">Maximum drawdown (<code>maxdrawdown</code>)<a class="headerlink" href="#maximum-drawdown-maxdrawdown" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.maxdrawdown">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">maxdrawdown</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Returns the maxdrawdown measure of returns</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="number-of-effective-assets-number_effective_assets">Number of Effective Assets (<code>number_effective_assets</code>)<a class="headerlink" href="#number-of-effective-assets-number_effective_assets" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.number_effective_assets">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">number_effective_assets</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">weigths</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Returns a measure of portfolio diversification, known as number of effective assets.
+Its maximum value</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="omega-ratio-omega_ratio">Omega Ratio (<code>omega_ratio</code>)<a class="headerlink" href="#omega-ratio-omega_ratio" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.omega_ratio">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">omega_ratio</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">ret</code>, <code class="mkapi-object-signature">target_ret=0.0</code>, <code class="mkapi-object-signature">risk_free_rate=0.0</code>, <code class="mkapi-object-signature">frequency=252</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Returns the omega ratio of a strategy.
+Omega is a ratio of winning size weighted by probabilities to losing size weighted by probabilities.
+It considers size and odds of winning and losing trades, as well as all moments because the definition incorporates the whole distribution of returns.</p>
+<p>Important advantages are:</p>
+<ul>
+<li>There is no parameter (estimation).</li>
+<li>There is no need to estimate (higher) moments.</li>
+<li>Works with all kinds of distributions.</li>
+<li>Use a function (of Loss Threshold) to measure performance rather than a single number (as in Sharpe Ratio).</li>
+<li>It is as smooth as the return distribution.</li>
+<li>It is monotonic decreasing</li>
+</ul>
+<p>Look here for further details:</p>
+<ul>
+<li><a href="https://cs.uwaterloo.ca/~yuying/Courses/CS870_2012/Omega_paper_Short_Cm.pdf">Omega ratio paper</a></li>
+<li><a href="https://nmfin.tech/wp-content/uploads/2019/02/beyond-Markowitz-portfolio-optimization.pdf">Beyond Markowitz optimization</a></li>
+</ul></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">ret</code>
+<span class="mkapi-item-type">(pd.Series)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Return of the strategy, typically obtained by the dot product of the asset returns dataframe and weights vector.</span></li>
+
+<li><code class="mkapi-item-name">target_ret</code>
+<span class="mkapi-item-type">(float, optional)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The desidered return per sample, aka the minimum acceptable return.</span></li>
+
+<li><code class="mkapi-item-name">risk_free_rate</code>
+<span class="mkapi-item-type">(float, optional)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The default risk free rate (default 0)</span></li>
+
+<li><code class="mkapi-item-name">frequency</code>
+<span class="mkapi-item-type">(int, optional)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The annualization frequency (default APPROX_BDAYS_PER_YEAR)</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section see-also">
+      <div class="mkapi-section-name see-also">
+          <span class="mkapi-section-name-body see-also">See Also</span> 
+        </div>
+      <div class="mkapi-section-body see-also"><p>sharpe_ratio, sortino_ratio, calmar_ratio</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="portfolio-return-portfolio_return">Portfolio Return (<code>portfolio_return</code>)<a class="headerlink" href="#portfolio-return-portfolio_return" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.portfolio_return">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">portfolio_return</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">prices</code>, <code class="mkapi-object-signature">weights</code>, <code class="mkapi-object-signature">rets_estimator=MeanHistoricalLinearReturns()</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Calculates the portfolio return as <span class="arithmatex">\(\mathbb{E}\lbrack \mathbf{r}^T \mathbf{w} \rbrack\)</span>.</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="portfolio-volatility-portfolio_vol">Portfolio Volatility (<code>portfolio_vol</code>)<a class="headerlink" href="#portfolio-volatility-portfolio_vol" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.portfolio_vol">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">portfolio_vol</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns</code>, <code class="mkapi-object-signature">weights</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">risk_estimator=SampleCovariance(returns_data=True)</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Computes the portfolio volatility using the risk_estimator, default set to sample covariance</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="semi-volatility-semistd">Semi-volatility (<code>semistd</code>)<a class="headerlink" href="#semi-volatility-semistd" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.semistd">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">semistd</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; float</span></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Returns the semideviation aka negative semideviation of r
+r must be a Series or a DataFrame</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="sharpe-ratio-sharpe_ratio">Sharpe Ratio (<code>sharpe_ratio</code>)<a class="headerlink" href="#sharpe-ratio-sharpe_ratio" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.sharpe_ratio">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">sharpe_ratio</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">riskfree_rate=0.0</code>, <code class="mkapi-object-signature">period=&#39;DAILY&#39;</code>, <code class="mkapi-object-signature">frequency=252</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; float</span></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Computes the annualized sharpe ratio of a set of returns.</p>
+<p>See the notes above about the annualization</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="skewness-skewness">Skewness (<code>skewness</code>)<a class="headerlink" href="#skewness-skewness" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.skewness">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">skewness</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; float</span></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Alternative to scipy.stats.skewness</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="sortino-ratio-sortino_ratio">Sortino Ratio (<code>sortino_ratio</code>)<a class="headerlink" href="#sortino-ratio-sortino_ratio" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.sortino_ratio">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">sortino_ratio</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">riskfree_rate=0.0</code>, <code class="mkapi-object-signature">frequency=252</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; float</span></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>The Sortino ratio is an improvement of the Sharpe ratio.
+What sets the Sortino ratio apart is that it acknowledges the difference between upside and downward risks.
+More specifically, it provides an accurate rate of return, given the likelihood of downside risk, while the
+Sharpe ratio treats both upside and downside risks equally.
+As a rule of thumb, a Sortino ratio of 2 and above is considered ideal.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">r</code>
+<span class="mkapi-item-type">(pd.Series)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">portfolio returns obtained from (prices @ weights).pct_change()</span></li>
+
+
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="tail-ratio-tail_ratio">Tail Ratio (<code>tail_ratio</code>)<a class="headerlink" href="#tail-ratio-tail_ratio" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.tail_ratio">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">tail_ratio</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns</code>, <code class="mkapi-object-signature">upper_tail=95.0</code>, <code class="mkapi-object-signature">lower_tail=5.0</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Determines the ratio between the right (95%) and left tail (5%).
+For example, a ratio of 0.25 means that losses are four times
+as bad as profits.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">returns</code>
+<span class="mkapi-item-type">(pd.Series or np.ndarray)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Daily returns of the strategy, noncumulative.
+ - See full explanation in :func:<code>~empyrical.stats.cum_returns</code>.</span></li>
+
+<li><code class="mkapi-item-name">upper_tail</code>
+<span class="mkapi-item-type">(float)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Upper percentile</span></li>
+
+<li><code class="mkapi-item-name">lower_tail</code>
+<span class="mkapi-item-type">(float)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Lower percentile</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="value-at-risk-value_at_risk">Value At Risk (<code>value_at_risk</code>)<a class="headerlink" href="#value-at-risk-value_at_risk" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.value_at_risk">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">value_at_risk</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">level=0.05</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Computes the value at risk with cutoff level of default 5%</p></div>
+    </div>
+  </div>
+
+</div>
+
+<h2 id="var-gaussian-var_gaussian">Var Gaussian (<code>var_gaussian</code>)<a class="headerlink" href="#var-gaussian-var_gaussian" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.metrics.metrics.var_gaussian">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object function code top">
+    <div class="mkapi-object-kind function top">function</div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">var_gaussian</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">level=5</code>, <code class="mkapi-object-signature">modified=False</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Returns the parametric gaussian VaR of a Series or DataFrame
+args:
+    r: pd.Series
+    level: percentile level
+    modified: True if Corni</p></div>
+    </div>
+  </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../risk/" class="btn btn-neutral float-left" title="Risk estimators"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../splitters/" class="btn btn-neutral float-right" title="Cross validation">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/CarloNicolini/scikit-portfolio" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../risk/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../splitters/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/mkapi.js" defer></script>
+      <script src="../javascripts/config.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/returns/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Returns estimators - scikit-portfolio</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet" />
+        <link href="../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../css/mkapi-readthedocs.css" rel="stylesheet" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Returns estimators";
+        var mkdocs_page_input_path = "returns.md";
+        var mkdocs_page_url = "/returns/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../imgs/scikit_portfolio.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting started</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_optimization_theory/">Portfolio optimization theory</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Algorithms</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Efficient frontier</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_frontier/">Classical Mean-Variance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_semivariance/">Mean-Semivariance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cvar/">Conditional Value At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cdar/">Conditional Drawdown At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_omega/">Omega ratio</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_mad/">Mean Absolute Deviation (MAD)</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Information theory</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_repo/">REPO</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ensemble/">Ensemble methods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../miscellaneous/">Miscellaneous</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Risk and returns</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Returns estimators</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#returns-estimator-base-class">Returns estimator base class</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mean-historical-linear-returns-meanhistoricallinearreturns">Mean historical linear-returns MeanHistoricalLinearReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#compounded-historical-linear-returns-compoundedhistoricallinearreturns">Compounded historical linear-returns CompoundedHistoricalLinearReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#mean-historical-log-returns-meanhistoricallogreturns">Mean historical log-returns MeanHistoricalLogReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#compounded-historical-log-returns-compoundedhistoricallogreturns">Compounded historical log-returns CompoundedHistoricalLogReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#median-historical-linear-returns-medianhistoricallinearreturns">Median historical linear returns MedianHistoricalLinearReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#median-historical-log-returns-medianhistoricallogreturns">Median historical log returns MedianHistoricalLogReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#exponential-moving-average-returns-emahistoricallinearreturns">Exponential Moving Average Returns EMAHistoricalLinearReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#capm-expected-returns">CAPM expected returns</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk/">Risk estimators</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Model selection</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../metrics/">Metrics and scorers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../splitters/">Cross validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developing new methods</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">scikit-portfolio</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Risk and returns &raquo;</li><li>Returns estimators</li>
+    <li class="wy-breadcrumbs-aside">
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/returns.md"
+          class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="expected-returns-estimators">Expected returns estimators<a class="headerlink" href="#expected-returns-estimators" title="Permanent link">&para;</a></h1>
+<p>One of the most, if not the most, important inputs when executing optimization methods, where the objective function, more or less aims to maximize expected return, is the vector of expected returns for each asset.
+A small increase in the expected return of just one of a portfolio’s assets can potentially force half of the assets from the resulting optimal portfolio, see <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>.</p>
+<p>In this document, we always refer to the expected returns with the bold greek letter <span class="arithmatex">\(\boldsymbol \mu\)</span>, alternatively as the expectation operator of the asset returns <span class="arithmatex">\(\mathbb{E}[{\mathbf{R}}]\)</span>.</p>
+<p>Here we offer many estimators of expected returns, both using linear and logarithmic returns, with or without compounding.
+Additionally, <code>scikit-portfolio</code> introduces other estimators for the expected returns based on <code>median</code> or exponentially weighted averages, which turn out to be slightly better in the backtesting results than the standard mean historical returns.</p>
+<h2 id="returns-estimator-base-class">Returns estimator base class<a class="headerlink" href="#returns-estimator-base-class" title="Permanent link">&para;</a></h2>
+<p>This base class is at the core of all returns estimators. THe <code>.fit</code> method takes either <em>price</em> data or <em>return</em> data, depending on the initialization parameter <code>returns_data</code>. Moreover you can always modifiy the parameter with the '.set_returns_data(True|False)' method, returning a new estimator.</p>
+<hr>
+
+<h2 id="mean-historical-linear-returns-meanhistoricallinearreturns">Mean historical linear-returns <code>MeanHistoricalLinearReturns</code><a class="headerlink" href="#mean-historical-linear-returns-meanhistoricallinearreturns" title="Permanent link">&para;</a></h2>
+<p>Mean historical returns are simply computed as the historical <strong>average</strong> of the geometric returns over all data.
+In other words, given the returns time series <span class="arithmatex">\(r_t\)</span> for <span class="arithmatex">\(t=1,\dots,\T\)</span>, the mean historical returns are obtained as</p>
+<div class="arithmatex">\[\begin{equation}
+\hat{\boldsymbol \mu} = \frac{1}{T} \sum_{t=1}^T r_t
+\end{equation}\]</div>
+<hr>
+
+<h2 id="compounded-historical-linear-returns-compoundedhistoricallinearreturns">Compounded historical linear-returns <code>CompoundedHistoricalLinearReturns</code><a class="headerlink" href="#compounded-historical-linear-returns-compoundedhistoricallinearreturns" title="Permanent link">&para;</a></h2>
+<p>Compounded historical returns are simply computed as the geometric <strong>average</strong> of the linear historical returns.
+In other words, given the returns time series <span class="arithmatex">\(r_t\)</span> for <span class="arithmatex">\(t=1,\dots,\T\)</span>, the compounded historical returns are obtained as:</p>
+<div class="arithmatex">\[\begin{equation}
+\hat{\boldsymbol \mu} = \left(\prod_{t=1}^T 1+ r_t\right)^{1/T}
+\end{equation}\]</div>
+<hr>
+
+<h2 id="mean-historical-log-returns-meanhistoricallogreturns">Mean historical log-returns <code>MeanHistoricalLogReturns</code><a class="headerlink" href="#mean-historical-log-returns-meanhistoricallogreturns" title="Permanent link">&para;</a></h2>
+<p>Here, rather than using linear returns, we compute the average of the log returns <span class="arithmatex">\(\log(p_t/p_{t-1})\)</span>:</p>
+<div class="arithmatex">\[\begin{equation}
+\hat{\boldsymbol \mu} = \frac{1}{T} \sum_{t=1}^T \left( \log p_t - \log p_{t-1} \right)
+\end{equation}\]</div>
+<hr>
+
+<h2 id="compounded-historical-log-returns-compoundedhistoricallogreturns">Compounded historical log-returns <code>CompoundedHistoricalLogReturns</code><a class="headerlink" href="#compounded-historical-log-returns-compoundedhistoricallogreturns" title="Permanent link">&para;</a></h2>
+<p>Here, rather than using linear returns, we compute the average of the log returns <span class="arithmatex">\(\log(p_t/p_{t-1})\)</span>, and geometric average</p>
+<div class="arithmatex">\[\begin{equation}
+\hat{\boldsymbol \mu} = \left(\prod_{t=1}^T 1 + (\log p_t - \log p_{t-1})\right)^{1/T} 
+\end{equation}\]</div>
+<hr>
+
+<h2 id="median-historical-linear-returns-medianhistoricallinearreturns">Median historical linear returns <code>MedianHistoricalLinearReturns</code><a class="headerlink" href="#median-historical-linear-returns-medianhistoricallinearreturns" title="Permanent link">&para;</a></h2>
+<p>Like for <code>MeanHistoricalLinearReturns</code>, but using <strong>median</strong> rather than average.
+In other words, given the returns time series <span class="arithmatex">\(r_t\)</span> for <span class="arithmatex">\(t=1,\dots,T\)</span>, the median historical returns are obtained as</p>
+<div class="arithmatex">\[\begin{equation}
+\hat{\boldsymbol \mu} = \textrm{median} \left( \{ r_{1},\ldots, r_{T} \} \right)
+\end{equation}\]</div>
+<hr>
+
+<h2 id="median-historical-log-returns-medianhistoricallogreturns">Median historical log returns <code>MedianHistoricalLogReturns</code><a class="headerlink" href="#median-historical-log-returns-medianhistoricallogreturns" title="Permanent link">&para;</a></h2>
+<p>Like for <code>MeanHistoricalLinearReturns</code>, but using <strong>median</strong> rather than average.
+In other words, given the log-returns time series <span class="arithmatex">\(\log p_t/p_{t-1}\)</span> for <span class="arithmatex">\(t=1,\dots,T\)</span>, the median historical log-returns are obtained as:</p>
+<div class="arithmatex">\[\begin{equation}
+\hat{\boldsymbol \mu} = \textrm{median} \left( \{ \log (p_{t+1}/p_{t})_{t=1}, \ldots, \log( p_T/p_{T-1})_{t=T} \} \right)
+\end{equation}\]</div>
+<hr>
+
+<h2 id="exponential-moving-average-returns-emahistoricallinearreturns">Exponential Moving Average Returns <code>EMAHistoricalLinearReturns</code><a class="headerlink" href="#exponential-moving-average-returns-emahistoricallinearreturns" title="Permanent link">&para;</a></h2>
+<p>Estimates the (annualized if frequency=252) expected returns as the exponential moving average of linear historical returns.
+Compounding is set to false by default.</p>
+<hr>
+
+<h2 id="capm-expected-returns">CAPM expected returns<a class="headerlink" href="#capm-expected-returns" title="Permanent link">&para;</a></h2>
+<p>Compute a return estimate using the Capital Asset Pricing Model. Under the CAPM, asset returns are equal to market returns plus a <span class="arithmatex">\(\beta\)</span> term encoding the relative risk of the asset.
+The formula for calculating the expected return of an asset given its risk is as follows:</p>
+<div class="arithmatex">\[\begin{equation}
+\mathbb{E}[R_i] = r_f + \beta_i \left( \mathbb{E}\lbrackR_m\rbrack - r_f\right)
+\end{equation}\]</div>
+<p>where
+- <span class="arithmatex">\(\mathbb{E}[R_i]\)</span> is the expected return of asset <span class="arithmatex">\(i\)</span>
+- <span class="arithmatex">\(r_f\)</span> is the risk-free rate
+- <span class="arithmatex">\(\beta_i\)</span> is the beta of the investment
+- $ \left( \mathbb{E}\lbrackR_m\rbrack - r_f\right)$ is the market risk premium</p>
+<p>The beta of a potential investment is a measure of how much risk the investment will add to a portfolio that looks like the market. If a stock is riskier than the market, it will have a beta greater than one. If a stock has a beta of less than one, the formula assumes it will reduce the risk of a portfolio.</p>
+<p>See this page on <a href="https://www.investopedia.com/terms/c/capm.asp">Investopedia</a> for more information about the CAPM.</p>
+<hr>
+
+<h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Best, M.J., and Grauer, R.R., (1991). On the Sensitivity of Mean-Variance-Ecient Portfolios to Changes in Asset Means: Some Analytical and Computational Results. The Review of Financial Studies, pp. 315-342.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>Lo, Andrew. "The statistics of Sharpe ratio". Financial Analysts Journal (2003).&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../miscellaneous/" class="btn btn-neutral float-left" title="Miscellaneous"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../risk/" class="btn btn-neutral float-right" title="Risk estimators">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/CarloNicolini/scikit-portfolio" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../miscellaneous/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../risk/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/mkapi.js" defer></script>
+      <script src="../javascripts/config.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/efficient_cvar/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Conditional Value At Risk - scikit-portfolio</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet" />
+        <link href="../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../css/mkapi-readthedocs.css" rel="stylesheet" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Conditional Value At Risk";
+        var mkdocs_page_input_path = "efficient_cvar.md";
+        var mkdocs_page_url = "/efficient_cvar/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../imgs/scikit_portfolio.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting started</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_optimization_theory/">Portfolio optimization theory</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Algorithms</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Efficient frontier</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_frontier/">Classical Mean-Variance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_semivariance/">Mean-Semivariance</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="./">Conditional Value At Risk</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#minimum-cvar-portfolio">Minimum CVar portfolio</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-return-on-mean-cvar-frontier">Efficient return on mean-cvar frontier</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-risk-on-mean-cvar-frontier">Efficient risk on mean-cvar frontier</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#references">References</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cdar/">Conditional Drawdown At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_omega/">Omega ratio</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_mad/">Mean Absolute Deviation (MAD)</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Information theory</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_repo/">REPO</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ensemble/">Ensemble methods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../miscellaneous/">Miscellaneous</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Risk and returns</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns/">Returns estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk/">Risk estimators</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Model selection</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../metrics/">Metrics and scorers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../splitters/">Cross validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developing new methods</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">scikit-portfolio</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Algorithms &raquo;</li>
+          <li>Efficient frontier &raquo;</li><li>Conditional Value At Risk</li>
+    <li class="wy-breadcrumbs-aside">
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/efficient_cvar.md"
+          class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="efficient-conditional-value-at-risk-frontier">Efficient Conditional Value At Risk Frontier<a class="headerlink" href="#efficient-conditional-value-at-risk-frontier" title="Permanent link">&para;</a></h1>
+<p>Conditional value at risk is a measure often used in portfolio optimization for <strong>effective risk management</strong>.
+The CVar (conditional value-at-risk) also called expected shortfall is a popular measure of <strong>tail risk</strong>.
+CVaR is derived by taking a weighted average of the "extreme" losses in the tail of the distribution of possible 
+returns, beyond the value at risk (VaR) cutoff point <span class="arithmatex">\(\beta\)</span>.</p>
+<p>For example, if we calculate the CVaR to be 10% for <span class="arithmatex">\(\beta=0.95\)</span>, we can be <span class="arithmatex">\(95\%\)</span> confident that the worst-case average daily loss will be 3 %.</p>
+<p>In other words, one can see CVar in terms of percentiles, so that it boils down to the average of all losses so severe that they only occur <span class="arithmatex">\((1−\beta)\%\)</span> of the times.</p>
+<p>We will adopt the following notation: </p>
+<ul>
+<li><em>w</em> for the vector of portfolio weights</li>
+<li><em>r</em> for a vector of asset returns (daily), with probability distribution <span class="arithmatex">\(p(r)\)</span>.</li>
+<li><span class="arithmatex">\(L(w, r) = - w^T r\)</span> for the loss of the portfolio</li>
+<li><span class="arithmatex">\(\alpha\)</span> for the portfolio value-at-risk (VaR) with confidence <span class="arithmatex">\(\beta\)</span>.</li>
+</ul>
+<p>The CVaR can then be written as:</p>
+<div class="arithmatex">\[\begin{equation}
+CVaR(w, \beta) = \frac{1}{1-\beta} \int_{L(w, r) \geq \alpha (w)} L(w, r) p(r)dr.
+\end{equation}\]</div>
+<p>This is a nasty expression to optimize because we are essentially integrating over VaR values. The key insight
+of Rockafellar and Uryasev (2001) <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">1</a></sup> is that we can can equivalently optimize the following convex function:</p>
+<div class="arithmatex">\[\begin{equation}
+F_\beta (w, \alpha) = \alpha + \frac{1}{1-\beta} \int [-w^T r - \alpha]^+ p(r) dr,
+\end{equation}\]</div>
+<p>where <span class="arithmatex">\([x]^+ = \max(x, 0)\)</span>. The authors prove that minimising <span class="arithmatex">\(F_\beta(w, \alpha)\)</span> over all <span class="arithmatex">\(w, \alpha\)</span> minimises the CVaR.
+Suppose we have a sample of <em>T</em> daily returns (these can either be historical or simulated). 
+The integral in the expression becomes a sum, so the CVaR optimization problem reduces to a linear program:</p>
+<div class="arithmatex">\[\begin{equation*}
+\begin{aligned}
+&amp; \underset{w, \alpha}{\text{minimise}} &amp; &amp; \alpha + \frac{1}{1-\beta} \frac 1 T \sum_{i=1}^T u_i \\
+&amp; \text{subject to} &amp; &amp; u_i \geq 0  \\
+&amp;&amp;&amp;  u_i \geq -w^T r_i - \alpha. \\
+\end{aligned}
+\end{equation*}\]</div>
+<p>This formulation introduces a new variable for each datapoint (similar to Efficient Semivariance), so
+you may run into performance issues for long returns dataframes. At the same time, you should aim to
+provide a sample of data that is large enough to include tail events. </p>
+<h2 id="minimum-cvar-portfolio">Minimum CVar portfolio<a class="headerlink" href="#minimum-cvar-portfolio" title="Permanent link">&para;</a></h2>
+<hr>
+
+<h2 id="efficient-return-on-mean-cvar-frontier">Efficient return on mean-cvar frontier<a class="headerlink" href="#efficient-return-on-mean-cvar-frontier" title="Permanent link">&para;</a></h2>
+<hr>
+
+<h2 id="efficient-risk-on-mean-cvar-frontier">Efficient risk on mean-cvar frontier<a class="headerlink" href="#efficient-risk-on-mean-cvar-frontier" title="Permanent link">&para;</a></h2>
+<hr>
+
+<h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:3">
+<p>Chekhlov, A.; Rockafellar, R.; Uryasev, D. (2005). <a href="http://www.math.columbia.edu/~chekhlov/IJTheoreticalAppliedFinance.8.1.2005.pdf">Drawdown measure in portfolio optimization</a>&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../efficient_semivariance/" class="btn btn-neutral float-left" title="Mean-Semivariance"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../efficient_cdar/" class="btn btn-neutral float-right" title="Conditional Drawdown At Risk">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/CarloNicolini/scikit-portfolio" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../efficient_semivariance/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../efficient_cdar/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/mkapi.js" defer></script>
+      <script src="../javascripts/config.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

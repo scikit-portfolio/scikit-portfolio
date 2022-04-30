@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/efficient_omega/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Omega ratio - scikit-portfolio</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet" />
+        <link href="../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../css/mkapi-readthedocs.css" rel="stylesheet" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Omega ratio";
+        var mkdocs_page_input_path = "efficient_omega.md";
+        var mkdocs_page_url = "/efficient_omega/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../imgs/scikit_portfolio.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting started</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_optimization_theory/">Portfolio optimization theory</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Algorithms</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Efficient frontier</a>
+    <ul class="current">
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_frontier/">Classical Mean-Variance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_semivariance/">Mean-Semivariance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cvar/">Conditional Value At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cdar/">Conditional Drawdown At Risk</a>
+                </li>
+                <li class="toctree-l2 current"><a class="reference internal current" href="./">Omega ratio</a>
+    <ul class="current">
+    <li class="toctree-l3"><a class="reference internal" href="#maximum-omega-ratio">Maximum Omega ratio</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#minimum-omega-risk">Minimum Omega Risk</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-risk-on-omega-ratio-frontier">Efficient risk on omega-ratio frontier</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-return-on-omega-ratio-frontier">Efficient return on omega-ratio frontier</a>
+    </li>
+    </ul>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_mad/">Mean Absolute Deviation (MAD)</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Information theory</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_repo/">REPO</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ensemble/">Ensemble methods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../miscellaneous/">Miscellaneous</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Risk and returns</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns/">Returns estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk/">Risk estimators</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Model selection</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../metrics/">Metrics and scorers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../splitters/">Cross validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developing new methods</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">scikit-portfolio</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Algorithms &raquo;</li>
+          <li>Efficient frontier &raquo;</li><li>Omega ratio</li>
+    <li class="wy-breadcrumbs-aside">
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/efficient_omega.md"
+          class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="omega-ratio">Omega ratio<a class="headerlink" href="#omega-ratio" title="Permanent link">&para;</a></h1>
+<p>A criticism to the classical Sharpe ratio is that it is  only appropriate
+when the portfolio return is elliptically distributed, as it only takes into account only first and second moments of 
+the returns distribution, neglecting other higher order moments. Especially, when the portfolio return is skewed or
+exhibits fat tails, then the Sharpe Ratio might result in counterintuitive performance evaluations and rankings.</p>
+<p>To address this issue, <strong>Omega ratio</strong> has been introducede as a measure of the ratio between risk and rewards that 
+takes into consideration all moments of the portfolio returns distribution. 
+It captures both the downside and upside potential of the constructed portfolio, while remaining consistent with utility maximization. </p>
+<p>The Omega Ratio makes use of a threshold value <span class="arithmatex">\(\tau\)</span>, or <em>minimum acceptable return</em> to distinguish the upside from the downside.
+This means that portfolio returns above <span class="arithmatex">\(\tau\)</span> are considered <strong>profits</strong>, whereas returns below <span class="arithmatex">\(\tau\)</span> are considered as <strong>losses</strong>.</p>
+<p>Mathematically, given the cumulative portfolio returns distribution <span class="arithmatex">\(F(r)\)</span>, Omega ratio is defined as: </p>
+<div class="arithmatex">\[\begin{equation}
+\Omega(r) = \dfrac{\int_{\tau}^\infty (1-F(r)) dr}{\int_{-\infty}^{\tau} F(r) dr}.
+\end{equation}\]</div>
+<p>This concept is well illustrated in the following picture, where the returns cumulative distribution is shown.
+Here the Omega Ratio is defined as the ratio of the green area over the red area. The green area on the right of the 
+threshold <span class="arithmatex">\(\tau\)</span> (in this example 0.0015) and above the
+cumulative distribution represents the upside potential. 
+The red area on the left of the threshold and below the cumulative distribution represents the downside potential (risk):</p>
+<p><img alt="omega_ratio" src="../imgs/omega_ratio.svg" /></p>
+<p>After some easy manipulation, the Omega ratio can be operationally defined as:</p>
+<div class="arithmatex">\[\begin{equation}
+\Omega(r_P) = \dfrac{\mathbf{w}^T \boldsymbol \mu - \tau}{\left&lt;  (\tau - \mathbf{w}^T \mathbf{R})^+ \right &gt;} + 1
+\end{equation}\]</div>
+<p>In the expression above, at the numerator we have the expected portfolio return, with <span class="arithmatex">\(\boldsymbol \mu\)</span> being the 
+vector of expected returns, while at the denominator we consider the <strong>average</strong> <span class="arithmatex">\(\left&lt; \cdot \right&gt;\)</span> of the positive 
+excess returns, over all temporal samples <span class="arithmatex">\(t=1,\ldots, T\)</span> with <span class="arithmatex">\(\mathbf{R}_t\)</span> the return of all assets at time <span class="arithmatex">\(t\)</span>, hence a vector of <span class="arithmatex">\(N\)</span> assets.
+The product <span class="arithmatex">\(\mathbf{w}^T\mathbf{R}\)</span> is then to be intended as a matrix product between the <span class="arithmatex">\(N\)</span> dimensional weights 
+product and the <span class="arithmatex">\(N \times T\)</span> dimensional returns matrix.</p>
+<p>Similarly to the classical mean-variance frontier, it is possible to draw an efficient frontier also for Omega 
+ratio:</p>
+<p><img alt="omega_frontier" src="../imgs/omega_frontier.svg" /></p>
+<p>The frontier is a direct analogue to the mean-variance efficient frontier, whereas in this case the numerators (<strong>return</strong>) and 
+denominator (<strong>volatility</strong>) of the classical Markowitz frontiers are replaced by specific formulas for reward (<strong>Omega numerator</strong>) and risk (<strong>Omega denominator</strong>), operationally defined as:</p>
+<div class="arithmatex">\[\begin{split}
+\begin{equation*}
+\begin{aligned}
+\textrm{Omega numerator (reward)} =&amp; \mathbf{w}^T \boldsymbol \mu - \tau \\
+\textrm{Omega denominator (risk)} =&amp; \sum_{t=1}^T \max \left( \tau - \mathbf{w}^T \mathbf{R}_t,\, 0 \right )
+\end{aligned}
+\end{equation*}
+\end{split}\]</div>
+<p>The slope of the tangent to the frontier passing through the origin gives the maximum Omega Ratio and indicates
+the associated portfolio.
+The affiliated Omega Ratio for each point on the frontier is given by the slope of the line passing through it and the origin.
+The goal is to find the line with the maximum slope that passes through the origin and a point on the frontier. 
+Since the frontier is non-decreasing and concave, the tangent from the origin to the frontier yields the portfolio with the maximum Omega.</p>
+<p>Although Omega ratio is a non-convex function, it is possible to express its maximization in terms of a convex 
+optimization trasforming the problem into a linear one, because Omega is <em>quasi-concave</em> in portfolio weights 
+<span class="arithmatex">\(\mathbf{w}\)</span>.</p>
+<p>For the set of prices defined in <code>skportfolio.data.load_tech_stock_prices</code> the Omega efficient frontier is 
+delineated in the following picture:</p>
+<p><img alt="omega_frontier_stocks" src="../imgs/omega_frontier_real.svg" /></p>
+<p>As in the mean-variance case, the maximum return stock is the one with the maximum risk, as quantified by the Omega 
+risk on the x-axis. Similarly to maximum sharpe ratio and minimum volatility, we identify two points on the frontier 
+and the tangent line from the origin touches the frontier exactly at maximum omega ratio point.
+Small red points are from random uniform portfolios, while the golden dot represents the equally weighted portfolio.</p>
+<h2 id="maximum-omega-ratio">Maximum Omega ratio<a class="headerlink" href="#maximum-omega-ratio" title="Permanent link">&para;</a></h2>
+<p>Maximization of the omega ratio is done through linearization of the quasi-convex Omega-ratio problem.
+Following a recent paper by Kapsos et al <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>, the mathematical optimization problem to find the maximum Omega ratio 
+portfolio in <code>skportfolio</code> is the following:</p>
+<div class="arithmatex">\[\begin{split}
+\begin{equation*}
+\begin{aligned}
+\underset{\mathbf{s}\in \mathbb{R}^n, \mathbf{q}\in \mathbb{R}^m, z \in \mathbb{R}}{\text{max}} &amp; \mathbf{s}^T 
+\boldsymbol \mu - \tau z &amp; \\
+&amp; q_t \geq \tau z - \mathbf{s}^T \mathbf{R_t} &amp; \forall t = 1,\ldots,T \\
+&amp; q_t \geq 0 &amp; \forall t = 1,\ldots,T \\
+&amp; \mathbf{1}^T \mathbf{q} = 1 \\
+&amp; \mathbf{1}^T \mathbf{s} = z \\
+&amp; z w_{\min} \leq \mathbf{s} \leq z w_{\max} \\
+&amp; \mathbf{s}^T \boldsymbol \mu \geq \tau z \\
+&amp; z \geq 0
+\end{aligned}
+\end{equation*}
+\end{split}\]</div>
+<p>Once solved, the optimal weights are then recovered from the <span class="arithmatex">\(\mathbf{s}\)</span> variable after normalization.
+The above linear program not only ensures global optimality, but is also simple and fast to solve, even if the 
+number of constraints grows linearly with the number of data points (indicated by <span class="arithmatex">\(T\)</span>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Importantly, here the number of constraints grows linearly with number of temporal samples. 
+The <a href="skportfolio"><code>EfficientOmegaRatio</code></a> class offers a way to subsample the returns at a predetermined fraction of  the original, thus making the problem
+computationally easier to solve.
+Please refer to the <code>EfficientOmegaRatio</code> class documentation, for the <code>fraction</code> parameter.</p>
+</div>
+<hr>
+
+<h2 id="minimum-omega-risk">Minimum Omega Risk<a class="headerlink" href="#minimum-omega-risk" title="Permanent link">&para;</a></h2>
+<p>This portfolio minimizes the denominator in the Omega ratio. It is indeed very similar to the objective function of 
+the Minimum Absolute Deviation portfolio. The minimum Omega risk optimization problem is solved through the 
+<code>EfficientOmegaFrontier</code> interface:</p>
+<div class="arithmatex">\[\begin{split}
+\begin{equation*}
+\begin{aligned}
+&amp; \underset{\mathbf{w}\in \mathbb{R}^+}{\text{minimize}} &amp; &amp; \left\langle (\tau - \mathbf{w}^T \mathbf{R})^+ 
+\right\rangle \\
+&amp; \text{subject to} &amp; &amp;  \mathbf{w}^T \mathbf{1} = 1\\
+\end{aligned}
+\end{equation*}
+\end{split}\]</div>
+<hr>
+
+<h2 id="efficient-risk-on-omega-ratio-frontier">Efficient risk on omega-ratio frontier<a class="headerlink" href="#efficient-risk-on-omega-ratio-frontier" title="Permanent link">&para;</a></h2>
+<p>This portfolio minimizes the denominator in the Omega ratio, conditioned on having a return greater than target 
+<span class="arithmatex">\(\varrho_{\textrm{target}}\)</span>.
+The following optimization problem is solved through the <code>EfficientOmegaFrontier</code> interface via the <code>.efficient_risk</code> method:</p>
+<div class="arithmatex">\[\begin{split}
+\begin{equation*}
+\begin{aligned}
+&amp; \underset{\mathbf{w}\in \mathbb{R}^+}{\text{minimize}} &amp; &amp; \left\langle (\tau - \mathbf{w}^T \mathbf{R})^+ \right\rangle \\
+&amp; \text{subject to} &amp; &amp;  \mathbf{w}^T \mathbf{1} = 1\\
+&amp;&amp;&amp;  \mathbf{w}^T \boldsymbol\mu - \tau \geq \varrho_{\textrm{target}}
+\end{aligned}
+\end{equation*}
+\end{split}\]</div>
+<hr>
+
+<h2 id="efficient-return-on-omega-ratio-frontier">Efficient return on omega-ratio frontier<a class="headerlink" href="#efficient-return-on-omega-ratio-frontier" title="Permanent link">&para;</a></h2>
+<p>This portfolio maximizes the numerator of the Omega ratio, conditioned on having a denominator in the Omega ratio greater than target 
+<span class="arithmatex">\(\rho_{\textrm{target}}\)</span>.
+The following optimization problem is solved through the <code>EfficientOmegaFrontier</code> interface via the <code>efficient_return</code> method:</p>
+<div class="arithmatex">\[\begin{split}
+\begin{equation*}
+\begin{aligned}
+&amp; \underset{\mathbf{w}\in \mathbb{R}^+}{\text{minimize}} &amp; &amp; \mathbf{w}^T \boldsymbol\mu - \tau  \\
+&amp; \text{subject to} &amp; &amp;  \mathbf{w}^T \mathbf{1} = 1\\
+&amp;&amp;&amp;  \left\langle (\tau - \mathbf{w}^T \mathbf{R})^+ \right\rangle \leq \rho_{\textrm{target}}
+\end{aligned}
+\end{equation*}
+\end{split}\]</div>
+<hr>
+
+<h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>"Optimizing the Omega Ratio using Linear Programming", Kapsos M., Zymler S., Christofides N., Rustem B. (2011) <a href="https://cs.uwaterloo.ca/~yuying/Courses/CS870_2012/Omega_paper_Short_Cm.pdf">url</a>:&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../efficient_cdar/" class="btn btn-neutral float-left" title="Conditional Drawdown At Risk"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../efficient_mad/" class="btn btn-neutral float-right" title="Mean Absolute Deviation (MAD)">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/CarloNicolini/scikit-portfolio" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../efficient_cdar/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../efficient_mad/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/mkapi.js" defer></script>
+      <script src="../javascripts/config.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/ensemble/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Ensemble methods - scikit-portfolio</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet" />
+        <link href="../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../css/mkapi-readthedocs.css" rel="stylesheet" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Ensemble methods";
+        var mkdocs_page_input_path = "ensemble.md";
+        var mkdocs_page_url = "/ensemble/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../imgs/scikit_portfolio.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting started</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_optimization_theory/">Portfolio optimization theory</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Algorithms</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="#">Efficient frontier</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_frontier/">Classical Mean-Variance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_semivariance/">Mean-Semivariance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cvar/">Conditional Value At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cdar/">Conditional Drawdown At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_omega/">Omega ratio</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_mad/">Mean Absolute Deviation (MAD)</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Information theory</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_repo/">REPO</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Ensemble methods</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#1-resampled-efficient-frontier">1. Resampled efficient frontier</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#2-subset-resampling">2. Subset Resampling</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#3-bayesian-robust-allocation">3. Bayesian Robust Allocation</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../miscellaneous/">Miscellaneous</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Risk and returns</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns/">Returns estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk/">Risk estimators</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Model selection</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../metrics/">Metrics and scorers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../splitters/">Cross validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developing new methods</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">scikit-portfolio</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Algorithms &raquo;</li><li>Ensemble methods</li>
+    <li class="wy-breadcrumbs-aside">
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/ensemble.md"
+          class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="ensemble-methods">Ensemble methods<a class="headerlink" href="#ensemble-methods" title="Permanent link">&para;</a></h1>
+<p>This class of meta-estimators are based on the idea that building a robust portfolio requires great attention to 
+<strong>estimation risk</strong>. 
+Estimation risk is the risk that inputs to the portfolio optimization process (i.e., expected returns and 
+volatilities or correlations) are inaccurately estimated by sampling from historical data, leading to suboptimal allocations.</p>
+<p>It is known that in the mean-variance portoflio, even small inaccuracies in the estimation of expected 
+returns from prices, leads to very large errors in the optimal allocation, thus producing portfolios with skewed 
+allocations. As a consequence of the fact that more uniform portfolios typically lead to greater out-of-sample 
+performances, this behaviour is unwanted, and could be reminiscent of the overfitting phenomenon in machine learning. </p>
+<p>In this section we collect some methods and address the <em>reduce portfolio overfitting</em> problem, with a multitude of 
+different approaches, borrowing ideas from machine-learning (regularization) and classical statistics (bootstrapping)
+and bayesian statistics. </p>
+<h2 id="1-resampled-efficient-frontier">1. Resampled efficient frontier<a class="headerlink" href="#1-resampled-efficient-frontier" title="Permanent link">&para;</a></h2>
+<p>The classical approach to asset allocation is a two-step process: first the market distribution is estimated, then an optimization is performed, as if the estimated distribution were the true market distribution. 
+Since this is not the case, the classical <em>optimal</em> allocation is not truly optimal.
+More importantly, since the optimization process is extremely sensitive to the input parameters, the sub-optimality due to estimation risk can be <strong>dramatic</strong>.</p>
+<p>Monte Carlo resampling methods are used to model more realistic investment input parameters for the portfolio optimization.</p>
+<p>The <strong>Resampled Efficient Frontier</strong> method <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">1</a></sup>  avoids the literal use of the estimated distribution of 
+market invariants (returns), but rather seeks to <em>+average</em>* a randomly perturbed scenario over a large number of 
+possible investment histories.</p>
+<p>The idea is very simple and is reminiscent of the <strong>bootstraping technique</strong> in statistics.
+Because of our limited ability to calculate the <em>real</em> estimates of risk and returns, we <strong>bootstrap</strong> on 
+historical returns by performing  <strong>random normal perturbations</strong>, sampling from <span class="arithmatex">\(\tilde{\boldsymbol{\mu}} \sim N(\hat{\boldsymbol \mu}, \hat{\mathbf{C}}
+)\)</span>, where <span class="arithmatex">\(\hat{\boldsymbol \mu}\)</span> are the sample mean of historical returns, and <span class="arithmatex">\(\hat{\mathbf{C}}\)</span> is the sample 
+covariance of historical returns, thus producing a number of <span class="arithmatex">\(K\)</span> Monte-Carlo scenarios.</p>
+<p>Each of the <span class="arithmatex">\(K\)</span> random scenario can be thought as a possible case, as the expected returns are compatible with the 
+observed returns series, provided that the sample covariance is big enough to allow some <em>wiggling</em> of the averages around their true but unobservable values.</p>
+<p>Under very reasonable assumptions, the resampled frontier method is provably effective at improving risk-adjusted portfolio return on out-of-sample data.
+Such a portfolio is different from the Markowitz efficient portfolio it will have suboptimal risk/return characteristics
+with respect to the sample mean and covariance, but optimal characteristics when averaged over the many possible values 
+of the unknown true mean and covariance.</p>
+<p>We then solve for the efficient frontier over each perturbed sample and average all the solutions to get a more robust portfolio, without all those extreme allocations, typical of Markowitz-like 
+optimization. 
+Resampled optimized portfolios perform better because they are better risk-managed by avoiding the unrealistical literal use of investment information that characterizes Markowitz Mean-Variance optimization.</p>
+<p><strong><code>scikit-portfolio</code></strong> extends the advantages of the resampled frontier approach to virtually all portfolio 
+estimators whose one input parameter is a <code>rets_estimator</code> of type <code>BaseReturnsEstimator</code> , not only to the <a href="../efficient_frontier/">classical 
+portfolios</a> such as the <code>MinimumVolatility</code> portfolio or the <code>MaxSharpe</code>, discussed in the 
+classical efficient frontier approach.</p>
+<p>You can simply create a standard <code>MichaudEfficientFrontier</code> portfolio in <strong><code>scikit-portfolio</code></strong> by importing both 
+the <code>MichaudEfficientFrontier</code> object and the desidered portfolio estimator. Here we produce an ensemble estimate of 
+the <code>MaxSharpeRatio</code> portfolio, a method that is known to produce highly skewed allocations because of the strong 
+sensitivity on expected returns.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">skportfolio.ensemble</span> <span class="kn">import</span> <span class="n">MichaudResampledFrontier</span>
+<span class="kn">from</span> <span class="nn">skportfolio.frontier</span> <span class="kn">import</span> <span class="n">MaxSharpe</span>
+<span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">SampleCovariance</span><span class="p">,</span><span class="n">MeanHistoricalLinearReturns</span>
+<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+
+<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
+<span class="c1"># create a Maximum sharpe ratio portfolio estimator to be fed to resampled frontier meta-estimator</span>
+<span class="n">ptf</span> <span class="o">=</span> <span class="n">MaxSharpe</span><span class="p">(</span>
+    <span class="n">returns_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">risk_free_rate</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">frequency</span><span class="o">=</span><span class="mi">252</span><span class="p">,</span>
+    <span class="n">rets_estimator</span><span class="o">=</span><span class="n">MeanHistoricalLinearReturns</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="n">ensemble</span> <span class="o">=</span> <span class="n">MichaudResampledFrontier</span><span class="p">(</span>
+    <span class="n">ptf_estimator</span><span class="o">=</span><span class="n">ptf</span><span class="p">,</span>
+    <span class="n">rets_estimator</span><span class="o">=</span><span class="n">MeanHistoricalLinearReturns</span><span class="p">(),</span> 
+    <span class="n">risk_estimator</span><span class="o">=</span><span class="n">SampleCovariance</span><span class="p">(),</span>
+    <span class="n">n_iter</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
+    <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
+
+<span class="n">W</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">all_weights_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">W</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">expanding</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</code></pre></div>
+<p>Here we show the cumulative average of asset weights under the resampled frontier allocation. It is evident that 
+after enough scenarios, the weights averages tend to stabilize around the correct values for the optimal 
+maximum sharpe ratio allocation.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><img alt="evolution of resampled frontier weights" src="../imgs/resampled_frontier_weights_evolution.svg" /></p>
+<p><strong>Figure 1.</strong> The asset allocation under resampling of expected returns, results much more uniform than the extremal pointwise allocations from the maximum sharpe portfolios.</p>
+</div>
+<p>We could stop here, but we want to show how to use the Resampled Frontier portfolio also to estimate Maximum Omega 
+Ratio portfolios, to reduce the estimation error.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">skportfolio.ensemble</span> <span class="kn">import</span> <span class="n">MichaudResampledFrontier</span>
+<span class="kn">from</span> <span class="nn">skportfolio.frontier</span> <span class="kn">import</span> <span class="n">MaxOmegaRatio</span>
+<span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">SampleCovariance</span><span class="p">,</span><span class="n">MeanHistoricalLinearReturns</span>
+
+<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+
+<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
+<span class="n">returns</span> <span class="o">=</span> <span class="n">prices</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<span class="c1"># create a Maximum sharpe ratio portfolio estimator to be fed to resampled frontier meta-estimator</span>
+<span class="n">ptf</span> <span class="o">=</span> <span class="n">MaxOmegaRatio</span><span class="p">(</span>
+    <span class="n">returns_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">frequency</span><span class="o">=</span><span class="mi">252</span>
+<span class="p">)</span>
+
+<span class="n">ensemble</span> <span class="o">=</span> <span class="n">MichaudResampledFrontier</span><span class="p">(</span>
+    <span class="n">ptf_estimator</span><span class="o">=</span><span class="n">ptf</span><span class="p">,</span>
+    <span class="n">rets_estimator</span><span class="o">=</span><span class="n">MeanHistoricalLinearReturns</span><span class="p">(),</span>
+    <span class="n">risk_estimator</span><span class="o">=</span><span class="n">SampleCovariance</span><span class="p">(),</span>
+    <span class="n">n_iter</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
+    <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
+
+<span class="c1">## Plotting part</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">W</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">all_weights_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="n">W</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;scenario&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Cumulative average weight&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p>The allocation weights are slightly different with the Omega ratio efficient frontier, but nonetheless we still 
+observe a tendency to stabilization of portfolio weights when considering the cumulative average. The optimal number 
+of scenarios should be chosen in a way such that the cumulative averages are self-stabilizing. The default value of 
+500 scenarios is a good trade-off in most cases.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><img alt="omega_scenario" src="../imgs/resampled_frontier_weights_evolution_omega.svg" /></p>
+<p><strong>Figure 2.</strong> Average weights allocation for the Maximum Omega Ratio portfolio, as a function of the scenario index. </p>
+</div>
+<h2 id="2-subset-resampling">2. Subset Resampling<a class="headerlink" href="#2-subset-resampling" title="Permanent link">&para;</a></h2>
+<p>Here we implement an enhanced version of the <strong>subset resampling technique</strong> discussed in the paper: </p>
+<blockquote>
+<p>"Portfolio Selection via Subset Resampling" <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">2</a></sup></p>
+</blockquote>
+<p>The technique works by averaging allocation estimated with a noise-sensitive portfolio estimator (such as <code>MaxSharpeRatio</code>) over many <em>masked</em> subsets of assets. 
+The mask-optimization process is repeated many times: every iteration considers only a certain fraction of the entire asset universe, and optimal weights are computed.
+All the local estimates are then aggregated either by averaging or by voting mechanism, and a final allocation is 
+produced.</p>
+<p>This method is very similar to the well-known class of ensemble methods in machine learning, for example <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestRegressor.html">RandomForests</a> 
+where many <strong>weak learners</strong> are merged to produce a robust estimation. 
+In this way the risk of parameters estimation is reduced, and outlier effects are smoothed away in the final estimate.</p>
+<p>Being controlled by a single parameter selecting the fraction of assets to be sampled at each itereation, we can see 
+the two ends of the spectrum of possible sub-estimators produced by <code>SubsetResampling</code> meta-estimator.
+On one side, with sampling one single asset at every step (hence fraction=<code>1/N</code>, we asymptotically obtain the same 
+results as from the <code>EquallyWeighted</code> portfolio. On the other side, sampling with <code>fraction=1</code> we simply return the 
+results from the input portfolio estimator. In other words the fraction of assets to be selected at each iteration 
+controls a smooth blending between the equally weighted portfolio and the single portfolio estimator.</p>
+<p>In the following code snippet we illustrate how to use the estimator <code>SubsetResampling</code> jointly with 
+<code>MaxSharpeRatio</code> on the technological stocks example. We average 64 estimates of random subsets of the stocks from 
+the <code>prices</code> dataset. By setting the <code>subset_size=0.5</code> we implement what suggested by the original authors and pick 
+on each iteration a number of columns equivalent to <span class="arithmatex">\(5^{0.5}\)</span> (with integer approximation). While does not make much 
+sense for our data, as we only have 5 stocks in the data, it illustrates well the point.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio.frontier</span> <span class="kn">import</span> <span class="n">MaxSharpe</span>
+<span class="kn">from</span> <span class="nn">skportfolio.ensemble</span> <span class="kn">import</span> <span class="n">SubsetResampling</span>
+<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+
+<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
+<span class="c1"># fit on price data and average over 64 estimates, </span>
+<span class="c1"># considering ceil(5**0.5) = 3 stocks per subsample</span>
+<span class="n">ptf</span> <span class="o">=</span> <span class="n">SubsetResampling</span><span class="p">(</span>
+    <span class="n">ptf_estimator</span><span class="o">=</span><span class="n">MaxSharpe</span><span class="p">(),</span>
+    <span class="n">subset_size</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">n_iter</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+    <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">agg_func</span><span class="o">=</span><span class="s2">&quot;median&quot;</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
+
+<span class="n">ptf</span><span class="o">.</span><span class="n">weights_</span>
+</code></pre></div>
+<p>One can also access the list of weights in the <code>ptf.all_weights_</code> variable, which in this case is a <span class="arithmatex">\(64 \times 5\)</span> array 
+containing all  weights, in order to create nice visualizations.</p>
+<p>Here is a picture of a 2D embedding of all portfolio weights using the dimensionality reduction method <a href="https://umap-learn.readthedocs.io/en/latest/plotting.html">UMAP</a> from data related to cryptocurrencies prices over 2 years, for a total of more than 200 assets.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><img alt="Embedding" src="../imgs/umap_max_sharpe.png" /></p>
+<p><strong>Figure 3.</strong> Dimensionality reduction of portfolio weights as estimate from subset resampling.
+Point color is the Sharpe ratio of the portfolio returns, darker points corresponds to higher Sharpe Ratios. 
+The average weights are depicted with a red dot, while median weights are indicated with the purple dot. 
+Median weights portfolio tends to stay in sparser areas: </p>
+</div>
+<p>For further description and ideas <a href="https://blog.thinknewfound.com/2018/07/machine-learning-subset-resampling-and-portfolio-optimization/">visit here</a></p>
+<h2 id="3-bayesian-robust-allocation">3. Bayesian Robust Allocation<a class="headerlink" href="#3-bayesian-robust-allocation" title="Permanent link">&para;</a></h2>
+<p>Among the just discussed methods, the Bayesian Robust allocation is by far the most complex. It is based on a 
+variant of the Black-Litterman model, designed by Attilio Meucci.</p>
+<p>Bayesian theory provides a way to limit the sensitivity of the final allocation to the input parameters by shrinking the estimate of the market parameters
+toward the investor’s prior, as in the Black-Litterman approach.
+At the same time, the theory of robust optimization provides a different approach to dealing with estimation risk: the investor chooses the best allocation in the worst market
+within a given uncertainty range.
+Robust allocations are guaranteed to perform adequately for all the markets within the given uncertainty range. Nevertheless, the choice of this range is
+quite arbitrary. Furthermore, the investor’s prior knowledge, a key ingredient in any allocation decision, is not taken in consideration.</p>
+<p>Using the Bayesian approach to estimation we can naturally identify a suitable uncertainty range for the market parameters, namely the location-dispersion ellipsoid of their posterior distribution.
+Robust Bayesian allocations are the solutions to a robust optimization problem that uses as uncertainty range the Bayesian location-dispersion ellipsoid. Similarly to robust allocations, these al-
+locations account for estimation risk over a whole range of market parameters. </p>
+<p>Similarly to Bayesian decisions, these allocations include the investor’s prior knowledge in the optimization process within a sound and self-adjusting statistical framework.</p>
+<p>Here we consider robust Bayesian decisions that also account for the estimation error in the covariances and that, unlike in the Black-Litterman framework, explicitly process the information from the market, namely the observed time series of the past returns.
+As it turns out, the multi-parameter, non-conically constrained mean-variance optimization simplifies to a parsimonious Bayesian efficient frontier that resembles the classical frontier, except that
+the classical parameterization in terms of the exposure to market risk becomes in this context a parameterization in terms of the exposure to both market risk and estimation risk.</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio.ensemble</span> <span class="kn">import</span> <span class="n">RobustBayesian</span>
+<span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">MeanHistoricalLinearReturns</span><span class="p">,</span><span class="n">SampleCovariance</span>
+<span class="n">RobustBayesian</span><span class="p">(</span>
+    <span class="n">window</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span>
+    <span class="n">rets_estimator</span><span class="o">=</span><span class="n">MeanHistoricalLinearReturns</span><span class="p">(),</span>
+    <span class="n">risk_estimator</span><span class="o">=</span><span class="n">SampleCovariance</span><span class="p">(),</span>
+    <span class="n">n_portfolios</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+    <span class="n">robustness_param_loc</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">robustness_param_scatter</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span>
+<span class="p">)</span>
+</code></pre></div>
+<h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:2">
+<p><em>Efficient Asset Management: A practical Guide to Stock Portfolio Optimization and Asset Allocation.</em>, Michaud,
+R., and Michaud, R. (1998) ISBN 978-0-19-533191-2.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>"Portfolio Selection via Subset Resampling", Shen and Wang (2017) <a href="https://aaai.org/ocs/index.php/AAAI/AAAI17/paper/download/14443/13945">https://aaai.org/ocs/index.
+php/AAAI/AAAI17/paper/download/14443/13945</a>&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../efficient_repo/" class="btn btn-neutral float-left" title="REPO"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../miscellaneous/" class="btn btn-neutral float-right" title="Miscellaneous">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/CarloNicolini/scikit-portfolio" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../efficient_repo/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../miscellaneous/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/mkapi.js" defer></script>
+      <script src="../javascripts/config.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

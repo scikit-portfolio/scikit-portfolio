@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/risk/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Risk estimators - scikit-portfolio</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet" />
+        <link href="../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../css/mkapi-readthedocs.css" rel="stylesheet" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Risk estimators";
+        var mkdocs_page_input_path = "risk.md";
+        var mkdocs_page_url = "/risk/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../imgs/scikit_portfolio.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting started</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_optimization_theory/">Portfolio optimization theory</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Algorithms</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Efficient frontier</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_frontier/">Classical Mean-Variance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_semivariance/">Mean-Semivariance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cvar/">Conditional Value At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cdar/">Conditional Drawdown At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_omega/">Omega ratio</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_mad/">Mean Absolute Deviation (MAD)</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Information theory</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_repo/">REPO</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ensemble/">Ensemble methods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../miscellaneous/">Miscellaneous</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Risk and returns</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../returns/">Returns estimators</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Risk estimators</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#risk-estimator-base-class">Risk estimator base class</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#sample-covariance-samplecovariance">Sample Covariance SampleCovariance</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#semicovariance-semicovariance">Semicovariance SemiCovariance</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#covariancermt-covariancermt">CovarianceRMT CovarianceRMT</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#ledoit-wolf-covariance-estimator-covarianceledoitwolf">Ledoit-Wolf covariance estimator CovarianceLedoitWolf</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#covariance-glasso-covarianceglasso">Covariance GLASSO CovarianceGLASSO</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#exponential-moving-average-covariance-covarianceexp">Exponential Moving Average Covariance CovarianceExp</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Model selection</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../metrics/">Metrics and scorers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../splitters/">Cross validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developing new methods</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">scikit-portfolio</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>Risk and returns &raquo;</li><li>Risk estimators</li>
+    <li class="wy-breadcrumbs-aside">
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/risk.md"
+          class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="risk-estimators">Risk estimators<a class="headerlink" href="#risk-estimators" title="Permanent link">&para;</a></h1>
+<p>Risk has always played a very large role in the world of finance with the performance of a large number of investment and trading strategies being dependent on the efficient estimation of underlying market risk.
+In this regard, one of the most popular and commonly used representation of risk in finance is through a covariance matrix –  higher covariance values mean more volatility in the markets and vice-versa.
+Covariance matrix is the most commonly used risk model, as it describes asset volatilities and their co-dependence in terms of quadratic forms.
+This is important because one of the principles of diversification is that risk can be reduced by making many uncorrelated bets (correlation is just normalised covariance).
+This also comes with a caveat – empirical covariance values are always measured using historical data and are extremely sensitive to small changes in market conditions. </p>
+<p>Interestingly enough, a piece of research by Kritzman et al. (2010) <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> shows that minimum variance portfolios may perform better out of sample than the equally weighted portfolio.</p>
+<p>This makes the covariance matrix an unreliable estimator of the true risk calling for the need of better estimators.
+In this section we devote our analysis to presenting different covariance matrix estimators which aim to reduce the estimation risk.</p>
+<p>Asset allocation and risk assessment also rely on correlations (covariance), however in this case a large number of correlations are often required.
+Construction of an optimal portfolio with a set of constraints requires a forecast of the covariance matrix of returns.
+Similarly, the calculation of the standard deviation of today's portfolio requires a covariance matrix of all the assets in the portfolio.
+These functions entail estimation and forecasting of large covariance matrices, potentially with thousands of assets.</p>
+<hr>
+
+<h2 id="risk-estimator-base-class">Risk estimator base class<a class="headerlink" href="#risk-estimator-base-class" title="Permanent link">&para;</a></h2>
+<p>The class <code>BaseRiskEstimator</code> is at the core of all risk estimators. 
+The <code>.fit</code> method takes either <em>price</em> data or <em>return</em> data, depending on the initialization parameter <code>returns_data</code>.
+Moreover, you can always modifiy the parameter with the <code>.set_returns_data(True|False)</code> method, returning a new estimator.
+With the generic term <code>risk</code> we mean a proxy measure of portfolio risk, like the portfolio volatility as measured from the <a href="../efficient_frontier/">standard deviation</a>, the <a href="../efficient_mad/">Mean-Absolute-Deviation of the excess returns</a>, or the <a href="../efficient_cvar/">conditional value at risk</a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>For all covariance-based estimators, keep in mind that objects are supposed to be fed with daily prices or returns, and annualized covariances are returned.
+Indeed, default annualization factor is 252 periods, the approximate number of business days in a year. 
+If returns have a different frequency, and covariance over different time periods is required, you <strong>must</strong> modify the <code>frequency</code> parameter.
+For example if you are feeding price tickers at a 30 minute time-frame, and you need to compute <em>weekly covariance</em>, you need to specify the frequency factor as the number of units of periods in the covariance interval.
+In that specific case <code>frequency=2*24*7=336</code>.
+Keep in mind though that for returns with frames shorter than one day, strong serial correlation may exist, making this <em>covariance</em> aggregation approximation incorrect.
+For more details see the paper from Andrew Lo <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup>. </p>
+</div>
+<p>For notation, please see <a href="../portfolio_optimization_theory/#notation">the notation section</a></p>
+<hr>
+
+<h2 id="sample-covariance-samplecovariance">Sample Covariance <code>SampleCovariance</code><a class="headerlink" href="#sample-covariance-samplecovariance" title="Permanent link">&para;</a></h2>
+<p>Sample covariance from the asset returns.
+For more information about the covariance estimator implemented here see the <a href="https://scikit-learn.org/stable/modules/covariance.html">scikit learn page on covariance estimation</a>.
+The <code>SampleCovariance</code> is obtained from the asset returns <span class="arithmatex">\(r_t^{(i)}\)</span> for <span class="arithmatex">\(i \in 1,\ldots,N\)</span> as follows: </p>
+<div class="arithmatex">\[\begin{equation}
+\hat{\boldsymbol \Sigma} = \frac{\mathbf{Z}\mathbf{Z}^T}{T-1}.
+\end{equation}\]</div>
+<hr>
+
+<h2 id="semicovariance-semicovariance">Semicovariance <code>SemiCovariance</code><a class="headerlink" href="#semicovariance-semicovariance" title="Permanent link">&para;</a></h2>
+<p>The semicovariance, a.k.a. the covariance matrix estimated from only the returns exceeding a given benchmark <span class="arithmatex">\(b\)</span> (typically 0).
+We adopt the definition as from <a href="https://pyportfolioopt.readthedocs.io/en/latest/RiskModels.html">pyportfolioopt</a>.
+There are multiple possible ways of defining a semicovariance matrix, the main differences lying in the 'pairwise' nature, i.e whether we should sum over <span class="arithmatex">\(\min(r_i,B)\min(r_j,b)\)</span>  or <span class="arithmatex">\(\min(r_i r_j,b)\)</span>.
+In this implementation, we have followed the advice of Estrada (2007) <sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>, preferring:</p>
+<div class="arithmatex">\[\begin{equation}
+\hat{\boldsymbol \Sigma}^b = \frac{1}{T} \sum_{t = 1}^T \min(R_{ti},b) \min(R_{tj},b)
+\end{equation}\]</div>
+<hr>
+
+<h2 id="covariancermt-covariancermt">CovarianceRMT <code>CovarianceRMT</code><a class="headerlink" href="#covariancermt-covariancermt" title="Permanent link">&para;</a></h2>
+<p>The random matrix theory (RMT) postulates that a covariance matrix is built from a component related to bulk random gaussian noise and from a real signal, as described from the Marchenko-Pastur distribution.
+Here we follow the approach from MacMahon and Garlaschelli <sup id="fnref:5"><a class="footnote-ref" href="#fn:5">5</a></sup>.
+The calculation is based on the idea that a signal eigenspectrum consists in a continuos bulk and a "market-mode", to filter.
+Basically, the deviation of the spectra of real correlation matrices from the RMT prediction provides an effective way to filter
+out noise from empirical data.
+Starting from the eigendecomposition of the sample covariance</p>
+<p>\begin{equation}
+\hat{\boldsymbol \Sigma} = \sum_{k}^N \lambda_k \mathbf{q}_k \mathbf{q}_k^T<br />
+\end{equation}
+where <span class="arithmatex">\(\lambda_k\)</span> is the <span class="arithmatex">\(k\)</span>-th eigenvalue and <span class="arithmatex">\(\mathbf{q}_k\)</span> is the <span class="arithmatex">\(k\)</span>-th eigenvector of the sample covariance matrix, we get the filtered covariance matrix as: </p>
+<div class="arithmatex">\[\begin{equation}
+\hat{\boldsymbol \Sigma}^{RMT} = \sum_{k : \lambda_{k} &gt; \lambda_{\textrm{MP}}}^N \lambda_k \mathbf{q}_k \mathbf{q}_k^T  
+\end{equation}\]</div>
+<p>The Marchenko-Pastur distribution postulates that it is possible to set a specific limit for the eigenvalues falling outside the bulk of random noise <span class="arithmatex">\(\lambda_{\textrm{MP}}\)</span>. Beyond that value, the effect of random gaussian noise is minimum and "true" signals are compared.
+We refer the reader to the paper <sup id="fnref2:5"><a class="footnote-ref" href="#fn:5">5</a></sup> for more details, or looking into the <code>scikit-portfolio</code> documentation.</p>
+<hr>
+
+<h3 id="ledoit-wolf-covariance-estimator-covarianceledoitwolf">Ledoit-Wolf covariance estimator <code>CovarianceLedoitWolf</code><a class="headerlink" href="#ledoit-wolf-covariance-estimator-covarianceledoitwolf" title="Permanent link">&para;</a></h3>
+<p>One popular approach to dealing with estimation risk is to simply ignore parameters that are hard to estimate.
+A popular approach is thus to employ "shrinkage estimators" for key inputs.
+For example, Ledoit and Wolf (2004)<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>, propose shrinking the sample correlation matrix towards (a fancy way of saying "averaging it with") the constant correlation matrix. 
+The constant correlation matrix is simply the correlation matrix where each diagonal element is equal to the pairwise average correlation across all assets.</p>
+<p>Mathematically, this shrinkage consists in reducing the ratio between the smallest and the largest eigenvalues of the empirical covariance matrix.
+It can be done by simply shifting every eigenvalue according to a given offset, which is equivalent of finding the L2-penalized Maximum Likelihood Estimator of the covariance matrix. 
+See <a href="https://scikit-learn.org/stable/modules/generated/sklearn.covariance.ledoit_wolf.html?highlight=ledoit#sklearn.covariance.ledoit_wolf">scikit-learn documentation</a> for more details.
+In practice, shrinkage boils down to a simple a convex transformation:</p>
+<div class="arithmatex">\[\begin{equation}
+\boldsymbol \Sigma^{\textrm{shrunk}} = (1-\alpha)\hat{\boldsymbol \Sigma} + \alpha \frac{\textrm{Tr} \hat{\boldsymbol \Sigma}}{T}\mathbf{I}
+\end{equation}\]</div>
+<p>Specifically, Ledoit-Wolf is a particular form of shrinkage, where the shrinkage coefficient <span class="arithmatex">\(\alpha\)</span> is computed using the formula described in <sup id="fnref2:2"><a class="footnote-ref" href="#fn:2">2</a></sup>.</p>
+<p><img alt="covariance_estimators" src="https://scikit-learn.org/stable/_images/sphx_glr_plot_sparse_cov_001.png" /></p>
+<hr>
+
+<h2 id="covariance-glasso-covarianceglasso">Covariance GLASSO <code>CovarianceGLASSO</code><a class="headerlink" href="#covariance-glasso-covarianceglasso" title="Permanent link">&para;</a></h2>
+<p>The GLASSO covariance method estimates the true covariance matrix <span class="arithmatex">\(\boldsymbol \Sigma\)</span> by solving the following optimization problem in the precision matrix <span class="arithmatex">\(\boldsymbol \Theta\)</span> with a L1 regularization term, inducing sparsity in the recovered precision matrix:</p>
+<p>\begin{equation}
+\underset{\boldsymbol \Theta \succeq \mathbf{0}}{\textrm{argmin}} \left\lbrack \textrm{Tr}(\hat{\boldsymbol \Sigma} \boldsymbol \Theta) - \log \det(\boldsymbol \Theta)  + \lambda \sum_{i,j} | \Theta_{ij} |\right \rbrack
+\end{equation}
+The latter is a convex optimization problem in <span class="arithmatex">\(\boldsymbol \Theta\)</span>.</p>
+<p>More details <a href="https://www.stata.com/meeting/us21/slides/US21_Dallakyan.pdf">here</a> and in the original paper by Tibshirani et al <sup id="fnref:6"><a class="footnote-ref" href="#fn:6">6</a></sup>.</p>
+<hr>
+
+<h3 id="exponential-moving-average-covariance-covarianceexp">Exponential Moving Average Covariance <code>CovarianceExp</code><a class="headerlink" href="#exponential-moving-average-covariance-covarianceexp" title="Permanent link">&para;</a></h3>
+<p>This method of computing the covariance takes into account with an exponential moving average only the most recent observations, given a decay factor governed by the parameter <code>span</code>. 
+Given a temporal span parameter <span class="arithmatex">\(K\)</span> the tensor <span class="arithmatex">\(\mathbf{Q} \in \mathbb{R}^{T \times N \times N}\)</span> is obtained as:</p>
+<div class="arithmatex">\[\begin{equation}
+Q_{tij} = Z_{ti} Z_{tj}.
+\end{equation}\]</div>
+<p>Finally, an exponential moving average is performed on <span class="arithmatex">\(\mathbf{Q}\)</span> over the temporal dimension <span class="arithmatex">\(t\)</span>:</p>
+<div class="arithmatex">\[\begin{equation}
+\left(\hat{\boldsymbol \Sigma}^{\textrm{EWMA}}\right)_{ij} = \frac{\sum \limits_{\tau=0}^T (1-\alpha)^{\tau} \mathbf{Q}_{T-\tau,i,j}}{\sum \limits_{\tau=0}^T (1-\alpha)^{\tau}}
+\end{equation}\]</div>
+<p>where <span class="arithmatex">\(\alpha\)</span> is the decay factor <span class="arithmatex">\(0\leq \alpha \leq 1\)</span>  uniquely specified by the <code>span</code> factor as <span class="arithmatex">\(\alpha = 2/(\textrm{span}+1)\)</span> for <span class="arithmatex">\(\textrm{span}\geq 1\)</span>.</p>
+<hr>
+
+<h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Kritzman, Page &amp; Turkington (2010) "In defense of optimization: The fallacy of 1/N". Financial Analysts Journal, 66(2), 31-39.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>O. Ledoit and M. Wolf, "A Well-Conditioned Estimator for Large-Dimensional Covariance Matrices", Journal of Multivariate Analysis, Volume 88, Issue 2, February 2004, pages 365-411. <a href="http://www.ledoit.net/honey.pdf">http://www.ledoit.net/honey.pdf</a>&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>Estrada (2006), Mean-Semivariance Optimization: A Heuristic Approach&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>Lo, A, "The statistics of Sharpe ratio". <a href="https://www.tandfonline.com/doi/abs/10.2469/faj.v58.n4.2453">https://www.tandfonline.com/doi/abs/10.2469/faj.v58.n4.2453</a> <a href="https://doi.org/10.2469/faj.v58.n4.2453">https://doi.org/10.2469/faj.v58.n4.2453</a>&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:5">
+<p>MacMahon M, Garlaschelli D., "Community detection for correlation matrices". Phys. Rev. X 5, 02100 <a href="https://journals.aps.org/prx/pdf/10.1103/PhysRevX.5.021006">https://journals.aps.org/prx/pdf/10.1103/PhysRevX.5.021006</a>&#160;<a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 5 in the text">&#8617;</a><a class="footnote-backref" href="#fnref2:5" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn:6">
+<p>Friedman, Jerome, Trevor Hastie, and Robert Tibshirani. "Sparse inverse covariance estimation with the graphical lasso." Biostatistics 9.3 (2008): 432-441.&#160;<a class="footnote-backref" href="#fnref:6" title="Jump back to footnote 6 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../returns/" class="btn btn-neutral float-left" title="Returns estimators"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../metrics/" class="btn btn-neutral float-right" title="Metrics and scorers">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/CarloNicolini/scikit-portfolio" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../returns/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../metrics/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/mkapi.js" defer></script>
+      <script src="../javascripts/config.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>
