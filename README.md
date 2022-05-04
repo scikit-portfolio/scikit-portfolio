@@ -2,7 +2,10 @@
 
 # Scikit-Portfolio
 
-[![Python package](https://github.com/CarloNicolini/scikit-portfolio/actions/workflows/python-package.yml/badge.svg?branch=main)](https://github.com/CarloNicolini/scikit-portfolio/actions/workflows/python-package.yml)
+[![Python package](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python-package.yml/badge.svg)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python-package.yml)
+[![Wheel builder](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/wheels.yml/badge.svg)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/wheels.yml)
+[![run_tox](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/run_tox.yml/badge.svg)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/run_tox.yml)
+[![build and deploy mkdocs to github pages](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/gh-pages.yml)
 
 ## Portfolio optimization for data scientists
 
