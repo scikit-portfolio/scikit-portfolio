@@ -20,4 +20,5 @@ mkdocs-material-extensions==1.0.3
 mkapi==1.0.14
 tox==3.24.5
 pytest==7.0.1
+pytest_cov==3.0.0
 coverage==6.3.2
