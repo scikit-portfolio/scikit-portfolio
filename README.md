@@ -2,6 +2,7 @@
 
 # Scikit-Portfolio
 
+[![Python package](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml/badge.svg)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml)
 
 ## Portfolio optimization for data scientists
 
