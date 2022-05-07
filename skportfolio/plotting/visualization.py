@@ -1,3 +1,6 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from skportfolio.frontier._efficientfrontier import (
     _BaseEfficientFrontierPortfolioEstimator,
 )
@@ -15,6 +18,8 @@ def _validate_plotting_kwargs(**kwargs):
         "risk_return_line_style",
         "show_only_portfolio",
         "frontier_line_color",
+        "show_tangency_line",
+        "autoset_lims",
     ]
     for k, v in kwargs.items():
         if k not in valid_kwargs:
@@ -78,6 +83,10 @@ def plot_frontier(
             multiple portfolios over the frontier. Default False, it draws the entire frontier.
         - frontier_line_color: str
             Color of the plot of the efficient frontier. Default None
+        - show_tangency_line: bool
+            Show the tangency line that has for 0 volatility the value of risk_free_rate
+        - autoset_lims: bool
+            Whethet to automatically set the axes x-y limits. Default True
 
     Returns
     -------
@@ -98,7 +107,13 @@ def plot_frontier(
         risks, returns, frontier_weights = ptf_estimator.estimate_frontier(
             X=prices_or_returns, num_portfolios=num_portfolios
         )
-        ax.plot(risks, returns, "-", color=kwargs.get("frontier_line_color", "C0"))
+        ax.plot(
+            risks,
+            returns,
+            "-",
+            color=kwargs.get("frontier_line_color", "C0"),
+            label=str(ptf_estimator),
+        )
 
     ax.set_ylabel("Portfolio return")
     ax.set_xlabel(
@@ -134,12 +149,16 @@ def plot_frontier(
             text=asset,
             fontsize=kwargs.get("fontsize", 8),
         )
+
+    xmin, xmax = ax.get_xlim()
+    ymin, ymax = ax.get_ylim()
+
     if ptf_estimator.model is not None:
+
         x, y = ptf_estimator.risk_reward()
         ax.scatter(
             x,
             y,
-            label=str(ptf_estimator),
             color=kwargs.get("risk_return_color", "C0"),
         )
         ax.plot(
@@ -156,6 +175,60 @@ def plot_frontier(
             linestyle=kwargs.get("risk_return_line_style", "--"),
             linewidth=kwargs.get("risk_return_line_width", 1),
         )
-
+        if "show_tangency_line" in kwargs and hasattr(ptf_estimator, "risk_free_rate"):
+            ax.plot((0, x), (ptf_estimator.risk_free_rate, y), "k--", linewidth=0.8)
+        if kwargs.get("autoset_lims", True):
+            ax.set_xlim([xmin, xmax])
+            ax.set_ylim([ymin, ymax])
     ax.legend(loc=kwargs.get("legend_loc", 2))
+    return ax
+
+
+def pie_chart(weights: pd.Series, threshold: int = 12, ax=None, **kwargs):
+    if ax is None:
+        fig, ax = plt.subplots(figsize=kwargs.pop("figsize", (7, 7)))
+    n_weights = weights.shape[0]
+    weights = weights.sort_values(ascending=False)
+    weights_thr = weights.head(threshold)
+    weights_thr = pd.concat(
+        [
+            weights_thr,
+            pd.Series(index=["Other"], data=weights.tail(n_weights - threshold).sum()),
+        ],
+        axis=0,
+    )
+    weights_thr = weights_thr.sample(
+        frac=1
+    )  # to shuffle the weights and avoid concentration in plot
+    wedges, texts = ax.pie(weights_thr, wedgeprops=dict(width=0.5), startangle=-40)
+
+    bbox_props = dict(
+        boxstyle="square,pad=0.3",
+        fc=kwargs.pop("backgroundcolor", None),
+        ec=kwargs.pop("linecolor", None),
+        lw=kwargs.pop("linewidth", 0.72),
+    )
+    kw = dict(arrowprops=dict(arrowstyle="-"), bbox=bbox_props, zorder=0, va="center")
+
+    for i, p in enumerate(wedges):
+        ang = (p.theta2 - p.theta1) / 2.0 + p.theta1
+        y = np.sin(np.deg2rad(ang))
+        x = np.cos(np.deg2rad(ang))
+        horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
+        connectionstyle = "angle,angleA=0,angleB={}".format(ang)
+        kw["arrowprops"].update(
+            {
+                "connectionstyle": connectionstyle,
+                "color": kwargs.pop("linecolor", f"C{i}"),
+            }
+        )
+        ax.annotate(
+            f"{weights_thr.index[i]}: {(100*weights_thr.iloc[i]):.1f}%",
+            xy=(x, y),
+            xytext=(1.35 * np.sign(x), 1.4 * y),
+            horizontalalignment=horizontalalignment,
+            **{**kw, **kwargs},
+        )
+
+    ax.set_title(f"{weights.name}", y=1.15)
     return ax

@@ -146,7 +146,7 @@ class MichaudResampledFrontier(PortfolioEstimator):
         # filter unfitted results
         out = [o for o in out if not np.isnan(o[2])]
         self.all_weights_ = [o[0] for o in out]
-        self.risk_rewards_ = [o[1] for o in out]
+        self.risk_rewards_ = [(o[1], o[2]) for o in out]
         # finally collects all the obtained weights and average by mean
         self.weights_ = pd.concat(self.all_weights_, axis=1).aggregate(
             self.agg_func, axis=1

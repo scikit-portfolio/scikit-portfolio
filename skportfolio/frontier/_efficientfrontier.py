@@ -58,6 +58,8 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
         min_weight: float = 0.0,
         max_weight: float = 1.0,
         n_jobs: int = 1,
+        model=None,
+        weight_bounds=(0, 1),
     ):
         super().__init__()
         self.returns_data = returns_data
@@ -66,7 +68,8 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
         self.min_weight = min_weight
         self.max_weight = max_weight
         self.n_jobs = n_jobs
-        self.model = None
+        self.model = model
+        self.weight_bounds = weight_bounds
 
     @abstractmethod
     def _optimizer(self, X: pd.DataFrame) -> BaseConvexOptimizer:
@@ -141,35 +144,15 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
             return pd.Series(
                 self.model.clean_weights(),
                 index=X.columns,
-                name=self.__class__.__name__,
+                name=str(self),
             )
         except (SolverError, OptimizationError, ValueError) as ex:
             warnings.warn(str(ex))
             return pd.Series(
                 data=[np.nan] * X.shape[1],
                 index=X.columns,
-                name=self.__class__.__name__,
+                name=str(self),
             )
-
-    def add_constraint(self, cnstr: Union[Callable, List[Callable]]):
-        """
-        Add a list of constraints to the convex optimization problem
-        Parameters
-        ----------
-        cnstr: list
-            List of constraints, to be added to the optimization problem
-
-        Returns
-        -------
-        object
-            The portfolio estimator object
-        """
-        if self.model is None or not hasattr(self.model, "weights"):
-            raise AttributeError("Must fit portfolio to data first.")
-        if isinstance(cnstr, list):
-            for c in cnstr:
-                self.model.add_constraint(c)
-        return self
 
     def estimate_frontier(
         self, X, num_portfolios: int = 20, random_seed: int = None
@@ -264,6 +247,25 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
         # portfolio risks (x-coordinate), portfolio returns (y-coordinate) and associated portfolio weights
         return risks, returns, frontier_weights
 
+    def add_constraints(self, cnstr: Union[Callable, List[Callable]]):
+        """
+        Add a list of constraints to the convex optimization problem
+        Parameters
+        ----------
+        cnstr: list
+            List of constraints, to be added to the optimization problem
+
+        Returns
+        -------
+        object
+            The portfolio estimator object
+        """
+        if isinstance(cnstr, list):
+            self.constraints = cnstr
+        else:
+            raise TypeError("Only list of constraints supported")
+        return self
+
 
 class _BaseMeanVariancePortfolio(
     _EfficientMeanVarianceMixin,
@@ -329,6 +331,10 @@ class _BaseMeanVariancePortfolio(
             risk_matrix=cov_matrix,
             weight_bounds=(self.min_weight, self.max_weight),
         )
+        if hasattr(self, "constraints"):
+            for cnstr in self.constraints:
+                eff_front_model.add_constraint(cnstr)
+
         if self.l2_gamma > 0:
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma
@@ -462,6 +468,9 @@ class _BaseMeanSemiVariancePortfolio(
             weight_bounds=(self.min_weight, self.max_weight),
             frequency=self.frequency,
         )
+        if hasattr(self, "constraints"):
+            for cnstr in self.constraints:
+                eff_front_model.add_constraint(cnstr)
         if self.l2_gamma > 0:
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma
@@ -558,6 +567,9 @@ class _BaseCVarCDarEstimator(
             weight_bounds=(self.min_weight, self.max_weight),
             beta=self.beta,
         )
+        if hasattr(self, "constraints"):
+            for cnstr in self.constraints:
+                eff_front_model.add_constraint(cnstr)
         if self.l2_gamma > 0:
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma
@@ -752,6 +764,9 @@ class _BaseOmegaPortfolio(
             minimum_acceptable_return=self.minimum_acceptable_return,
             weight_bounds=self.weight_bounds,
         )
+        if hasattr(self, "constraints"):
+            for cnstr in self.constraints:
+                eff_front_model.add_constraint(cnstr)
         if self.l2_gamma > 0:
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma
@@ -869,6 +884,9 @@ class _BaseMADPortfolio(
             returns=X if self.returns_data else returns_from_prices(X),
             weight_bounds=self.weight_bounds,
         )
+        if hasattr(self, "constraints"):
+            for cnstr in self.constraints:
+                eff_front_model.add_constraint(cnstr)
         if self.l2_gamma > 0:
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma

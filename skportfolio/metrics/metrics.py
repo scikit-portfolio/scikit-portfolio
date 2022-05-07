@@ -144,7 +144,7 @@ def sharpe_ratio_se(
     """
     sr_hat = sharpe_ratio(r, riskfree_rate, period, frequency)
     T = r.shape[0]
-    std_err_sr_hat = np.sqrt((1 + 0.5 * sr_hat ** 2) / T)
+    std_err_sr_hat = np.sqrt((1 + 0.5 * sr_hat**2) / T)
     return std_err_sr_hat
 
 
@@ -250,8 +250,8 @@ def skewness(r: pd.Series) -> float:
     """
     demeaned_r = r - r.mean()
     sigma_r = r.std(ddof=0)
-    exp = (demeaned_r ** 3).mean()
-    return exp / (sigma_r ** 3)
+    exp = (demeaned_r**3).mean()
+    return exp / (sigma_r**3)
 
 
 def kurtosis(r: pd.Series) -> float:
@@ -260,8 +260,8 @@ def kurtosis(r: pd.Series) -> float:
     """
     demeaned_r = r - r.mean()
     sigma_r = r.std(ddof=0)
-    exp = (demeaned_r ** 4).mean()
-    return exp / (sigma_r ** 4)
+    exp = (demeaned_r**4).mean()
+    return exp / (sigma_r**4)
 
 
 def var_gaussian(
@@ -292,9 +292,9 @@ def var_gaussian(
         k = kurtosis(r)
         z = (
             z
-            + (z ** 2 - 1) * s / 6
-            + (z ** 3 - 3 * z) * (k - 3) / 24
-            - (2 * z ** 3 - 5 * z) * (s ** 2) / 36
+            + (z**2 - 1) * s / 6
+            + (z**3 - 3 * z) * (k - 3) / 24
+            - (2 * z**3 - 5 * z) * (s**2) / 36
         )
     return -(r.mean() + z * r.std(ddof=0))
 
@@ -594,7 +594,7 @@ def number_effective_assets(weigths: pd.Series):
     -------
 
     """
-    return 1.0 / (weigths ** 2).sum()
+    return 1.0 / (weigths**2).sum()
 
 
 def parkinson_volatility(high_price: pd.Series, low_price: pd.Series):
@@ -781,6 +781,7 @@ def backtest(
     Takes a dataframe with N columns (pairs) and T rows (time) containing the daily prices
     Computes return over rows, volatility over rows, sharpe ratio over rows,
     """
+    returns = returns_from_prices(prices)
 
     def get_stats(w):
         portfolio_returns = returns_from_prices(prices.dot(w))
@@ -788,7 +789,7 @@ def backtest(
             {
                 "annual_return": annualize_rets(portfolio_returns),
                 "final_cumulative_return": final_cum_returns(portfolio_returns),
-                "volatility": portfolio_vol(portfolio_returns, w, frequency),
+                "volatility": portfolio_vol(returns, w, frequency),
                 "sharpe_ratio": sharpe_ratio(
                     portfolio_returns, risk_free_rate, frequency
                 ),

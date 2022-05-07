@@ -169,17 +169,6 @@ class PortfolioEstimator(
     BaseEstimator,
     metaclass=ABCMeta,
 ):
-    def __init__(self):
-        self.weights_: Union[None, pd.Series] = None
-        self.random_state: Union[int, np.random.RandomState] = None
-        self.returns_data: bool = False
-        self.weight_bounds: Tuple[float, float] = (0.0, 1.0)
-        self.frequency: int = 1
-        self.score_function = sharpe_ratio
-        self.rets_estimator = None
-        self.risk_estimator = None
-        self.n_jobs = 1
-
     @abstractmethod
     def fit(self, X, y=None) -> PortfolioEstimator:
         """
@@ -218,7 +207,7 @@ class PortfolioEstimator(
             raise ValueError(
                 "You are likely feeding returns and not prices. Positive reals are expected in the predict method."
             )
-        return X.dot(self.weights_).rename(self.__class__.__name__)
+        return X.dot(self.weights_).rename(str(self))
 
     def score(self, X, y=None, **kwargs):
         """
@@ -238,7 +227,7 @@ class PortfolioEstimator(
             The specific score value from the specified, Sharpe ratio is returned if not specified.
         """
         if "score_function" not in kwargs:
-            score_function = self.score_function
+            score_function = sharpe_ratio
         else:
             score_function = kwargs.pop("score_function")
         return score_function(returns_from_prices(X.dot(self.weights_)), **kwargs)
@@ -254,9 +243,7 @@ class PortfolioEstimator(
         -------
             A series of assets with NaN weights.
         """
-        self.weights_ = pd.Series(
-            data=np.nan, index=X.columns, name=self.__class__.__name__
-        )
+        self.weights_ = pd.Series(data=np.nan, index=X.columns, name=str(self))
         return self
 
     def set_returns_data(self, returns_data=False):
@@ -355,9 +342,7 @@ class EquallyWeighted(PortfolioEstimator, metaclass=ABCMeta):
 
     def fit(self, X, y=None) -> PortfolioEstimator:
         n = X.shape[1]
-        self.weights_ = pd.Series(
-            index=X.columns, data=1 / n, name=self.__class__.__name__
-        )
+        self.weights_ = pd.Series(index=X.columns, data=1 / n, name=str(self))
         return self
 
     def optuna_parameters(self) -> Dict[str, Any]:
@@ -380,7 +365,7 @@ class InverseVariance(PortfolioEstimator, metaclass=ABCMeta):
         self.weights_ = pd.Series(
             index=X.columns,
             data=np.diag(inverse_covariance) / (np.diag(inverse_covariance).sum()),
-            name=self.__class__.__name__,
+            name=str(self),
         )
         return self
 
@@ -425,7 +410,7 @@ class InverseVolatility(PortfolioEstimator, metaclass=ABCMeta):
         self.weights_: pd.Series = pd.Series(
             index=X.columns,
             data=inv_cov / np.nansum(inv_cov),
-            name=self.__class__.__name__,
+            name=str(self),
         )
         return self
 
