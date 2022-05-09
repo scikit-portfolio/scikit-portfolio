@@ -129,7 +129,7 @@ def load_sp500_adj_close():
     return df
 
 
-def load_nasdaq_adj_close():
+def load_nasdaq_adj_close() -> pd.DataFrame:
     """
     Loads adjusted close prices of the Nasdaq index (^IXIC), in the interval from 2016-08-22 to 2021-08-20.
     Returns
@@ -139,7 +139,7 @@ def load_nasdaq_adj_close():
     return load_dataset("nasdaq_100")
 
 
-def load_matlab_random_returns():
+def load_matlab_random_returns() -> pd.DataFrame:
     """
     Loads random returns for 5 assets generated with matlab with rng(42) seed.
 
@@ -158,7 +158,7 @@ def load_matlab_random_returns():
     )
 
 
-def load_crypto_prices():
+def load_crypto_prices() -> pd.DataFrame:
     """
     Loads prics of 74 cryptocurrencies from 2020-01-01 to 2022-03-02 at 4h timeframe.
 
@@ -167,3 +167,14 @@ def load_crypto_prices():
     Returns a pandas dataframe of prics of 74 cryptocurrencies from 2020-01-01 to 2022-03-02 at 4h timeframe.
     """
     return load_dataset("crypto_large")
+
+
+def load_dow_prices() -> pd.DataFrame:
+    """
+    Load prices of 31 DowJones prices.
+    Source Matlab dow-portolio.xlsx
+    Returns
+    -------
+    Pandas dataframe
+    """
+    return load_dataset("dow")

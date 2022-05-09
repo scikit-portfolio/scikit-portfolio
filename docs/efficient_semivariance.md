@@ -32,13 +32,9 @@ Here we offer three specific portfolio estimators over the mean-semivariance fro
 
 ## 2.1 Minimum semi-volatility 
 
-::: skportfolio.frontier._efficientfrontier.MinimumSemiVolatility
-
 ## 2.1 Efficient return on mean-semivariance frontier
-::: skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn
 
 ## 2.3 Efficient risk on mean-semivariance frontier
-::: skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn
 
 <hr>
 

@@ -237,7 +237,7 @@ For completeness here we also report the entire self-explaining code for the gen
 
 
 ```python
-import  numpy as np
+import numpy as np
 import pandas as pd
 from skportfolio.frontier._mad import EfficientMeanAbsoluteDeviation
 from warnings import warn

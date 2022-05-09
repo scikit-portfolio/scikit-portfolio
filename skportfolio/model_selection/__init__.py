@@ -12,7 +12,6 @@ from .model_selection import (
     WalkForwardFixed,
 )
 
-from optuna.integration import OptunaSearchCV
 from sklearn.model_selection import GridSearchCV
 from .model_selection import print_split, make_split_df, KFold
 from ._cv import portfolio_cross_validate

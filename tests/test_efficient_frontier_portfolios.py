@@ -94,12 +94,6 @@ def check_estimate_frontier(
     return risks, returns, weights
 
 
-def check_optuna_params(model: PortfolioEstimator):
-    assert isinstance(
-        model.optuna_parameters(), dict
-    ), "Not a dictionary for grid parameters"
-
-
 def check_clone_portfolio(model: PortfolioEstimator):
     # Tests that clone creates a correct deep copy.
     # We create an estimator, make a copy of its original state
@@ -163,4 +157,11 @@ def test_efficient_frontier_portfolios(prices, returns):
                 fitted_model, X=prices_or_returns
             )
             check_grid_params(model)
-            check_optuna_params(model)
+
+
+def test_estimate_frontier_exact(prices):
+    model = MinimumVolatility()
+    # import warnings
+    #
+    # warnings.filterwarnings("error")
+    model.estimate_frontier(prices, n_jobs=8)

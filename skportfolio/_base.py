@@ -190,6 +190,7 @@ class PortfolioEstimator(
     def predict(self, X) -> pd.Series:
         """
         Applies the estimated weights to the prices to get the portfolio value.
+        In other words, generates the equity curve of the portfolio.
 
         Parameters
         ----------
@@ -296,33 +297,11 @@ class PortfolioEstimator(
         self.risk_estimator = risk_est
         return self
 
-    def set_n_jobs(self, n_jobs: int):
-        """
-        Modify the number of parallel jobs. Used for methods requiring parallel computing.
-
-        Parameters
-        ----------
-        n_jobs: int
-            Number of parallel hobs
-
-        Returns
-        -------
-
-        """
-        if not isinstance(n_jobs, int):
-            raise ValueError("Must set integer number of jobs")
-        self.n_jobs = n_jobs
-        return self
-
     def grid_parameters(self) -> Dict[str, Sequence[Any]]:
         raise NotImplementedError(
             "Must implement abstract method for each derived subclass"
         )
 
-    def optuna_parameters(self) -> Dict[str, Any]:
-        raise NotImplementedError(
-            "Must implement abstract method for each derived subclass"
-        )
 
     def info(self, **kwargs):
         out = f"Model name: {self.__class__.__name__}\n{pd.Series(self.get_params())}\n"
@@ -345,8 +324,6 @@ class EquallyWeighted(PortfolioEstimator, metaclass=ABCMeta):
         self.weights_ = pd.Series(index=X.columns, data=1 / n, name=str(self))
         return self
 
-    def optuna_parameters(self) -> Dict[str, Any]:
-        return {}
 
     def grid_parameters(self) -> Dict[str, Sequence[Any]]:
         return {}
@@ -369,8 +346,6 @@ class InverseVariance(PortfolioEstimator, metaclass=ABCMeta):
         )
         return self
 
-    def optuna_parameters(self) -> Dict[str, Any]:
-        return {}
 
     def grid_parameters(self) -> Dict[str, Sequence[Any]]:
         return {}
@@ -390,8 +365,6 @@ class CapWeighted(PortfolioEstimator, metaclass=ABCMeta):
         self.weights_: pd.Series = mkcap / mkcap.sum()
         return self
 
-    def optuna_parameters(self) -> Dict[str, Any]:
-        return {}
 
     def grid_parameters(self) -> Dict[str, Sequence[Any]]:
         return {}
@@ -414,8 +387,6 @@ class InverseVolatility(PortfolioEstimator, metaclass=ABCMeta):
         )
         return self
 
-    def optuna_parameters(self) -> Dict[str, Any]:
-        return {}
 
     def grid_parameters(self) -> Dict[str, Sequence[Any]]:
         return {}

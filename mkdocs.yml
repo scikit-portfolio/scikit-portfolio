@@ -32,8 +32,7 @@ markdown_extensions:
   - attr_list
   - admonition
   - footnotes
-  - codehilite:
-      guess_lang: true
+
   - toc:
       permalink: true
   - pymdownx.arithmatex:
@@ -47,7 +46,6 @@ markdown_extensions:
       base_path: docs
       check_paths: true
   - pymdownx.tabbed
-  - pymdownx.superfences
   - pymdownx.tasklist:
       custom_checkbox: true
 
@@ -57,9 +55,9 @@ plugins:
   - autorefs
   - include
   - mkapi
-#  - gallery:
-#      examples_dirs: docs/examples
-#      gallery_dirs: docs/generated/gallery
+##  - gallery:
+##      examples_dirs: docs/examples
+##      gallery_dirs: docs/generated/gallery
 
 nav:
   - Home: index.md

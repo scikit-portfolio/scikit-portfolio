@@ -159,9 +159,6 @@ class MichaudResampledFrontier(PortfolioEstimator):
     def grid_parameters(self) -> Dict[str, Sequence[Any]]:
         pass
 
-    def optuna_parameters(self) -> Dict[str, Any]:
-        pass
-
 
 class SubsetResampling(PortfolioEstimator):
     """
@@ -441,7 +438,7 @@ class RobustBayesian(PortfolioEstimator):
         pick_vol = int(np.round(0.8 * self.n_portfolios)) - 1
         v = ds_hat[pick_vol] ** 2
         g_s = v / (
-            (nu1 / (nu1 + N + 1) + np.sqrt(2 * nu1 ** 2 * q_s2 / ((nu1 + N + 1) ** 3)))
+            (nu1 / (nu1 + N + 1) + np.sqrt(2 * nu1**2 * q_s2 / ((nu1 + N + 1) ** 3)))
         )
 
         targets = []
@@ -473,7 +470,4 @@ class RobustBayesian(PortfolioEstimator):
         return self
 
     def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-        pass
-
-    def optuna_parameters(self) -> Dict[str, Any]:
         pass

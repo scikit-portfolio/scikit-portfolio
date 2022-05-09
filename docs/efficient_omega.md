@@ -158,7 +158,6 @@ The following optimization problem is solved through the `EfficientOmegaFrontier
 \end{equation*}
 \end{split}
 
-<hr>
-
 # References
+
 [^1]: "Optimizing the Omega Ratio using Linear Programming", Kapsos M., Zymler S., Christofides N., Rustem B. (2011) [url](https://cs.uwaterloo.ca/~yuying/Courses/CS870_2012/Omega_paper_Short_Cm.pdf):
