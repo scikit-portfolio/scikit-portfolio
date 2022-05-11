@@ -16,6 +16,7 @@ from skportfolio._constants import (
     BASE_TARGET_RETURN,
     APPROX_BDAYS_PER_YEAR,
 )
+from pypfopt.base_optimizer import BaseConvexOptimizer
 
 
 class _TargetReturnMixin:
@@ -49,7 +50,7 @@ class _BaseFrontierMixin(ABC):
         verbose=None,
         solver_options=None,
         **kwargs
-    ):
+    ) -> BaseConvexOptimizer:
         raise NotImplementedError(
             "Must implement the _get_model method based on the efficient frontier object"
         )
@@ -71,7 +72,7 @@ class _EfficientMeanVarianceMixin(_BaseFrontierMixin):
         verbose=None,
         solver_options=None,
         **kwargs
-    ):
+    ) -> EfficientFrontier:
         if expected_returns is None:
             raise AttributeError("Must specify parameter 'expected_returns'")
         if risk_matrix is None:
@@ -102,7 +103,7 @@ class _EfficientSemivarianceMixin(_BaseFrontierMixin):
         verbose=None,
         solver_options=None,
         **kwargs
-    ):
+    ) -> EfficientSemivariance:
         if expected_returns is None:
             raise AttributeError("Must specify parameter 'expected_returns'")
         if returns is None:

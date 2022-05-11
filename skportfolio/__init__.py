@@ -49,3 +49,7 @@ from skportfolio.model_selection import *
 # Plotting utilities
 import skportfolio.plotting as plotting
 from skportfolio.plotting import *
+
+# backtesting utilities
+import skportfolio.backtest as backtest
+from skportfolio.backtest import *

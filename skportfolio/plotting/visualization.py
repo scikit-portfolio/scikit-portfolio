@@ -1,4 +1,4 @@
-from typing import Dict,Any,Optional
+from typing import Dict, Any, Optional
 import warnings
 
 import matplotlib.pyplot as plt
@@ -37,10 +37,9 @@ def plot_frontier(
     ptf_estimator: _BaseEfficientFrontierPortfolioEstimator,
     prices_or_returns,
     num_portfolios: int = 20,
-    n_jobs: int = 1,
     show_assets=False,
     ax=None,
-    frontier_kwargs:Optional[Dict[str,Any]]=None,
+    frontier_kwargs: Optional[Dict[str, Any]] = None,
     **kwargs,
 ):
     """
@@ -58,8 +57,6 @@ def plot_frontier(
         Asset prices or returns
     num_portfolios: int
         Number of points along the efficient frontier
-    n_jobs: int
-        Number of parallel jobs to plot the efficient frontier. Each point is evaluated in a separate process.
     show_assets: bool
         Whether to additionally display dots representing portfolios made uniquely by each single asset.
     ax: matplotlib axis object
@@ -100,7 +97,7 @@ def plot_frontier(
         - tangency_line_style: str
             Style of the tangency line
         - autoset_lims: bool
-            Whethet to automatically set the axes x-y limits. Default True
+            Whether to automatically set the axes x-y limits. Default True
 
     Returns
     -------
@@ -108,7 +105,7 @@ def plot_frontier(
     matplotlib axis object containing the picture
     """
     if frontier_kwargs is None:
-        frontier_kwargs={}
+        frontier_kwargs = {}
     _validate_plotting_kwargs(**kwargs)
 
     if ax is None:
@@ -121,7 +118,7 @@ def plot_frontier(
 
     if not kwargs.get("show_only_portfolio", False):
         risks, returns, frontier_weights = ptf_estimator.estimate_frontier(
-            X=prices_or_returns, num_portfolios=num_portfolios, n_jobs=n_jobs
+            X=prices_or_returns, num_portfolios=num_portfolios
         )
         ax.plot(
             risks,
@@ -223,20 +220,31 @@ def pie_chart(weights: pd.Series, threshold: int = 12, ax=None, **kwargs):
     Matplotlib axis object
     """
     if ax is None:
-        fig, ax = plt.subplots(figsize=kwargs.pop("figsize", (7, 7)))
+        try:
+            import matplotlib.pyplot as plt
+
+            fig, ax = plt.subplots(figsize=kwargs.get("figsize", None))
+        except ImportError as importerror:
+            raise importerror
+
     n_weights = weights.shape[0]
-    weights = weights.sort_values(ascending=False)
-    weights_thr = weights.head(threshold)
-    weights_thr = pd.concat(
-        [
-            weights_thr,
-            pd.Series(index=["Other"], data=weights.tail(n_weights - threshold).sum()),
-        ],
-        axis=0,
-    )
-    weights_thr = weights_thr.sample(
-        frac=1
-    )  # to shuffle the weights and avoid concentration in plot
+    if threshold < n_weights:
+        weights = weights.sort_values(ascending=False)
+        weights_thr = weights.head(threshold)
+        weights_thr = pd.concat(
+            [
+                weights_thr,
+                pd.Series(
+                    index=["Other"], data=weights.tail(n_weights - threshold).sum()
+                ),
+            ],
+            axis=0,
+        )
+        weights_thr = weights_thr.sample(
+            frac=1
+        )  # to shuffle the weights and avoid concentration in plot
+    else:
+        weights_thr = weights
     wedges, texts = ax.pie(weights_thr, wedgeprops=dict(width=0.5), startangle=-40)
 
     bbox_props = dict(
@@ -271,17 +279,32 @@ def pie_chart(weights: pd.Series, threshold: int = 12, ax=None, **kwargs):
     return ax
 
 
-def allocation_chart(
+def risk_allocation_chart(
     ptf_estimator: _BaseEfficientFrontierPortfolioEstimator,
     prices_or_returns,
     num_portfolios: int = 20,
-    n_jobs: int = 1,
     show_assets=False,
     ax=None,
     **kwargs,
 ):
+    """
+    Draws the allocation chart as an area plot over the risk axis.
+
+    Parameters
+    ----------
+    ptf_estimator
+    prices_or_returns
+    num_portfolios
+    show_assets
+    ax
+    kwargs
+
+    Returns
+    -------
+
+    """
     risk, rewards, frontier_weights = ptf_estimator.estimate_frontier(
-        prices_or_returns, num_portfolios=num_portfolios, n_jobs=n_jobs
+        prices_or_returns, num_portfolios=num_portfolios
     )
 
     if ax is None:
@@ -321,3 +344,4 @@ def allocation_chart(
     ax.set_xlim([risk.min(), risk.max()])
     ax.set_ylim([0, 100])
     return ax
+

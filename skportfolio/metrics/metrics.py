@@ -589,7 +589,7 @@ def tail_ratio(
 
 
 def downside_risk(
-    r: pd.Series, target_return: float = 0.0, frequency: int = APPROX_BDAYS_PER_YEAR
+    r: pd.Series, target_return: float = 0.0
 ) -> float:
     """
     Calculates downside risk
@@ -603,7 +603,7 @@ def downside_risk(
     -------
 
     """
-    return ep.downside_risk(r, required_return=target_return, annualization=frequency)
+    return ep.downside_risk(r, required_return=target_return)
 
 
 def drawdown(returns: pd.Series):

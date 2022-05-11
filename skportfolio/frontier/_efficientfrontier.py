@@ -1,7 +1,6 @@
 import warnings
 from abc import ABCMeta
 from abc import abstractmethod
-from copy import deepcopy
 from itertools import product
 from typing import Any
 from typing import Callable
@@ -15,8 +14,6 @@ from typing import Union
 import numpy as np
 import pandas as pd
 from cvxpy.error import SolverError
-from joblib import Parallel
-from joblib import delayed
 from pypfopt import objective_functions
 from pypfopt.base_optimizer import BaseConvexOptimizer
 from pypfopt.exceptions import OptimizationError
@@ -58,6 +55,7 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
         weight_bounds: Tuple[float, float] = (0, 1),
         l2_gamma: float = 0.0,
     ):
+        super().__init__(returns_data=returns_data)
         self.returns_data = returns_data
         self.frequency = frequency
         self.weight_bounds = weight_bounds
@@ -85,7 +83,6 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
             "weight_bounds": all_weight_bounds,
             "l2_gamma": np.logspace(-4, 1, 10),
         }
-
 
     def _fit_method(self, X, method: str, **kwargs) -> pd.Series:
         """
@@ -129,7 +126,10 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
             )
 
     def estimate_frontier(
-        self, X, num_portfolios: int = 20, n_jobs: int = 1, random_seed: int = None, **kwargs
+        self,
+        X,
+        num_portfolios: int = 20,
+        random_seed: int = None,
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Estimates the efficient frontier given either returns or prices (depending on `self.returns_data` attribute),
@@ -143,21 +143,15 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
             The prices or returns to fit multiple times the efficient risk/return portfolio
         num_portfolios: int
             Number of portfolios along the frontier.
-        n_jobs: int
-            Number of parallel jobs to distribute the calculations. Uses joblib parallel capabilities.
         random_seed:
             Only when the portfolio returns estimator is PerturbedReturns, this is needed to lock the same stochastic
             sample of the expected returns across the entire frontier.
-        kwargs:
-            - prefer: str
-                Default "threads" instead of joblib loky, in case you are using multiple threads
         Returns
         -------
         tuple
             The first two elements represent, the risk and return coordinates of the portfolios along the
             efficient frontier. The last element contains the portfolio weights.
             Portfolios are indexed from the least risky to the maximum return along the frontier.
-
         Examples
         --------
         If you need to compute the efficient frontier for the Markowitz Mean-Variance portfolio for 128 points using
@@ -165,11 +159,8 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
 
         >>> from skportfolio import MinimumVolatility
         >>> from skportfolio.datasets import load_tech_stock_prices
-        >>> MinimumVolatility().estimate_frontier(load_tech_stock_prices(), num_portfolios=128, n_jobs=16)
+        >>> MinimumVolatility().estimate_frontier(load_tech_stock_prices(), num_portfolios=128)
         """
-        import warnings
-
-        warnings.filterwarnings("error")
         # First estimate the frontier limits in terms of risk and returns.
         n_assets = X.shape[1]
         self.rets_estimator.reseed(random_seed)
@@ -188,8 +179,8 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
         # objective value will be distorted
         try:
             min_return_model.efficient_risk(
-                    self.risk_function(min_risk_model._opt.value)
-                )
+                self.risk_function(min_risk_model._opt.value)
+            )
         except SolverError:
             return (np.nan * np.zeros(num_portfolios),) * 3
         self.rets_estimator.reseed(random_seed)
@@ -215,15 +206,8 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
                 return [np.nan, np.nan * np.zeros(n_assets)]
             return self.risk_reward(_model_risk)[0], _model_risk.weights
 
-        if n_jobs is not None and n_jobs != 1:
-            # perform embarassingly parallel operations
-            out = Parallel(n_jobs=n_jobs, prefer=kwargs.get("prefer", None))(delayed(get_risk_weights)(r) for r in returns)
-            risks = np.array([v[0] for v in out])
-            frontier_weights = np.array([v[1] for v in out])
-        else:
-            # do not even use joblib and sequentially creates all the points on the frontier
-            for i, ret in enumerate(returns):
-                risks[i], frontier_weights[i, :] = get_risk_weights(ret)
+        for i, ret in enumerate(returns):
+            risks[i], frontier_weights[i, :] = get_risk_weights(ret)
         # portfolio risks (x-coordinate), portfolio returns (y-coordinate) and associated portfolio weights
         return risks, returns, frontier_weights
 
@@ -315,7 +299,7 @@ class _BaseMeanVariancePortfolio(
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma
             )
-        return deepcopy(eff_front_model)
+        return eff_front_model
 
     def risk_reward(self, model: BaseConvexOptimizer = None):
         """
@@ -517,7 +501,7 @@ class _BaseMeanSemiVariancePortfolio(
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma
             )
-        return deepcopy(eff_front_model)
+        return eff_front_model
 
     def risk_reward(self, model: BaseConvexOptimizer = None):
         if model is None:
@@ -664,7 +648,7 @@ class _BaseCVarCDarEstimator(
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma
             )
-        return deepcopy(eff_front_model)
+        return eff_front_model
 
 
 class _EfficientCVarEstimator(
@@ -987,7 +971,7 @@ class _BaseOmegaPortfolio(
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma
             )
-        return deepcopy(eff_front_model)
+        return eff_front_model
 
     def risk_reward(self, model: Optional[BaseConvexOptimizer] = None):
         if model is None:
@@ -1200,7 +1184,7 @@ class _BaseMADPortfolio(
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma
             )
-        return deepcopy(eff_front_model)
+        return eff_front_model
 
     def risk_reward(self, model: Optional[BaseConvexOptimizer] = None):
         if model is None:
