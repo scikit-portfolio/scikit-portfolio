@@ -30,6 +30,7 @@ from .metrics import value_at_risk
 from .metrics import var_gaussian
 from .metrics import var_historic
 from .metrics import backtest
+from .metrics import equity_curve
 
 # Here is a list of sklearn compatible scorers
 sharpe_ratio_scorer = make_scorer(

@@ -5,8 +5,6 @@ from abc import abstractmethod
 from typing import Any
 from typing import Dict
 from typing import Sequence
-from typing import Tuple
-from typing import Union
 
 import cvxpy as cp
 import numpy as np

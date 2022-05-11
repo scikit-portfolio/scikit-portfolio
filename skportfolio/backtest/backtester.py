@@ -1,19 +1,17 @@
-# Here we should implement a backtester that takes one or more portfolio estimator objects, possibly a rebalancing policy, transaction costs
-import pandas as pd
+# Here we should implement a backtester that takes one or more portfolio estimator objects,
+# possibly a rebalancing policy, transaction costs
+from skportfolio import PortfolioEstimator
+from .rebalancing import RebalancePolicy
 
-def equity_curve(df: pd.DataFrame):
-    """
-    Normalizes the values, setting all assets to relative value of 1.
-    While this function could in theory work on any dataframe, it's only
-    useful to compare the performances of equities as result of many Portfolio.predit
-    methods series
 
-    Parameters
-    ----------
-    df: pd.DataFrame
+class Strategy:
+    def __init__(self, estimator: PortfolioEstimator, rebalancer: RebalancePolicy):
+        pass
 
-    Returns
-    -------
-    The equity curve. First value is set to 1.
-    """
-    return df.div(df.iloc[0])
+    def fit(self):
+        pass
+
+
+class StrategySummary:
+    def __init__(self):
+        pass

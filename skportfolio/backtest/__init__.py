@@ -1,1 +1,2 @@
-from .backtester import equity_curve
+from .backtester import Strategy
+from .rebalancing import RebalancePolicy

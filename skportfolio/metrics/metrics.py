@@ -588,9 +588,7 @@ def tail_ratio(
     )
 
 
-def downside_risk(
-    r: pd.Series, target_return: float = 0.0
-) -> float:
+def downside_risk(r: pd.Series, target_return: float = 0.0) -> float:
     """
     Calculates downside risk
     Parameters
@@ -655,11 +653,10 @@ def backtest(
     target_return: float = 0.0,
 ):
     """
-
     Takes a dataframe with N columns (pairs) and T rows (time) containing the daily prices
     Computes return over rows, volatility over rows, sharpe ratio over rows,
     """
-    returns = returns_from_prices(prices)
+    returns = prices.pct_change().dropna()
 
     def get_stats(w):
         portfolio_returns = returns_from_prices(prices.dot(w))
@@ -667,7 +664,9 @@ def backtest(
             {
                 "annual_return": annualize_rets(portfolio_returns),
                 "final_cumulative_return": final_cum_returns(portfolio_returns),
-                "volatility": portfolio_vol(returns, w, frequency),
+                "volatility": portfolio_vol(
+                    returns=returns, weights=w, frequency=frequency
+                ),
                 "sharpe_ratio": sharpe_ratio(
                     portfolio_returns, risk_free_rate, frequency
                 ),
@@ -692,3 +691,26 @@ def backtest(
         weights = [weights]
 
     return pd.concat((get_stats(w) for w in weights if not w.isna().any()), axis=1)
+
+
+def equity_curve(df: pd.DataFrame, initial_value: float = 1):
+    """
+    An equity curve is a visual representation of the trend and variation in the value of an
+    investment or trading account shown on a chart over a specified period of time.
+    Normalizes the values, setting all assets to relative value of 1.
+    While this function could in theory work on any dataframe, it's only
+    useful to compare the performances of equities as result of many Portfolio.predit
+    methods series
+
+    Parameters
+    ----------
+    df: pd.DataFrame
+        Dataframe of asset prices
+    initial_value:
+        Capital at the first instant
+
+    Returns
+    -------
+    The equity curve. First value is set to initial_value
+    """
+    return df.div(df.iloc[0]).mul(initial_value)
