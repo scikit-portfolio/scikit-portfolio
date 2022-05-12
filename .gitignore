@@ -1,0 +1,148 @@
+
+
+.AppleDB
+# Rope project settings
+.project
+*.xlsx
+
+dist/
+wheels/
+# Pyre type checker
+._*
+# pyenv
+# intellij
+
+# SageMath parsed files
+.coverage.*
+# Created by https://www.gitignore.io/api/macos,python
+# Icon must end with two \r
+#data dir
+docs/_build/
+#   install all needed dependencies.
+.nox/
+parts/
+
+*$py.class
+# manual dependencies
+.apdisk
+# Files that might appear in the root of a volume
+# celery beat schedule file
+#   having no cross-platform support, pipenv may install dependencies that don't work, or not
+.tox/
+
+
+# Installer logs
+pip-wheel-metadata/
+
+.vscode/
+.pydevproject
+
+
+__pycache__/
+
+*.pickle
+.python-version
+nosetests.xml
+develop-eggs/
+# Byte-compiled / optimized / DLL files
+.hypothesis/
+lib/
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+Icon
+.spyproject
+
+#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
+.dmypy.json
+# C extensions
+
+.cache
+.Trashes
+build/
+*.so
+#  Usually these files are written by a python script from a template
+*.zip
+.idea/
+
+*.pot
+.TemporaryItems
+pip-log.txt
+# pipenv
+.mypy_cache/
+# Directories potentially created on remote AFP share
+
+dmypy.json
+coverage.xml
+*.egg
+
+.pyre/
+### macOS ###
+
+
+var/
+downloads/
+.fseventsd
+#   However, in case of collaboration, if having platform-specific dependencies or dependencies
+target/
+*.spec
+# PyInstaller
+/site
+# Scrapy stuff:
+
+# Thumbnails
+# Sphinx documentation
+.eggs/
+*.ipynb_checkpoints
+# mkdocs documentation
+# Mr Developer
+
+.ropeproject
+# Edit at https://www.gitignore.io/?templates=macos,python
+.coverage
+.DocumentRevisions-V100
+Temporary Items
+# Unit test / coverage reports
+.AppleDesktop
+lib64/
+
+# PyBuilder
+
+*.py[cod]
+
+.mr.developer.cfg
+.DS_Store
+sdist/
+.scrapy
+htmlcov/
+Network Trash Folder
+*.egg-info/
+.pytest_cache/
+*.sage.py
+#Pipfile.lock
+eggs/
+pip-delete-this-directory.txt
+celerybeat-schedule
+# General
+### Python ###
+.Spotlight-V100
+*.manifest
+
+
+.LSOverride
+share/python-wheels/
+
+*.cover
+.com.apple.timemachine.donotpresent
+
+
+# Visual studio
+MANIFEST
+# mypy
+
+.Python
+
+.spyderproject
+# Spyder project settings
+.VolumeIcon.icns
+.AppleDouble
+.installed.cfg
+*.mo
