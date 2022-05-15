@@ -7,6 +7,7 @@ import pandas as pd
 from skportfolio.frontier._efficientfrontier import (
     _BaseEfficientFrontierPortfolioEstimator,
 )
+from skportfolio.backtest.backtester import Backtester
 
 
 def _validate_plotting_kwargs(**kwargs):
@@ -345,3 +346,21 @@ def risk_allocation_chart(
     ax.set_ylim([0, 100])
     return ax
 
+
+def plot_asset_value(backtester: Backtester):
+    """
+    Plot the value of each asset as an area plot, using a backtester as the object carrying the
+    results of the strategy.
+
+    Parameters
+    ----------
+    backtester
+
+    Returns
+    -------
+
+    See Also
+    --------
+    https://it.mathworks.com/help/finance/backtestengine.runbacktest.html
+    """
+    pass

@@ -84,11 +84,12 @@ def load_dataset(name, cache=True, data_home=None, **kws):
     else:
         full_path = url
 
-    df = pd.read_csv(full_path, **kws)
+    df = pd.read_csv(full_path, **kws).infer_objects()
 
     if df.iloc[-1].isnull().all():
         df = df.iloc[:-1]
     if "date" in df.columns:
+        df["date"] = pd.to_datetime(df["date"])
         return df.set_index("date")
     else:
         return df
