@@ -693,7 +693,7 @@ def backtest(
     return pd.concat((get_stats(w) for w in weights if not w.isna().any()), axis=1)
 
 
-def equity_curve(df: pd.DataFrame, initial_value: float = 1):
+def equity_curve(df: Union[pd.Series, pd.DataFrame], initial_value: float = 1):
     """
     An equity curve is a visual representation of the trend and variation in the value of an
     investment or trading account shown on a chart over a specified period of time.
