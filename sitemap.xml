@@ -2,127 +2,152 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://scikit-portfolio.github.io/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://scikit-portfolio.github.io/comparing_results/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <loc>https://scikit-portfolio.github.io/backtesting/</loc>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/datasets/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://scikit-portfolio.github.io/docker/</loc>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/efficient_cdar/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://scikit-portfolio.github.io/efficient_cdar_api/</loc>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/efficient_cvar/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://scikit-portfolio.github.io/efficient_cvar_api/</loc>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/efficient_frontier/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://scikit-portfolio.github.io/efficient_frontier_api/</loc>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/efficient_mad/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://scikit-portfolio.github.io/efficient_mad_api/</loc>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/efficient_omega/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://scikit-portfolio.github.io/efficient_omega_api/</loc>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/efficient_repo/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/efficient_semivariance/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://scikit-portfolio.github.io/efficient_semivariance_api/</loc>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/ensemble/</loc>
-         <lastmod>2022-04-30</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://scikit-portfolio.github.io/examples/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/getting_started/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/hyperparameters/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/installation/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/metrics/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/miscellaneous/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/portfolio_estimator/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/portfolio_optimization_theory/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/returns/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://scikit-portfolio.github.io/returns_api/</loc>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/risk/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://scikit-portfolio.github.io/risk_api/</loc>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://scikit-portfolio.github.io/splitters/</loc>
-         <lastmod>2022-04-30</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://scikit-portfolio.github.io/examples/</loc>
-         <lastmod>2022-04-30</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://scikit-portfolio.github.io/generated/gallery/</loc>
-         <lastmod>2022-04-30</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://scikit-portfolio.github.io/generated/gallery/mean_variance_frontier/</loc>
-         <lastmod>2022-04-30</lastmod>
+         <lastmod>2022-05-28</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

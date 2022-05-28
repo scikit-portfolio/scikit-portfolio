@@ -67,41 +67,11 @@
                 </li>
                 <li class="toctree-l2 current"><a class="reference internal current" href="./">Mean-Semivariance</a>
     <ul class="current">
-    <li class="toctree-l3"><a class="reference internal" href="#21-minimum-semi-volatility">2.1 Minimum semi-volatility</a>
+    <li class="toctree-l3"><a class="reference internal" href="#minimum-semi-volatility">Minimum semi-volatility  📖</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#skportfolio.frontier._efficientfrontier.MinimumSemiVolatility">skportfolio.frontier._efficientfrontier.MinimumSemiVolatility</a>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-return-on-mean-semivariance-frontier">Efficient return on mean-semivariance frontier 📖</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#skportfolio.frontier._efficientfrontier.MinimumSemiVolatility.fit">fit()</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#skportfolio.frontier._efficientfrontier.MinimumSemiVolatility.fit--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#skportfolio.frontier._efficientfrontier.MinimumSemiVolatility.fit--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#21-efficient-return-on-mean-semivariance-frontier">2.1 Efficient return on mean-semivariance frontier</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn">skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit">fit()</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit--returns">Returns</a>
-    </li>
-        </ul>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#23-efficient-risk-on-mean-semivariance-frontier">2.3 Efficient risk on mean-semivariance frontier</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn">skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit">fit()</a>
-        <ul>
-    <li class="toctree-l4"><a class="reference internal" href="#skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit--parameters">Parameters</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit--returns">Returns</a>
-    </li>
-        </ul>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-risk-on-mean-semivariance-frontier">Efficient risk on mean-semivariance frontier 📖</a>
     </li>
     </ul>
                 </li>
@@ -141,6 +111,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul>
@@ -148,8 +120,31 @@
                   </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -178,7 +173,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="2-mean-semivariance-frontier">2. Mean-Semivariance frontier<a class="headerlink" href="#2-mean-semivariance-frontier" title="Permanent link">&para;</a></h1>
+                <h1 id="mean-semivariance-frontier">Mean-Semivariance frontier<a class="headerlink" href="#mean-semivariance-frontier" title="Permanent link">&para;</a></h1>
 <p>Here instead of the classical Markowitz efficient frontier optimization where the covariance is taken into
 account, we use the semivariance, i.e. the variance of only negative returns, as investors are more interested
  Here instead of the classical Markowitz efficient frontier optimization where the covariance is taken into
@@ -205,256 +200,9 @@ The implementation is based on Markowitz et al. (2019)<sup id="fnref:1"><a class
 While EfficientSemivariance allows for additional constraints/objectives in principle, you are much more likely to run into solver errors. I suggest that you keep EfficientSemivariance problems small and minimally constrained.</p>
 </div>
 <p>Here we offer three specific portfolio estimators over the mean-semivariance frontier:</p>
-<h2 id="21-minimum-semi-volatility">2.1 Minimum semi-volatility<a class="headerlink" href="#21-minimum-semi-volatility" title="Permanent link">&para;</a></h2>
-
-
-  <div class="doc doc-object doc-class">
-
-<a id="skportfolio.frontier._efficientfrontier.MinimumSemiVolatility"></a>
-    <div class="doc doc-contents first">
-
-      <p>Minimum semi-volatility portfolio.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>skportfolio/frontier/_efficientfrontier.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">MinimumSemiVolatility</span><span class="p">(</span>
-    <span class="n">_BaseMeanSemiVariancePortfolio</span><span class="p">,</span>
-<span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Minimum semi-volatility portfolio.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PortfolioEstimator</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">weights_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit_method</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="s2">&quot;min_semivariance&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span>
-</code></pre></div>
-        </details>
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h2 id="skportfolio.frontier._efficientfrontier.MinimumSemiVolatility.fit" class="doc doc-heading">
-<code class="codehilite language-python"><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
-
-
-<a href="#skportfolio.frontier._efficientfrontier.MinimumSemiVolatility.fit" class="headerlink" title="Permanent link">&para;</a></h2>
-
-    <div class="doc doc-contents ">
-
-      <p>Fit the portfolio model from asset prices.</p>
-<h4 id="skportfolio.frontier._efficientfrontier.MinimumSemiVolatility.fit--parameters">Parameters<a class="headerlink" href="#skportfolio.frontier._efficientfrontier.MinimumSemiVolatility.fit--parameters" title="Permanent link">&para;</a></h4>
-<div class="admonition x">
-<p class="admonition-title">pd.DataFrame</p>
-<p>Asset prices</p>
-</div>
-<div class="admonition y">
-<p class="admonition-title">None</p>
-<p>There for compatibility</p>
-</div>
-<h4 id="skportfolio.frontier._efficientfrontier.MinimumSemiVolatility.fit--returns">Returns<a class="headerlink" href="#skportfolio.frontier._efficientfrontier.MinimumSemiVolatility.fit--returns" title="Permanent link">&para;</a></h4>
-<p>self
-    The current estimator</p>
-
-        <details class="quote">
-          <summary>Source code in <code>skportfolio/frontier/_efficientfrontier.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PortfolioEstimator</span><span class="p">:</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">weights_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit_method</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="s2">&quot;min_semivariance&quot;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
-
-<h2 id="21-efficient-return-on-mean-semivariance-frontier">2.1 Efficient return on mean-semivariance frontier<a class="headerlink" href="#21-efficient-return-on-mean-semivariance-frontier" title="Permanent link">&para;</a></h2>
-
-
-  <div class="doc doc-object doc-class">
-
-<a id="skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn"></a>
-    <div class="doc doc-contents first">
-
-
-        <details class="quote">
-          <summary>Source code in <code>skportfolio/frontier/_efficientfrontier.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">MeanSemiVarianceEfficientReturn</span><span class="p">(</span>
-    <span class="n">_TargetReturnMixin</span><span class="p">,</span> <span class="n">_BaseMeanSemiVariancePortfolio</span>
-<span class="p">):</span>
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PortfolioEstimator</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">weights_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit_method</span><span class="p">(</span>
-            <span class="n">X</span><span class="p">,</span> <span class="s2">&quot;efficient_return&quot;</span><span class="p">,</span> <span class="n">target_return</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_return</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span>
-</code></pre></div>
-        </details>
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h2 id="skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit" class="doc doc-heading">
-<code class="codehilite language-python"><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
-
-
-<a href="#skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit" class="headerlink" title="Permanent link">&para;</a></h2>
-
-    <div class="doc doc-contents ">
-
-      <p>Fit the portfolio model from asset prices.</p>
-<h4 id="skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit--parameters">Parameters<a class="headerlink" href="#skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit--parameters" title="Permanent link">&para;</a></h4>
-<div class="admonition x">
-<p class="admonition-title">pd.DataFrame</p>
-<p>Asset prices</p>
-</div>
-<div class="admonition y">
-<p class="admonition-title">None</p>
-<p>There for compatibility</p>
-</div>
-<h4 id="skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit--returns">Returns<a class="headerlink" href="#skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit--returns" title="Permanent link">&para;</a></h4>
-<p>self
-    The current estimator</p>
-
-        <details class="quote">
-          <summary>Source code in <code>skportfolio/frontier/_efficientfrontier.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PortfolioEstimator</span><span class="p">:</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">weights_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit_method</span><span class="p">(</span>
-        <span class="n">X</span><span class="p">,</span> <span class="s2">&quot;efficient_return&quot;</span><span class="p">,</span> <span class="n">target_return</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_return</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
-
-<h2 id="23-efficient-risk-on-mean-semivariance-frontier">2.3 Efficient risk on mean-semivariance frontier<a class="headerlink" href="#23-efficient-risk-on-mean-semivariance-frontier" title="Permanent link">&para;</a></h2>
-
-
-  <div class="doc doc-object doc-class">
-
-<a id="skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn"></a>
-    <div class="doc doc-contents first">
-
-
-        <details class="quote">
-          <summary>Source code in <code>skportfolio/frontier/_efficientfrontier.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">class</span> <span class="nc">MeanSemiVarianceEfficientReturn</span><span class="p">(</span>
-    <span class="n">_TargetReturnMixin</span><span class="p">,</span> <span class="n">_BaseMeanSemiVariancePortfolio</span>
-<span class="p">):</span>
-    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PortfolioEstimator</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">weights_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit_method</span><span class="p">(</span>
-            <span class="n">X</span><span class="p">,</span> <span class="s2">&quot;efficient_return&quot;</span><span class="p">,</span> <span class="n">target_return</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_return</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span>
-</code></pre></div>
-        </details>
-
-
-
-  <div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-  <div class="doc doc-object doc-method">
-
-
-
-<h2 id="skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit" class="doc doc-heading">
-<code class="codehilite language-python"><span class="n">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
-
-
-<a href="#skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit" class="headerlink" title="Permanent link">&para;</a></h2>
-
-    <div class="doc doc-contents ">
-
-      <p>Fit the portfolio model from asset prices.</p>
-<h4 id="skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit--parameters">Parameters<a class="headerlink" href="#skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit--parameters" title="Permanent link">&para;</a></h4>
-<div class="admonition x">
-<p class="admonition-title">pd.DataFrame</p>
-<p>Asset prices</p>
-</div>
-<div class="admonition y">
-<p class="admonition-title">None</p>
-<p>There for compatibility</p>
-</div>
-<h4 id="skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit--returns">Returns<a class="headerlink" href="#skportfolio.frontier._efficientfrontier.MeanSemiVarianceEfficientReturn.fit--returns" title="Permanent link">&para;</a></h4>
-<p>self
-    The current estimator</p>
-
-        <details class="quote">
-          <summary>Source code in <code>skportfolio/frontier/_efficientfrontier.py</code></summary>
-          <div class="codehilite"><pre><span></span><code><span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PortfolioEstimator</span><span class="p">:</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">weights_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fit_method</span><span class="p">(</span>
-        <span class="n">X</span><span class="p">,</span> <span class="s2">&quot;efficient_return&quot;</span><span class="p">,</span> <span class="n">target_return</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target_return</span>
-    <span class="p">)</span>
-    <span class="k">return</span> <span class="bp">self</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
-
-
-
-  </div>
-
-    </div>
-
-  </div>
-
+<h2 id="minimum-semi-volatility">Minimum semi-volatility  <a href="../efficient_semivariance_api#minimum-semi-volatility">📖</a><a class="headerlink" href="#minimum-semi-volatility" title="Permanent link">&para;</a></h2>
+<h2 id="efficient-return-on-mean-semivariance-frontier">Efficient return on mean-semivariance frontier <a href="../efficient_semivariance_api#minimum-semi-volatility">📖</a><a class="headerlink" href="#efficient-return-on-mean-semivariance-frontier" title="Permanent link">&para;</a></h2>
+<h2 id="efficient-risk-on-mean-semivariance-frontier">Efficient risk on mean-semivariance frontier <a href="../efficient_semivariance_api#minimum-semi-volatility">📖</a><a class="headerlink" href="#efficient-risk-on-mean-semivariance-frontier" title="Permanent link">&para;</a></h2>
 <hr>
 
 <h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>

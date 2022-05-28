@@ -103,11 +103,17 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
                   </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
               </ul>
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="./">Datasets</a>
@@ -122,6 +128,25 @@
     </li>
     </ul>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -156,7 +181,7 @@ Once loaded they are cached in the home directory under the <code>.skportfolio</
 The data have been obtained through the excellent Python package <a href="https://pypi.org/project/yfinance/">yfinance</a></p>
 <h2 id="simulated-normal-returns">Simulated normal returns<a class="headerlink" href="#simulated-normal-returns" title="Permanent link">&para;</a></h2>
 <p>These simulated returns are obtained from the Matlab financial toolbox, with random seed set to 42.</p>
-<div class="highlight"><pre><span></span><code>rng(42)
+<pre><code class="language-textmate">rng(42)
 m = [ 0.05; 0.1; 0.12; 0.18 ];
 C = [ 0.0064 0.00408 0.00192 0; 
     0.00408 0.0289 0.0204 0.0119;
@@ -166,7 +191,7 @@ m = m/12;
 C = C/12;
 
 AssetScenarios = mvnrnd(m, C, 20000);
-</code></pre></div>
+</code></pre>
 <p>This tool is very useful for testing against commercial implementations of various portfolio optimization methods, see for example the tests in <a href="../efficient_mad/">efficient MAD</a></p>
 <h2 id="sp500-prices">SP500 prices<a class="headerlink" href="#sp500-prices" title="Permanent link">&para;</a></h2>
 <p>SP500 index price</p>
@@ -176,7 +201,8 @@ AssetScenarios = mvnrnd(m, C, 20000);
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../portfolio_estimator/" class="btn btn-neutral float-left" title="Estimators"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../docker/" class="btn btn-neutral float-left" title="Docker"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../efficient_frontier_api/" class="btn btn-neutral float-right" title="Mean Variance frontier">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -203,8 +229,10 @@ AssetScenarios = mvnrnd(m, C, 20000);
         </span>
     
     
-      <span><a href="../portfolio_estimator/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../docker/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
+    
+      <span><a href="../efficient_frontier_api/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

@@ -69,11 +69,11 @@
                 </li>
                 <li class="toctree-l2 current"><a class="reference internal current" href="./">Conditional Value At Risk</a>
     <ul class="current">
-    <li class="toctree-l3"><a class="reference internal" href="#minimum-cvar-portfolio">Minimum CVar portfolio</a>
+    <li class="toctree-l3"><a class="reference internal" href="#minimum-cvar-portfolio">Minimum CVar portfolio 📖</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#efficient-return-on-mean-cvar-frontier">Efficient return on mean-cvar frontier</a>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-return-on-mean-cvar-frontier">Efficient return on mean-cvar frontier 📖</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#efficient-risk-on-mean-cvar-frontier">Efficient risk on mean-cvar frontier</a>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-risk-on-mean-cvar-frontier">Efficient risk on mean-cvar frontier 📖</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#references">References</a>
     </li>
@@ -113,6 +113,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul>
@@ -120,8 +122,31 @@
                   </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -186,13 +211,13 @@ The integral in the expression becomes a sum, so the CVaR optimization problem r
 <p>This formulation introduces a new variable for each datapoint (similar to Efficient Semivariance), so
 you may run into performance issues for long returns dataframes. At the same time, you should aim to
 provide a sample of data that is large enough to include tail events. </p>
-<h2 id="minimum-cvar-portfolio">Minimum CVar portfolio<a class="headerlink" href="#minimum-cvar-portfolio" title="Permanent link">&para;</a></h2>
+<h2 id="minimum-cvar-portfolio">Minimum CVar portfolio <a href="../efficient_cvar_api#minimum_cvar">📖</a><a class="headerlink" href="#minimum-cvar-portfolio" title="Permanent link">&para;</a></h2>
 <hr>
 
-<h2 id="efficient-return-on-mean-cvar-frontier">Efficient return on mean-cvar frontier<a class="headerlink" href="#efficient-return-on-mean-cvar-frontier" title="Permanent link">&para;</a></h2>
+<h2 id="efficient-return-on-mean-cvar-frontier">Efficient return on mean-cvar frontier <a href="../efficient_cvar_api#efficient-return-optimization-on-cvar-frontier">📖</a><a class="headerlink" href="#efficient-return-on-mean-cvar-frontier" title="Permanent link">&para;</a></h2>
 <hr>
 
-<h2 id="efficient-risk-on-mean-cvar-frontier">Efficient risk on mean-cvar frontier<a class="headerlink" href="#efficient-risk-on-mean-cvar-frontier" title="Permanent link">&para;</a></h2>
+<h2 id="efficient-risk-on-mean-cvar-frontier">Efficient risk on mean-cvar frontier <a href="../efficient_cvar_api#efficient-risk-optimization-on-cdar-frontier">📖</a><a class="headerlink" href="#efficient-risk-on-mean-cvar-frontier" title="Permanent link">&para;</a></h2>
 <hr>
 
 <h2 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h2>

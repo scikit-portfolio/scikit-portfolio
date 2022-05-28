@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/examples/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/docker/" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Index - scikit-portfolio</title>
+    <title>Docker - scikit-portfolio</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
@@ -17,9 +17,9 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Index";
-        var mkdocs_page_input_path = "examples/README.md";
-        var mkdocs_page_url = "/examples/";
+        var mkdocs_page_name = "Docker";
+        var mkdocs_page_input_path = "docker.md";
+        var mkdocs_page_url = "/docker/";
       </script>
     
     <script src="../js/jquery-3.6.0.min.js" defer></script>
@@ -103,15 +103,52 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
                   </li>
               </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Docker</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#docker-build">Docker build</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#docker-run-an-interpreter">Docker run an interpreter</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#docker-run-pytest">Docker run pytest</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#docker-open-a-bash-shell">Docker open a bash shell</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
               <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -126,9 +163,9 @@
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
-    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li><li>Index</li>
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li><li>Docker</li>
     <li class="wy-breadcrumbs-aside">
-        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/examples/README.md"
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/docker.md"
           class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
@@ -138,10 +175,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="plot-of-efficient-frontier">Plot of efficient frontier<a class="headerlink" href="#plot-of-efficient-frontier" title="Permanent link">&para;</a></h2>
+                <h1 id="docker">Docker<a class="headerlink" href="#docker" title="Permanent link">&para;</a></h1>
+<p>You can use scikit-portfolio through docker, provided you have docker installed or available in your system.
+Docker makes development efficient and predictable. Docker takes away repetitive, mundane configuration tasks and is used throughout the development lifecycle for fast, easy and portable application development – desktop and cloud. Docker’s comprehensive end to end platform includes UIs, CLIs, APIs and security that are engineered to work together across the entire application delivery lifecycle.</p>
+<h2 id="docker-build">Docker build<a class="headerlink" href="#docker-build" title="Permanent link">&para;</a></h2>
+<p>From root of repo issue the following command</p>
+<pre><code class="language-shell">docker build -f docker/Dockerfile . -t skportfolio
+</code></pre>
+<h2 id="docker-run-an-interpreter">Docker run an interpreter<a class="headerlink" href="#docker-run-an-interpreter" title="Permanent link">&para;</a></h2>
+<p>You can start an IPython interpreter</p>
+<pre><code class="language-shell">docker run -it skportfolio poetry run ipython
+</code></pre>
+<p>or even a <strong>Jupyter notebook</strong> that you can remotely connect to!</p>
+<pre><code>docker run -it -p 8888:8888 skportfolio poetry run jupyter notebook --allow-root --no-browser --ip 0.0.0.0
+</code></pre>
+<p>Then open a browser pointing at <code>http://127.0.0.1:8888/?token=xxx</code> where <code>xxx</code> is the token indicated by the output of the above command.</p>
+<h3 id="docker-run-pytest">Docker run pytest<a class="headerlink" href="#docker-run-pytest" title="Permanent link">&para;</a></h3>
+<pre><code class="language-shell">docker run -t skportfolio poetry run pytest
+</code></pre>
+<h3 id="docker-open-a-bash-shell">Docker open a bash shell<a class="headerlink" href="#docker-open-a-bash-shell" title="Permanent link">&para;</a></h3>
+<pre><code>docker run -it skportfolio bash
+</code></pre>
               
             </div>
           </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../portfolio_estimator/" class="btn btn-neutral float-left" title="Estimators"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../datasets/" class="btn btn-neutral float-right" title="Datasets">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
 
   <hr/>
 
@@ -167,6 +228,10 @@
         </span>
     
     
+      <span><a href="../portfolio_estimator/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../datasets/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

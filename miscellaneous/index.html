@@ -115,6 +115,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul>
@@ -122,8 +124,31 @@
                   </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -184,42 +209,42 @@ w_i =0 &amp; \textrm{otherwise}
 \end{aligned}
 \end{equation}
 \end{split}\]</div>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">SingleAsset</span>
-<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+<pre><code class="language-python">from skportfolio import SingleAsset
+from skportfolio.datasets import load_tech_stock_prices
 
-<span class="nb">print</span><span class="p">(</span><span class="n">SingleAsset</span><span class="p">(</span><span class="n">asset</span><span class="o">=</span><span class="s2">&quot;TSLA&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">load_tech_stock_prices</span><span class="p">())</span><span class="o">.</span><span class="n">weights_</span><span class="p">)</span>
-</code></pre></div>
+print(SingleAsset(asset=&quot;TSLA&quot;).fit(load_tech_stock_prices()).weights_)
+</code></pre>
 <h2 id="inverse-variance-portfolio">Inverse variance portfolio<a class="headerlink" href="#inverse-variance-portfolio" title="Permanent link">&para;</a></h2>
 <p>In this portfolio, asset weights are specified inversely proportional to asset returns variance.</p>
 <div class="arithmatex">\[\begin{equation}
 w_i = \frac{1/\sigma^2 \lbrack r_i  \rbrack}{\sum_{j=1}^N 1/\sigma^2 \lbrack r_j \rbrack}
 \end{equation}\]</div>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">InverseVariance</span>
-<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+<pre><code class="language-python">from skportfolio import InverseVariance
+from skportfolio.datasets import load_tech_stock_prices
 
-<span class="nb">print</span><span class="p">(</span><span class="n">InverseVariance</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">load_tech_stock_prices</span><span class="p">())</span><span class="o">.</span><span class="n">weights_</span><span class="p">)</span>
-</code></pre></div>
+print(InverseVariance().fit(load_tech_stock_prices()).weights_)
+</code></pre>
 <h2 id="inverse-volatility-portfolio">Inverse volatility portfolio<a class="headerlink" href="#inverse-volatility-portfolio" title="Permanent link">&para;</a></h2>
 <p>In this portfolio, asset weights are specified inversely proportional to asset returns volatility <span class="arithmatex">\(\sigma=\sqrt{\sigma^2}\)</span>.
 Very similar to Inverse Variance Portfolio.</p>
 <div class="arithmatex">\[\begin{equation}
 w_i = \frac{1/\sigma \lbrack r_i  \rbrack}{\sum_{j=1}^N 1/\sigma \lbrack r_j \rbrack}
 \end{equation}\]</div>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">InverseVolatility</span>
-<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+<pre><code class="language-python">from skportfolio import InverseVolatility
+from skportfolio.datasets import load_tech_stock_prices
 
-<span class="nb">print</span><span class="p">(</span><span class="n">InverseVolatility</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">load_tech_stock_prices</span><span class="p">())</span><span class="o">.</span><span class="n">weights_</span><span class="p">)</span>
-</code></pre></div>
+print(InverseVolatility().fit(load_tech_stock_prices()).weights_)
+</code></pre>
 <h2 id="capitalization-weighted">Capitalization weighted<a class="headerlink" href="#capitalization-weighted" title="Permanent link">&para;</a></h2>
 <p>First the market capitalization is calculated as the prices of the asset times the number of outstanding shares, then weights are obtained as the sum-one normalized average of the market capitalization over time.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">CapWeighted</span>
-<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+<pre><code class="language-python">import pandas as pd
+from skportfolio import CapWeighted
+from skportfolio.datasets import load_tech_stock_prices
 
-<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
-<span class="n">shares</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Dataframe</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">prices</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">prices</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="mi">1_000_000</span><span class="p">)</span>  <span class="c1"># fake shares, 1M outstanding shares for each stock</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">CapWeighted</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="o">=</span><span class="n">prices</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">shares</span><span class="p">)</span><span class="o">.</span><span class="n">weights_</span><span class="p">)</span>
-</code></pre></div>
+prices = load_tech_stock_prices()
+shares = pd.Dataframe(index=prices.index, columns=prices.columns, data=1_000_000)  # fake shares, 1M outstanding shares for each stock
+print(CapWeighted().fit(X=prices, y=shares).weights_)
+</code></pre>
 <h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
 <div class="footnote">
 <hr />

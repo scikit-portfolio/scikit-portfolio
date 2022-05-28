@@ -103,6 +103,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul class="current">
@@ -126,8 +128,31 @@
                   </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -166,8 +191,8 @@ As from the official scikit-learn documentation:</p>
 <h2 id="portfolio-estimator">Portfolio Estimator<a class="headerlink" href="#portfolio-estimator" title="Permanent link">&para;</a></h2>
 <p>The API has one predominant object: the estimator.
 An estimator is an object that fits a model based on some training data and is capable of inferring some properties on new data. All portfolio estimators implement the <code>.fit</code> method:</p>
-<div class="highlight"><pre><span></span><code>estimator.fit(X, y)
-</code></pre></div>
+<pre><code>estimator.fit(X, y)
+</code></pre>
 <p>All built-in portfolio estimators also have a <code>.set_params</code> method, which sets data-independent parameters (overriding previous parameter values passed to <code>__init__</code>).</p>
 <p>All portfolio estimators in the <code>skportfolio</code> codebase should inherit from <code>skportfolio._base.PortfolioEstimator</code>.</p>
 <h2 id="instantiation">Instantiation<a class="headerlink" href="#instantiation" title="Permanent link">&para;</a></h2>
@@ -180,22 +205,22 @@ Also note that they should not be documented under the “Attributes” section,
 <p>In addition, every keyword argument accepted by <code>__init__</code> should correspond to an attribute on the instance.
 <code>Scikit-learn</code> and <code>skportfolio</code> relies on this to find the relevant attributes to set on an estimator when doing model selection.</p>
 <p>To summarize, an <code>__init__</code> should look like:</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">param2</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">param1</span> <span class="o">=</span> <span class="n">param1</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">param2</span> <span class="o">=</span> <span class="n">param2</span>
-</code></pre></div>
+<pre><code class="language-python">def __init__(self, param1=1, param2=2):
+    self.param1 = param1
+    self.param2 = param2
+</code></pre>
 <p><strong>There should be no logic, not even input validation, and the parameters should not be changed.</strong>
 The corresponding logic should be put where the parameters are used, typically in <code>.fit</code>.
 The following <strong>is wrong</strong>:</p>
-<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">param2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">param3</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
-    <span class="c1"># WRONG: parameters should not be modified</span>
-    <span class="k">if</span> <span class="n">param1</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">param2</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">param1</span> <span class="o">=</span> <span class="n">param1</span>
-    <span class="c1"># WRONG: the object&#39;s attributes should have exactly the name of</span>
-    <span class="c1"># the argument in the constructor</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">param3</span> <span class="o">=</span> <span class="n">param2</span>
-</code></pre></div>
+<pre><code class="language-python">def __init__(self, param1=1, param2=2, param3=3):
+    # WRONG: parameters should not be modified
+    if param1 &gt; 1:
+        param2 += 1
+    self.param1 = param1
+    # WRONG: the object's attributes should have exactly the name of
+    # the argument in the constructor
+    self.param3 = param2
+</code></pre>
 <p>The reason for postponing the validation is that the same validation would have to be performed in <code>set_params</code>, which is used in algorithms like GridSearchCV.</p>
 <h2 id="fitting">Fitting<a class="headerlink" href="#fitting" title="Permanent link">&para;</a></h2>
 <p>The next thing you will probably want to do is to estimate some parameters in the portfolio model.
@@ -211,8 +236,8 @@ If this requisite is not met, an exception of type ValueError should be raised.
 <code>y</code> is almost always ignored. However, to make it possible to use the estimator as part of a pipeline.
 For the same reason, <code>fit_predict</code>, <code>fit_transform</code>, <code>score</code> and <code>partial_fit</code> methods need to accept a y argument in the second place if they are implemented.</p>
 <p>The method should return the object (<code>self</code>). This pattern is useful to be able to implement quick <strong>one liners</strong> in an IPython session such as:</p>
-<div class="highlight"><pre><span></span><code><span class="n">prices_test_predicted</span> <span class="o">=</span> <span class="n">MinimumVolatility</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices_train</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">prices_test</span><span class="p">)</span>
-</code></pre></div>
+<pre><code class="language-python">prices_test_predicted = MinimumVolatility().fit(prices_train).predict(prices_test)
+</code></pre>
 <p>Depending on the nature of the algorithm, fit can sometimes also accept additional keywords arguments. However, any parameter that can have a value assigned prior to having access to the data should be an <code>__init__</code> keyword argument.
 <code>fit</code> parameters should be restricted to directly data dependent variables. A tolerance stopping criterion <code>tol</code> is not directly data dependent (although the optimal value according to some scoring function probably is).</p>
 <p>When fit is called, any previous call to fit should be ignored. 
@@ -233,46 +258,45 @@ that determines whether the method should return the parameters of
 sub-estimators (for most estimators, this can be ignored). The default value
 for <code>deep</code> should be <code>True</code>. For instance considering the following
 estimator::</p>
-<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">sklearn.base</span> <span class="kn">import</span> <span class="n">BaseEstimator</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">MyEstimator</span><span class="p">(</span><span class="n">BaseEstimator</span><span class="p">):</span>
-<span class="o">...</span>     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subestimator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">my_extra_param</span><span class="o">=</span><span class="s2">&quot;random&quot;</span><span class="p">):</span>
-<span class="o">...</span>         <span class="bp">self</span><span class="o">.</span><span class="n">subestimator</span> <span class="o">=</span> <span class="n">subestimator</span>
-<span class="o">...</span>         <span class="bp">self</span><span class="o">.</span><span class="n">my_extra_param</span> <span class="o">=</span> <span class="n">my_extra_param</span>
-</code></pre></div>
+<pre><code class="language-python">&gt;&gt;&gt; from sklearn.base import BaseEstimator
+&gt;&gt;&gt; from sklearn.linear_model import LogisticRegression
+&gt;&gt;&gt; class MyEstimator(BaseEstimator):
+...     def __init__(self, subestimator=None, my_extra_param=&quot;random&quot;):
+...         self.subestimator = subestimator
+...         self.my_extra_param = my_extra_param
+</code></pre>
 <p>The parameter <code>deep</code> will control whether or not the parameters of the
 <code>subsestimator</code> should be reported. Thus when <code>deep=True</code>, the output will be::</p>
-<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">my_estimator</span> <span class="o">=</span> <span class="n">MyEstimator</span><span class="p">(</span><span class="n">subestimator</span><span class="o">=</span><span class="n">LogisticRegression</span><span class="p">())</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">my_estimator</span><span class="o">.</span><span class="n">get_params</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<span class="o">...</span>     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="n">my_extra_param</span> <span class="o">-&gt;</span> <span class="n">random</span>
-<span class="n">subestimator__C</span> <span class="o">-&gt;</span> <span class="mf">1.0</span>
-<span class="n">subestimator__class_weight</span> <span class="o">-&gt;</span> <span class="kc">None</span>
-<span class="n">subestimator__dual</span> <span class="o">-&gt;</span> <span class="kc">False</span>
-<span class="n">subestimator__fit_intercept</span> <span class="o">-&gt;</span> <span class="kc">True</span>
-<span class="n">subestimator__intercept_scaling</span> <span class="o">-&gt;</span> <span class="mi">1</span>
-<span class="n">subestimator__l1_ratio</span> <span class="o">-&gt;</span> <span class="kc">None</span>
-<span class="n">subestimator__max_iter</span> <span class="o">-&gt;</span> <span class="mi">100</span>
-<span class="n">subestimator__multi_class</span> <span class="o">-&gt;</span> <span class="n">auto</span>
-<span class="n">subestimator__n_jobs</span> <span class="o">-&gt;</span> <span class="kc">None</span>
-<span class="n">subestimator__penalty</span> <span class="o">-&gt;</span> <span class="n">l2</span>
-<span class="n">subestimator__random_state</span> <span class="o">-&gt;</span> <span class="kc">None</span>
-<span class="n">subestimator__solver</span> <span class="o">-&gt;</span> <span class="n">lbfgs</span>
-<span class="n">subestimator__tol</span> <span class="o">-&gt;</span> <span class="mf">0.0001</span>
-<span class="n">subestimator__verbose</span> <span class="o">-&gt;</span> <span class="mi">0</span>
-<span class="n">subestimator__warm_start</span> <span class="o">-&gt;</span> <span class="kc">False</span>
-<span class="n">subestimator</span> <span class="o">-&gt;</span> <span class="n">LogisticRegression</span><span class="p">()</span>
-</code></pre></div>
+<pre><code class="language-python">&gt;&gt;&gt; my_estimator = MyEstimator(subestimator=LogisticRegression())
+&gt;&gt;&gt; for param, value in my_estimator.get_params(deep=True).items():
+...     print(f&quot;{param} -&gt; {value}&quot;)
+my_extra_param -&gt; random
+subestimator__C -&gt; 1.0
+subestimator__class_weight -&gt; None
+subestimator__dual -&gt; False
+subestimator__fit_intercept -&gt; True
+subestimator__intercept_scaling -&gt; 1
+subestimator__l1_ratio -&gt; None
+subestimator__max_iter -&gt; 100
+subestimator__multi_class -&gt; auto
+subestimator__n_jobs -&gt; None
+subestimator__penalty -&gt; l2
+subestimator__random_state -&gt; None
+subestimator__solver -&gt; lbfgs
+subestimator__tol -&gt; 0.0001
+subestimator__verbose -&gt; 0
+subestimator__warm_start -&gt; False
+subestimator -&gt; LogisticRegression()
+</code></pre>
 <p>Often, the <code>subestimator</code> has a name (as e.g. named steps in a
 <code>~sklearn.pipeline.Pipeline</code> object), in which case the key should
 become <code>&lt;name&gt;__C</code>, <code>&lt;name&gt;__class_weight</code>, etc.</p>
 <p>While when <code>deep=False</code>, the output will be::</p>
-<div class="codehilite"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span><span class="w"> </span><span class="n">for</span><span class="w"> </span><span class="n">param</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="n">my_estimator</span><span class="p">.</span><span class="n">get_params</span><span class="p">(</span><span class="n">deep</span><span class="o">=</span><span class="kr">False</span><span class="p">).</span><span class="n">items</span><span class="p">()</span><span class="o">:</span><span class="w"></span>
-<span class="p">...</span><span class="w">     </span><span class="n">print</span><span class="p">(</span><span class="n">f</span><span class="s">&quot;{param} -&gt; {value}&quot;</span><span class="p">)</span><span class="w"></span>
-<span class="n">my_extra_param</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nf">random</span><span class="w"></span>
-<span class="n">subestimator</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">LogisticRegression</span><span class="p">()</span><span class="w"></span>
-</code></pre></div>
-
+<pre><code>&gt;&gt;&gt; for param, value in my_estimator.get_params(deep=False).items():
+...     print(f"{param} -&gt; {value}")
+my_extra_param -&gt; random
+subestimator -&gt; LogisticRegression()
+</code></pre>
 <p>The <code>set_params</code> on the other hand takes as input a dict of the form
 <code>'parameter': value</code> and sets the parameter of the estimator using this dict.
 Return value must be estimator itself.</p>
@@ -283,16 +307,15 @@ grid searches.</p>
 <code>__repr__</code> method, is to inherit from <code>sklearn.base.BaseEstimator</code>. If you
 do not want to make your code dependent on scikit-learn, the easiest way to
 implement the interface is::</p>
-<div class="codehilite"><pre><span></span><code><span class="nv">def</span> <span class="nv">get_params</span><span class="ss">(</span><span class="nv">self</span>, <span class="nv">deep</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>:
-    # <span class="nv">suppose</span> <span class="nv">this</span> <span class="nv">estimator</span> <span class="nv">has</span> <span class="nv">parameters</span> <span class="s2">&quot;</span><span class="s">alpha</span><span class="s2">&quot;</span> <span class="nv">and</span> <span class="s2">&quot;</span><span class="s">recursive</span><span class="s2">&quot;</span>
-    <span class="k">return</span> {<span class="s2">&quot;</span><span class="s">alpha</span><span class="s2">&quot;</span>: <span class="nv">self</span>.<span class="nv">alpha</span>, <span class="s2">&quot;</span><span class="s">recursive</span><span class="s2">&quot;</span>: <span class="nv">self</span>.<span class="nv">recursive</span>}
+<pre><code>def get_params(self, deep=True):
+    # suppose this estimator has parameters "alpha" and "recursive"
+    return {"alpha": self.alpha, "recursive": self.recursive}
 
-<span class="nv">def</span> <span class="nv">set_params</span><span class="ss">(</span><span class="nv">self</span>, <span class="o">**</span><span class="nv">parameters</span><span class="ss">)</span>:
-    <span class="k">for</span> <span class="nv">parameter</span>, <span class="nv">value</span> <span class="nv">in</span> <span class="nv">parameters</span>.<span class="nv">items</span><span class="ss">()</span>:
-        <span class="nv">setattr</span><span class="ss">(</span><span class="nv">self</span>, <span class="nv">parameter</span>, <span class="nv">value</span><span class="ss">)</span>
-    <span class="k">return</span> <span class="nv">self</span>
-</code></pre></div>
-
+def set_params(self, **parameters):
+    for parameter, value in parameters.items():
+        setattr(self, parameter, value)
+    return self
+</code></pre>
 <h2 id="parameters-and-init">Parameters and init<a class="headerlink" href="#parameters-and-init" title="Permanent link">&para;</a></h2>
 <p>As <code>model_selection.GridSearchCV</code> uses <code>set_params</code>
 to apply parameter setting to estimators,
@@ -310,8 +333,8 @@ trailing <code>_</code> is used to check if the estimator has been fitted.</p>
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../hyperparameters/" class="btn btn-neutral float-left" title="Hyperparameters optimization"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../datasets/" class="btn btn-neutral float-right" title="Datasets">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../backtesting/" class="btn btn-neutral float-left" title="Backtesting"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../docker/" class="btn btn-neutral float-right" title="Docker">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -338,10 +361,10 @@ trailing <code>_</code> is used to check if the estimator has been fitted.</p>
         </span>
     
     
-      <span><a href="../hyperparameters/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../backtesting/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../datasets/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../docker/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

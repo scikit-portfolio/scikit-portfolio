@@ -1,0 +1,2719 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/efficient_omega_api/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Omega Ratio - scikit-portfolio</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet" />
+        <link href="../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../css/mkapi-readthedocs.css" rel="stylesheet" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Omega Ratio";
+        var mkdocs_page_input_path = "efficient_omega_api.md";
+        var mkdocs_page_url = "/efficient_omega_api/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../imgs/scikit_portfolio.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting started</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_optimization_theory/">Portfolio optimization theory</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Algorithms</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Efficient frontier</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_frontier/">Classical Mean-Variance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_semivariance/">Mean-Semivariance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cvar/">Conditional Value At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cdar/">Conditional Drawdown At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_omega/">Omega ratio</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_mad/">Mean Absolute Deviation (MAD)</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Information theory</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_repo/">REPO</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ensemble/">Ensemble methods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../miscellaneous/">Miscellaneous</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Risk and returns</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns/">Returns estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk/">Risk estimators</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Model selection</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../metrics/">Metrics and scorers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../splitters/">Cross validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developing new methods</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Omega Ratio</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#maximum-omega-ratio-maxomegaratio">Maximum Omega Ratio MaxOmegaratio</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#efficient-return-optimization-on-mad-frontier">Efficient return optimization on MAD frontier</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#efficient-risk-optimization-on-mad-frontier">Efficient risk optimization on MAD frontier</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#minimum-omega-risk">Minimum Omega Risk</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">scikit-portfolio</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>API &raquo;</li><li>Omega Ratio</li>
+    <li class="wy-breadcrumbs-aside">
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/efficient_omega_api.md"
+          class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="omega-ratio-portfolio">Omega ratio portfolio<a class="headerlink" href="#omega-ratio-portfolio" title="Permanent link">&para;</a></h1>
+<h2 id="maximum-omega-ratio-maxomegaratio">Maximum Omega Ratio <code>MaxOmegaratio</code><a class="headerlink" href="#maximum-omega-ratio-maxomegaratio" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.frontier._efficientfrontier.MaxOmegaRatio">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">skportfolio.frontier._efficientfrontier.</code><code class="mkapi-object-name">MaxOmegaRatio</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">weight_bounds=(0, 1)</code>, <code class="mkapi-object-signature">l2_gamma=0.0</code>, <code class="mkapi-object-signature">rets_estimator=MeanHistoricalLinearReturns()</code>, <code class="mkapi-object-signature">minimum_acceptable_return=0.02</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section bases">
+      <div class="mkapi-section-name bases">
+          <span class="mkapi-section-name-body bases">Bases</span> 
+        </div>
+      <div class="mkapi-section-body bases">
+<span class="mkapi-base">skportfolio.frontier._efficientfrontier._BaseOmegaPortfolio</span>
+
+<span class="mkapi-base">skportfolio.frontier._mixins._EfficientOmegaRatioMixin</span>
+
+<span class="mkapi-base">skportfolio.frontier._mixins._BaseFrontierMixin</span>
+
+<span class="mkapi-base">abc.ABC</span>
+
+<span class="mkapi-base">skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator</span>
+
+<span class="mkapi-base">skportfolio._base.PortfolioEstimator</span>
+
+<span class="mkapi-base">sklearn.base.BaseEstimator</span>
+</div>
+    </div>
+  <div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+    </div>
+  <div class="mkapi-section classes">
+      <div class="mkapi-section-name classes">
+          <span class="mkapi-section-name-body classes">Classes</span> 
+        </div>
+      <div class="mkapi-section-body classes"><ul class="mkapi-items">
+<li class="class"><code class="mkapi-item-name"><a href="#abc.ABCMeta">ABCMeta</a></code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Metaclass for defining Abstract Base Classes (ABCs).</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.add_constraints">add_constraints</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cnstr</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(object)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Add a list of constraints to the convex optimization problem</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.estimate_frontier">estimate_frontier</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">num_portfolios</code>, <code class="mkapi-object-signature">random_seed</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(tuple)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimates the efficient frontier given either returns or prices (depending on <code>self.returns_data</code> attribute),
+and number of points along the frontier. It always starts from the least risky portfolio and increasing the
+portfolio returns, it looks for the efficient risk portfolio until the riskiest portfolio (and the one with
+the highest return) is met.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.frontier._efficientfrontier.MaxOmegaRatio.fit">fit</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Fit the portfolio model from asset prices.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.get_params">get_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(params : dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Get parameters for this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.predict">predict</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(pd.Series)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Applies the estimated weights to the prices to get the portfolio value.
+In other words, generates the equity curve of the portfolio.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.score">score</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code>, <code class="mkapi-object-signature">**kwargs</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(float)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Score the portfolio using one of the metrics expressed as PortfolioScorer in the <code>metrics</code> module.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_dummy_weights">set_dummy_weights</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(A series of assets with NaN weights.)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Creates weights with NaN values, typically used when method cannot converge or solution is unfeasible.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.set_params">set_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self : estimator instance)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Set the parameters of this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_returns_data">set_returns_data</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Inform subsequent .fit method that the input data X are returns, otherwise prices are expected.
+Some portfolio estimators work independently with both, but is very important to specify what is contained
+in the <code>.fit</code> argument <code>X</code>.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_returns_estimator">set_returns_estimator</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">rets_est</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Modify the base returns estimator with a specified rets_est</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_risk_estimator">set_risk_estimator</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">risk_est</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Modify the base risk estimator with a new risk estimator</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.get_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">get_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep=True</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Get parameters for this estimator.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">deep</code>
+<span class="mkapi-item-type">(bool, default=True)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">If True, will return the parameters for this estimator and
+contained subobjects that are estimators.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(params : dict)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Parameter names mapped to their values.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.set_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as :class:<code>~sklearn.pipeline.Pipeline</code>). The latter have
+parameters of the form <code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's
+possible to update each component of a nested object.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">**params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimator parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self : estimator instance)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Estimator instance.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.predict">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">predict</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Applies the estimated weights to the prices to get the portfolio value.
+In other words, generates the equity curve of the portfolio.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The prices expressed as a pandas dataframe</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(pd.Series)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The estimated portfolio value time series</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.score">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">score</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code>, <code class="mkapi-object-signature">**kwargs</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Score the portfolio using one of the metrics expressed as PortfolioScorer in the <code>metrics</code> module.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Dataframe with asset prices. Do not feed returns here!</span></li>
+
+
+<li><code class="mkapi-item-name">**kwargs</code>
+<span class="mkapi-item-type">(Dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Additional parameters to specify to the portfolio returns scorer, like risk_free_rate for Sharpe ratio.
+Alternatively you can also specify the score function to be used, like sharpe_ratio, or sortino_ratio</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(float)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The specific score value from the specified, Sharpe ratio is returned if not specified.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_dummy_weights">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_dummy_weights</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Creates weights with NaN values, typically used when method cannot converge or solution is unfeasible.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Prices or returns data, only used to pick asset names</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_returns_data">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_returns_data</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Inform subsequent .fit method that the input data X are returns, otherwise prices are expected.
+Some portfolio estimators work independently with both, but is very important to specify what is contained
+in the <code>.fit</code> argument <code>X</code>.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_returns_estimator">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_returns_estimator</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">rets_est</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Modify the base returns estimator with a specified rets_est</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">rets_est</code>
+<span class="mkapi-item-type">(BaseReturnsEstimator)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The new returns estimator</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_risk_estimator">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_risk_estimator</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">risk_est</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Modify the base risk estimator with a new risk estimator</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">risk_est</code>
+<span class="mkapi-item-type">(BaseRiskEstimator)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The new risk estimator</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">abc.</code><code class="mkapi-object-name">ABCMeta</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">name</code>, <code class="mkapi-object-signature">bases</code>, <code class="mkapi-object-signature">namespace</code>, <code class="mkapi-object-signature">**kwargs</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Metaclass for defining Abstract Base Classes (ABCs).</p>
+<p>Use this metaclass to create an ABC.  An ABC can be subclassed
+directly, and then acts as a mix-in class.  You can also register
+unrelated concrete classes (even built-in classes) and unrelated
+ABCs as 'virtual subclasses' -- these and their descendants will
+be considered subclasses of the registering ABC by the built-in
+issubclass() function, but the registering ABC won't show up in
+their MRO (Method Resolution Order) nor will method
+implementations defined by the registering ABC be callable (not
+even via super()).</p></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="staticmethod"><code class="mkapi-item-name"><a href="#abc.ABCMeta.__instancecheck__">__instancecheck__</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">instance</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Override for isinstance(instance, cls).</span></li>
+
+<li class="staticmethod"><code class="mkapi-item-name"><a href="#abc.ABCMeta.__subclasscheck__">__subclasscheck__</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Override for issubclass(subclass, cls).</span></li>
+
+<li class="staticmethod"><code class="mkapi-item-name"><a href="#abc.ABCMeta.register">register</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Register a virtual subclass of an ABC.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta.register">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object staticmethod code">
+    <div class="mkapi-object-kind staticmethod">staticmethod</div>
+    <div class="mkapi-object-body staticmethod"><code class="mkapi-object-name">register</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Register a virtual subclass of an ABC.</p>
+<p>Returns the subclass, to allow usage as a class decorator.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta.__instancecheck__">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object staticmethod code">
+    <div class="mkapi-object-kind staticmethod">staticmethod</div>
+    <div class="mkapi-object-body staticmethod"><code class="mkapi-object-name">__instancecheck__</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">instance</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Override for isinstance(instance, cls).</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta.__subclasscheck__">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object staticmethod code">
+    <div class="mkapi-object-kind staticmethod">staticmethod</div>
+    <div class="mkapi-object-body staticmethod"><code class="mkapi-object-name">__subclasscheck__</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Override for issubclass(subclass, cls).</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.estimate_frontier">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">estimate_frontier</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">num_portfolios=20</code>, <code class="mkapi-object-signature">random_seed=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Estimates the efficient frontier given either returns or prices (depending on <code>self.returns_data</code> attribute),
+and number of points along the frontier. It always starts from the least risky portfolio and increasing the
+portfolio returns, it looks for the efficient risk portfolio until the riskiest portfolio (and the one with
+the highest return) is met.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The prices or returns to fit multiple times the efficient risk/return portfolio</span></li>
+
+<li><code class="mkapi-item-name">num_portfolios</code>
+<span class="mkapi-item-type">(int)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Number of portfolios along the frontier.</span></li>
+
+<li><code class="mkapi-item-name">random_seed</code>
+<span class="mkapi-item-type">(int, optional)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Only when the portfolio returns estimator is PerturbedReturns, this is needed to lock the same stochastic
+sample of the expected returns across the entire frontier.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(tuple)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The first two elements represent, the risk and return coordinates of the portfolios along the
+efficient frontier. The last element contains the portfolio weights.
+Portfolios are indexed from the least risky to the maximum return along the frontier.</p></div>
+    </div>
+  <div class="mkapi-section examples">
+      <div class="mkapi-section-name examples">
+          <span class="mkapi-section-name-body examples">Examples</span> 
+        </div>
+      <div class="mkapi-section-body examples"><p>If you need to compute the efficient frontier for the Markowitz Mean-Variance portfolio for 128 points using
+16 parallel CPU cores you can simply do:</p>
+<pre><code class="language-python">&gt;&gt;&gt; from skportfolio import MinimumVolatility
+&gt;&gt;&gt; from skportfolio.datasets import load_tech_stock_prices
+&gt;&gt;&gt; MinimumVolatility().estimate_frontier(load_tech_stock_prices(), num_portfolios=128)
+</code></pre></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.add_constraints">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">add_constraints</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cnstr</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Add a list of constraints to the convex optimization problem</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">cnstr</code>
+<span class="mkapi-item-type">(list)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">List of constraints, to be added to the optimization problem</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(object)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The portfolio estimator object</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.frontier._efficientfrontier.MaxOmegaRatio.fit">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">fit</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Fit the portfolio model from asset prices.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Asset prices</span></li>
+
+<li><code class="mkapi-item-name">y</code>
+<span class="mkapi-item-type">(None)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">There for compatibility</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The current estimator</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+
+<h2 id="efficient-return-optimization-on-mad-frontier">Efficient return optimization on MAD frontier<a class="headerlink" href="#efficient-return-optimization-on-mad-frontier" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.frontier._efficientfrontier.OmegaEfficientReturn">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">skportfolio.frontier._efficientfrontier.</code><code class="mkapi-object-name">OmegaEfficientReturn</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">weight_bounds=(0, 1)</code>, <code class="mkapi-object-signature">l2_gamma=0.0</code>, <code class="mkapi-object-signature">rets_estimator=MeanHistoricalLinearReturns()</code>, <code class="mkapi-object-signature">minimum_acceptable_return=0.02</code>, <code class="mkapi-object-signature">target_return=0.02</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section bases">
+      <div class="mkapi-section-name bases">
+          <span class="mkapi-section-name-body bases">Bases</span> 
+        </div>
+      <div class="mkapi-section-body bases">
+<span class="mkapi-base">skportfolio.frontier._mixins._TargetReturnMixin</span>
+
+<span class="mkapi-base">skportfolio.frontier._efficientfrontier._BaseOmegaPortfolio</span>
+
+<span class="mkapi-base">skportfolio.frontier._mixins._EfficientOmegaRatioMixin</span>
+
+<span class="mkapi-base">skportfolio.frontier._mixins._BaseFrontierMixin</span>
+
+<span class="mkapi-base">abc.ABC</span>
+
+<span class="mkapi-base">skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator</span>
+
+<span class="mkapi-base">skportfolio._base.PortfolioEstimator</span>
+
+<span class="mkapi-base">sklearn.base.BaseEstimator</span>
+</div>
+    </div>
+  <div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+    </div>
+  <div class="mkapi-section classes">
+      <div class="mkapi-section-name classes">
+          <span class="mkapi-section-name-body classes">Classes</span> 
+        </div>
+      <div class="mkapi-section-body classes"><ul class="mkapi-items">
+<li class="class"><code class="mkapi-item-name"><a href="#abc.ABCMeta">ABCMeta</a></code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Metaclass for defining Abstract Base Classes (ABCs).</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.add_constraints">add_constraints</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cnstr</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(object)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Add a list of constraints to the convex optimization problem</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.estimate_frontier">estimate_frontier</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">num_portfolios</code>, <code class="mkapi-object-signature">random_seed</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(tuple)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimates the efficient frontier given either returns or prices (depending on <code>self.returns_data</code> attribute),
+and number of points along the frontier. It always starts from the least risky portfolio and increasing the
+portfolio returns, it looks for the efficient risk portfolio until the riskiest portfolio (and the one with
+the highest return) is met.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.frontier._efficientfrontier.OmegaEfficientReturn.fit">fit</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Fit the portfolio model from asset prices.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.get_params">get_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(params : dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Get parameters for this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.predict">predict</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(pd.Series)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Applies the estimated weights to the prices to get the portfolio value.
+In other words, generates the equity curve of the portfolio.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.score">score</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code>, <code class="mkapi-object-signature">**kwargs</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(float)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Score the portfolio using one of the metrics expressed as PortfolioScorer in the <code>metrics</code> module.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_dummy_weights">set_dummy_weights</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(A series of assets with NaN weights.)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Creates weights with NaN values, typically used when method cannot converge or solution is unfeasible.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.set_params">set_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self : estimator instance)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Set the parameters of this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_returns_data">set_returns_data</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Inform subsequent .fit method that the input data X are returns, otherwise prices are expected.
+Some portfolio estimators work independently with both, but is very important to specify what is contained
+in the <code>.fit</code> argument <code>X</code>.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_returns_estimator">set_returns_estimator</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">rets_est</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Modify the base returns estimator with a specified rets_est</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_risk_estimator">set_risk_estimator</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">risk_est</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Modify the base risk estimator with a new risk estimator</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.get_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">get_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep=True</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Get parameters for this estimator.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">deep</code>
+<span class="mkapi-item-type">(bool, default=True)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">If True, will return the parameters for this estimator and
+contained subobjects that are estimators.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(params : dict)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Parameter names mapped to their values.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.set_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as :class:<code>~sklearn.pipeline.Pipeline</code>). The latter have
+parameters of the form <code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's
+possible to update each component of a nested object.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">**params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimator parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self : estimator instance)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Estimator instance.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.predict">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">predict</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Applies the estimated weights to the prices to get the portfolio value.
+In other words, generates the equity curve of the portfolio.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The prices expressed as a pandas dataframe</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(pd.Series)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The estimated portfolio value time series</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.score">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">score</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code>, <code class="mkapi-object-signature">**kwargs</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Score the portfolio using one of the metrics expressed as PortfolioScorer in the <code>metrics</code> module.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Dataframe with asset prices. Do not feed returns here!</span></li>
+
+
+<li><code class="mkapi-item-name">**kwargs</code>
+<span class="mkapi-item-type">(Dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Additional parameters to specify to the portfolio returns scorer, like risk_free_rate for Sharpe ratio.
+Alternatively you can also specify the score function to be used, like sharpe_ratio, or sortino_ratio</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(float)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The specific score value from the specified, Sharpe ratio is returned if not specified.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_dummy_weights">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_dummy_weights</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Creates weights with NaN values, typically used when method cannot converge or solution is unfeasible.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Prices or returns data, only used to pick asset names</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_returns_data">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_returns_data</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Inform subsequent .fit method that the input data X are returns, otherwise prices are expected.
+Some portfolio estimators work independently with both, but is very important to specify what is contained
+in the <code>.fit</code> argument <code>X</code>.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_returns_estimator">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_returns_estimator</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">rets_est</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Modify the base returns estimator with a specified rets_est</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">rets_est</code>
+<span class="mkapi-item-type">(BaseReturnsEstimator)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The new returns estimator</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_risk_estimator">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_risk_estimator</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">risk_est</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Modify the base risk estimator with a new risk estimator</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">risk_est</code>
+<span class="mkapi-item-type">(BaseRiskEstimator)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The new risk estimator</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">abc.</code><code class="mkapi-object-name">ABCMeta</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">name</code>, <code class="mkapi-object-signature">bases</code>, <code class="mkapi-object-signature">namespace</code>, <code class="mkapi-object-signature">**kwargs</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Metaclass for defining Abstract Base Classes (ABCs).</p>
+<p>Use this metaclass to create an ABC.  An ABC can be subclassed
+directly, and then acts as a mix-in class.  You can also register
+unrelated concrete classes (even built-in classes) and unrelated
+ABCs as 'virtual subclasses' -- these and their descendants will
+be considered subclasses of the registering ABC by the built-in
+issubclass() function, but the registering ABC won't show up in
+their MRO (Method Resolution Order) nor will method
+implementations defined by the registering ABC be callable (not
+even via super()).</p></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="staticmethod"><code class="mkapi-item-name"><a href="#abc.ABCMeta.__instancecheck__">__instancecheck__</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">instance</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Override for isinstance(instance, cls).</span></li>
+
+<li class="staticmethod"><code class="mkapi-item-name"><a href="#abc.ABCMeta.__subclasscheck__">__subclasscheck__</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Override for issubclass(subclass, cls).</span></li>
+
+<li class="staticmethod"><code class="mkapi-item-name"><a href="#abc.ABCMeta.register">register</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Register a virtual subclass of an ABC.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta.register">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object staticmethod code">
+    <div class="mkapi-object-kind staticmethod">staticmethod</div>
+    <div class="mkapi-object-body staticmethod"><code class="mkapi-object-name">register</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Register a virtual subclass of an ABC.</p>
+<p>Returns the subclass, to allow usage as a class decorator.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta.__instancecheck__">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object staticmethod code">
+    <div class="mkapi-object-kind staticmethod">staticmethod</div>
+    <div class="mkapi-object-body staticmethod"><code class="mkapi-object-name">__instancecheck__</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">instance</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Override for isinstance(instance, cls).</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta.__subclasscheck__">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object staticmethod code">
+    <div class="mkapi-object-kind staticmethod">staticmethod</div>
+    <div class="mkapi-object-body staticmethod"><code class="mkapi-object-name">__subclasscheck__</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Override for issubclass(subclass, cls).</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.estimate_frontier">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">estimate_frontier</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">num_portfolios=20</code>, <code class="mkapi-object-signature">random_seed=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Estimates the efficient frontier given either returns or prices (depending on <code>self.returns_data</code> attribute),
+and number of points along the frontier. It always starts from the least risky portfolio and increasing the
+portfolio returns, it looks for the efficient risk portfolio until the riskiest portfolio (and the one with
+the highest return) is met.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The prices or returns to fit multiple times the efficient risk/return portfolio</span></li>
+
+<li><code class="mkapi-item-name">num_portfolios</code>
+<span class="mkapi-item-type">(int)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Number of portfolios along the frontier.</span></li>
+
+<li><code class="mkapi-item-name">random_seed</code>
+<span class="mkapi-item-type">(int, optional)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Only when the portfolio returns estimator is PerturbedReturns, this is needed to lock the same stochastic
+sample of the expected returns across the entire frontier.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(tuple)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The first two elements represent, the risk and return coordinates of the portfolios along the
+efficient frontier. The last element contains the portfolio weights.
+Portfolios are indexed from the least risky to the maximum return along the frontier.</p></div>
+    </div>
+  <div class="mkapi-section examples">
+      <div class="mkapi-section-name examples">
+          <span class="mkapi-section-name-body examples">Examples</span> 
+        </div>
+      <div class="mkapi-section-body examples"><p>If you need to compute the efficient frontier for the Markowitz Mean-Variance portfolio for 128 points using
+16 parallel CPU cores you can simply do:</p>
+<pre><code class="language-python">&gt;&gt;&gt; from skportfolio import MinimumVolatility
+&gt;&gt;&gt; from skportfolio.datasets import load_tech_stock_prices
+&gt;&gt;&gt; MinimumVolatility().estimate_frontier(load_tech_stock_prices(), num_portfolios=128)
+</code></pre></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.add_constraints">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">add_constraints</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cnstr</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Add a list of constraints to the convex optimization problem</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">cnstr</code>
+<span class="mkapi-item-type">(list)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">List of constraints, to be added to the optimization problem</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(object)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The portfolio estimator object</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.frontier._efficientfrontier.OmegaEfficientReturn.fit">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">fit</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Fit the portfolio model from asset prices.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Asset prices</span></li>
+
+<li><code class="mkapi-item-name">y</code>
+<span class="mkapi-item-type">(None)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">There for compatibility</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The current estimator</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+
+<h2 id="efficient-risk-optimization-on-mad-frontier">Efficient risk optimization on MAD frontier<a class="headerlink" href="#efficient-risk-optimization-on-mad-frontier" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.frontier._efficientfrontier.OmegaEfficientRisk">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">skportfolio.frontier._efficientfrontier.</code><code class="mkapi-object-name">OmegaEfficientRisk</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">weight_bounds=(0, 1)</code>, <code class="mkapi-object-signature">l2_gamma=0.0</code>, <code class="mkapi-object-signature">rets_estimator=MeanHistoricalLinearReturns()</code>, <code class="mkapi-object-signature">minimum_acceptable_return=0.02</code>, <code class="mkapi-object-signature">target_risk=0.02</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section bases">
+      <div class="mkapi-section-name bases">
+          <span class="mkapi-section-name-body bases">Bases</span> 
+        </div>
+      <div class="mkapi-section-body bases">
+<span class="mkapi-base">skportfolio.frontier._mixins._TargetRiskMixin</span>
+
+<span class="mkapi-base">skportfolio.frontier._efficientfrontier._BaseOmegaPortfolio</span>
+
+<span class="mkapi-base">skportfolio.frontier._mixins._EfficientOmegaRatioMixin</span>
+
+<span class="mkapi-base">skportfolio.frontier._mixins._BaseFrontierMixin</span>
+
+<span class="mkapi-base">abc.ABC</span>
+
+<span class="mkapi-base">skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator</span>
+
+<span class="mkapi-base">skportfolio._base.PortfolioEstimator</span>
+
+<span class="mkapi-base">sklearn.base.BaseEstimator</span>
+</div>
+    </div>
+  <div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+    </div>
+  <div class="mkapi-section classes">
+      <div class="mkapi-section-name classes">
+          <span class="mkapi-section-name-body classes">Classes</span> 
+        </div>
+      <div class="mkapi-section-body classes"><ul class="mkapi-items">
+<li class="class"><code class="mkapi-item-name"><a href="#abc.ABCMeta">ABCMeta</a></code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Metaclass for defining Abstract Base Classes (ABCs).</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.add_constraints">add_constraints</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cnstr</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(object)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Add a list of constraints to the convex optimization problem</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.estimate_frontier">estimate_frontier</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">num_portfolios</code>, <code class="mkapi-object-signature">random_seed</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(tuple)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimates the efficient frontier given either returns or prices (depending on <code>self.returns_data</code> attribute),
+and number of points along the frontier. It always starts from the least risky portfolio and increasing the
+portfolio returns, it looks for the efficient risk portfolio until the riskiest portfolio (and the one with
+the highest return) is met.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.frontier._efficientfrontier.OmegaEfficientRisk.fit">fit</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Fit the portfolio model from asset prices.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.get_params">get_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(params : dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Get parameters for this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.predict">predict</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(pd.Series)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Applies the estimated weights to the prices to get the portfolio value.
+In other words, generates the equity curve of the portfolio.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.score">score</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code>, <code class="mkapi-object-signature">**kwargs</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(float)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Score the portfolio using one of the metrics expressed as PortfolioScorer in the <code>metrics</code> module.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_dummy_weights">set_dummy_weights</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(A series of assets with NaN weights.)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Creates weights with NaN values, typically used when method cannot converge or solution is unfeasible.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.set_params">set_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self : estimator instance)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Set the parameters of this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_returns_data">set_returns_data</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Inform subsequent .fit method that the input data X are returns, otherwise prices are expected.
+Some portfolio estimators work independently with both, but is very important to specify what is contained
+in the <code>.fit</code> argument <code>X</code>.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_returns_estimator">set_returns_estimator</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">rets_est</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Modify the base returns estimator with a specified rets_est</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_risk_estimator">set_risk_estimator</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">risk_est</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Modify the base risk estimator with a new risk estimator</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.get_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">get_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep=True</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Get parameters for this estimator.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">deep</code>
+<span class="mkapi-item-type">(bool, default=True)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">If True, will return the parameters for this estimator and
+contained subobjects that are estimators.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(params : dict)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Parameter names mapped to their values.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.set_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as :class:<code>~sklearn.pipeline.Pipeline</code>). The latter have
+parameters of the form <code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's
+possible to update each component of a nested object.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">**params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimator parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self : estimator instance)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Estimator instance.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.predict">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">predict</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Applies the estimated weights to the prices to get the portfolio value.
+In other words, generates the equity curve of the portfolio.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The prices expressed as a pandas dataframe</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(pd.Series)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The estimated portfolio value time series</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.score">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">score</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code>, <code class="mkapi-object-signature">**kwargs</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Score the portfolio using one of the metrics expressed as PortfolioScorer in the <code>metrics</code> module.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Dataframe with asset prices. Do not feed returns here!</span></li>
+
+
+<li><code class="mkapi-item-name">**kwargs</code>
+<span class="mkapi-item-type">(Dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Additional parameters to specify to the portfolio returns scorer, like risk_free_rate for Sharpe ratio.
+Alternatively you can also specify the score function to be used, like sharpe_ratio, or sortino_ratio</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(float)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The specific score value from the specified, Sharpe ratio is returned if not specified.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_dummy_weights">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_dummy_weights</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Creates weights with NaN values, typically used when method cannot converge or solution is unfeasible.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Prices or returns data, only used to pick asset names</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_returns_data">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_returns_data</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Inform subsequent .fit method that the input data X are returns, otherwise prices are expected.
+Some portfolio estimators work independently with both, but is very important to specify what is contained
+in the <code>.fit</code> argument <code>X</code>.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_returns_estimator">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_returns_estimator</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">rets_est</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Modify the base returns estimator with a specified rets_est</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">rets_est</code>
+<span class="mkapi-item-type">(BaseReturnsEstimator)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The new returns estimator</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_risk_estimator">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_risk_estimator</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">risk_est</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Modify the base risk estimator with a new risk estimator</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">risk_est</code>
+<span class="mkapi-item-type">(BaseRiskEstimator)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The new risk estimator</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">abc.</code><code class="mkapi-object-name">ABCMeta</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">name</code>, <code class="mkapi-object-signature">bases</code>, <code class="mkapi-object-signature">namespace</code>, <code class="mkapi-object-signature">**kwargs</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Metaclass for defining Abstract Base Classes (ABCs).</p>
+<p>Use this metaclass to create an ABC.  An ABC can be subclassed
+directly, and then acts as a mix-in class.  You can also register
+unrelated concrete classes (even built-in classes) and unrelated
+ABCs as 'virtual subclasses' -- these and their descendants will
+be considered subclasses of the registering ABC by the built-in
+issubclass() function, but the registering ABC won't show up in
+their MRO (Method Resolution Order) nor will method
+implementations defined by the registering ABC be callable (not
+even via super()).</p></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="staticmethod"><code class="mkapi-item-name"><a href="#abc.ABCMeta.__instancecheck__">__instancecheck__</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">instance</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Override for isinstance(instance, cls).</span></li>
+
+<li class="staticmethod"><code class="mkapi-item-name"><a href="#abc.ABCMeta.__subclasscheck__">__subclasscheck__</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Override for issubclass(subclass, cls).</span></li>
+
+<li class="staticmethod"><code class="mkapi-item-name"><a href="#abc.ABCMeta.register">register</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Register a virtual subclass of an ABC.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta.register">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object staticmethod code">
+    <div class="mkapi-object-kind staticmethod">staticmethod</div>
+    <div class="mkapi-object-body staticmethod"><code class="mkapi-object-name">register</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Register a virtual subclass of an ABC.</p>
+<p>Returns the subclass, to allow usage as a class decorator.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta.__instancecheck__">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object staticmethod code">
+    <div class="mkapi-object-kind staticmethod">staticmethod</div>
+    <div class="mkapi-object-body staticmethod"><code class="mkapi-object-name">__instancecheck__</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">instance</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Override for isinstance(instance, cls).</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta.__subclasscheck__">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object staticmethod code">
+    <div class="mkapi-object-kind staticmethod">staticmethod</div>
+    <div class="mkapi-object-body staticmethod"><code class="mkapi-object-name">__subclasscheck__</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Override for issubclass(subclass, cls).</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.estimate_frontier">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">estimate_frontier</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">num_portfolios=20</code>, <code class="mkapi-object-signature">random_seed=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Estimates the efficient frontier given either returns or prices (depending on <code>self.returns_data</code> attribute),
+and number of points along the frontier. It always starts from the least risky portfolio and increasing the
+portfolio returns, it looks for the efficient risk portfolio until the riskiest portfolio (and the one with
+the highest return) is met.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The prices or returns to fit multiple times the efficient risk/return portfolio</span></li>
+
+<li><code class="mkapi-item-name">num_portfolios</code>
+<span class="mkapi-item-type">(int)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Number of portfolios along the frontier.</span></li>
+
+<li><code class="mkapi-item-name">random_seed</code>
+<span class="mkapi-item-type">(int, optional)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Only when the portfolio returns estimator is PerturbedReturns, this is needed to lock the same stochastic
+sample of the expected returns across the entire frontier.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(tuple)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The first two elements represent, the risk and return coordinates of the portfolios along the
+efficient frontier. The last element contains the portfolio weights.
+Portfolios are indexed from the least risky to the maximum return along the frontier.</p></div>
+    </div>
+  <div class="mkapi-section examples">
+      <div class="mkapi-section-name examples">
+          <span class="mkapi-section-name-body examples">Examples</span> 
+        </div>
+      <div class="mkapi-section-body examples"><p>If you need to compute the efficient frontier for the Markowitz Mean-Variance portfolio for 128 points using
+16 parallel CPU cores you can simply do:</p>
+<pre><code class="language-python">&gt;&gt;&gt; from skportfolio import MinimumVolatility
+&gt;&gt;&gt; from skportfolio.datasets import load_tech_stock_prices
+&gt;&gt;&gt; MinimumVolatility().estimate_frontier(load_tech_stock_prices(), num_portfolios=128)
+</code></pre></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.add_constraints">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">add_constraints</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cnstr</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Add a list of constraints to the convex optimization problem</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">cnstr</code>
+<span class="mkapi-item-type">(list)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">List of constraints, to be added to the optimization problem</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(object)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The portfolio estimator object</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.frontier._efficientfrontier.OmegaEfficientRisk.fit">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">fit</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Fit the portfolio model from asset prices.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Asset prices</span></li>
+
+<li><code class="mkapi-item-name">y</code>
+<span class="mkapi-item-type">(None)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">There for compatibility</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The current estimator</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+
+<h2 id="minimum-omega-risk">Minimum Omega Risk<a class="headerlink" href="#minimum-omega-risk" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.frontier._efficientfrontier.MinimumOmegaRisk">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">skportfolio.frontier._efficientfrontier.</code><code class="mkapi-object-name">MinimumOmegaRisk</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">weight_bounds=(0, 1)</code>, <code class="mkapi-object-signature">l2_gamma=0.0</code>, <code class="mkapi-object-signature">rets_estimator=MeanHistoricalLinearReturns()</code>, <code class="mkapi-object-signature">minimum_acceptable_return=0.02</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section bases">
+      <div class="mkapi-section-name bases">
+          <span class="mkapi-section-name-body bases">Bases</span> 
+        </div>
+      <div class="mkapi-section-body bases">
+<span class="mkapi-base">skportfolio.frontier._efficientfrontier._BaseOmegaPortfolio</span>
+
+<span class="mkapi-base">skportfolio.frontier._mixins._EfficientOmegaRatioMixin</span>
+
+<span class="mkapi-base">skportfolio.frontier._mixins._BaseFrontierMixin</span>
+
+<span class="mkapi-base">abc.ABC</span>
+
+<span class="mkapi-base">skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator</span>
+
+<span class="mkapi-base">skportfolio._base.PortfolioEstimator</span>
+
+<span class="mkapi-base">sklearn.base.BaseEstimator</span>
+</div>
+    </div>
+  <div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+    </div>
+  <div class="mkapi-section classes">
+      <div class="mkapi-section-name classes">
+          <span class="mkapi-section-name-body classes">Classes</span> 
+        </div>
+      <div class="mkapi-section-body classes"><ul class="mkapi-items">
+<li class="class"><code class="mkapi-item-name"><a href="#abc.ABCMeta">ABCMeta</a></code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Metaclass for defining Abstract Base Classes (ABCs).</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.add_constraints">add_constraints</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cnstr</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(object)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Add a list of constraints to the convex optimization problem</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.estimate_frontier">estimate_frontier</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">num_portfolios</code>, <code class="mkapi-object-signature">random_seed</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(tuple)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimates the efficient frontier given either returns or prices (depending on <code>self.returns_data</code> attribute),
+and number of points along the frontier. It always starts from the least risky portfolio and increasing the
+portfolio returns, it looks for the efficient risk portfolio until the riskiest portfolio (and the one with
+the highest return) is met.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.frontier._efficientfrontier.MinimumOmegaRisk.fit">fit</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Fit the portfolio model from asset prices.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.get_params">get_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(params : dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Get parameters for this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.predict">predict</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(pd.Series)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Applies the estimated weights to the prices to get the portfolio value.
+In other words, generates the equity curve of the portfolio.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.score">score</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code>, <code class="mkapi-object-signature">**kwargs</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(float)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Score the portfolio using one of the metrics expressed as PortfolioScorer in the <code>metrics</code> module.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_dummy_weights">set_dummy_weights</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(A series of assets with NaN weights.)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Creates weights with NaN values, typically used when method cannot converge or solution is unfeasible.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.set_params">set_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self : estimator instance)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Set the parameters of this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_returns_data">set_returns_data</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Inform subsequent .fit method that the input data X are returns, otherwise prices are expected.
+Some portfolio estimators work independently with both, but is very important to specify what is contained
+in the <code>.fit</code> argument <code>X</code>.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_returns_estimator">set_returns_estimator</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">rets_est</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Modify the base returns estimator with a specified rets_est</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio._base.PortfolioEstimator.set_risk_estimator">set_risk_estimator</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">risk_est</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Modify the base risk estimator with a new risk estimator</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.get_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">get_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep=True</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Get parameters for this estimator.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">deep</code>
+<span class="mkapi-item-type">(bool, default=True)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">If True, will return the parameters for this estimator and
+contained subobjects that are estimators.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(params : dict)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Parameter names mapped to their values.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.set_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as :class:<code>~sklearn.pipeline.Pipeline</code>). The latter have
+parameters of the form <code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's
+possible to update each component of a nested object.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">**params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimator parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self : estimator instance)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Estimator instance.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.predict">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">predict</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Applies the estimated weights to the prices to get the portfolio value.
+In other words, generates the equity curve of the portfolio.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The prices expressed as a pandas dataframe</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(pd.Series)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The estimated portfolio value time series</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.score">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">score</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code>, <code class="mkapi-object-signature">**kwargs</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Score the portfolio using one of the metrics expressed as PortfolioScorer in the <code>metrics</code> module.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Dataframe with asset prices. Do not feed returns here!</span></li>
+
+
+<li><code class="mkapi-item-name">**kwargs</code>
+<span class="mkapi-item-type">(Dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Additional parameters to specify to the portfolio returns scorer, like risk_free_rate for Sharpe ratio.
+Alternatively you can also specify the score function to be used, like sharpe_ratio, or sortino_ratio</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(float)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The specific score value from the specified, Sharpe ratio is returned if not specified.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_dummy_weights">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_dummy_weights</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Creates weights with NaN values, typically used when method cannot converge or solution is unfeasible.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Prices or returns data, only used to pick asset names</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_returns_data">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_returns_data</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Inform subsequent .fit method that the input data X are returns, otherwise prices are expected.
+Some portfolio estimators work independently with both, but is very important to specify what is contained
+in the <code>.fit</code> argument <code>X</code>.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_returns_estimator">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_returns_estimator</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">rets_est</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Modify the base returns estimator with a specified rets_est</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">rets_est</code>
+<span class="mkapi-item-type">(BaseReturnsEstimator)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The new returns estimator</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio._base.PortfolioEstimator.set_risk_estimator">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_risk_estimator</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">risk_est</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Modify the base risk estimator with a new risk estimator</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">risk_est</code>
+<span class="mkapi-item-type">(BaseRiskEstimator)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The new risk estimator</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">abc.</code><code class="mkapi-object-name">ABCMeta</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">name</code>, <code class="mkapi-object-signature">bases</code>, <code class="mkapi-object-signature">namespace</code>, <code class="mkapi-object-signature">**kwargs</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Metaclass for defining Abstract Base Classes (ABCs).</p>
+<p>Use this metaclass to create an ABC.  An ABC can be subclassed
+directly, and then acts as a mix-in class.  You can also register
+unrelated concrete classes (even built-in classes) and unrelated
+ABCs as 'virtual subclasses' -- these and their descendants will
+be considered subclasses of the registering ABC by the built-in
+issubclass() function, but the registering ABC won't show up in
+their MRO (Method Resolution Order) nor will method
+implementations defined by the registering ABC be callable (not
+even via super()).</p></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="staticmethod"><code class="mkapi-item-name"><a href="#abc.ABCMeta.__instancecheck__">__instancecheck__</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">instance</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Override for isinstance(instance, cls).</span></li>
+
+<li class="staticmethod"><code class="mkapi-item-name"><a href="#abc.ABCMeta.__subclasscheck__">__subclasscheck__</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Override for issubclass(subclass, cls).</span></li>
+
+<li class="staticmethod"><code class="mkapi-item-name"><a href="#abc.ABCMeta.register">register</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code>
+
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Register a virtual subclass of an ABC.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta.register">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object staticmethod code">
+    <div class="mkapi-object-kind staticmethod">staticmethod</div>
+    <div class="mkapi-object-body staticmethod"><code class="mkapi-object-name">register</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Register a virtual subclass of an ABC.</p>
+<p>Returns the subclass, to allow usage as a class decorator.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta.__instancecheck__">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object staticmethod code">
+    <div class="mkapi-object-kind staticmethod">staticmethod</div>
+    <div class="mkapi-object-body staticmethod"><code class="mkapi-object-name">__instancecheck__</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">instance</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Override for isinstance(instance, cls).</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="abc.ABCMeta.__subclasscheck__">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object staticmethod code">
+    <div class="mkapi-object-kind staticmethod">staticmethod</div>
+    <div class="mkapi-object-body staticmethod"><code class="mkapi-object-name">__subclasscheck__</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cls</code>, <code class="mkapi-object-signature">subclass</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Override for issubclass(subclass, cls).</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.estimate_frontier">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">estimate_frontier</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">num_portfolios=20</code>, <code class="mkapi-object-signature">random_seed=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Estimates the efficient frontier given either returns or prices (depending on <code>self.returns_data</code> attribute),
+and number of points along the frontier. It always starts from the least risky portfolio and increasing the
+portfolio returns, it looks for the efficient risk portfolio until the riskiest portfolio (and the one with
+the highest return) is met.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">The prices or returns to fit multiple times the efficient risk/return portfolio</span></li>
+
+<li><code class="mkapi-item-name">num_portfolios</code>
+<span class="mkapi-item-type">(int)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Number of portfolios along the frontier.</span></li>
+
+<li><code class="mkapi-item-name">random_seed</code>
+<span class="mkapi-item-type">(int, optional)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Only when the portfolio returns estimator is PerturbedReturns, this is needed to lock the same stochastic
+sample of the expected returns across the entire frontier.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(tuple)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The first two elements represent, the risk and return coordinates of the portfolios along the
+efficient frontier. The last element contains the portfolio weights.
+Portfolios are indexed from the least risky to the maximum return along the frontier.</p></div>
+    </div>
+  <div class="mkapi-section examples">
+      <div class="mkapi-section-name examples">
+          <span class="mkapi-section-name-body examples">Examples</span> 
+        </div>
+      <div class="mkapi-section-body examples"><p>If you need to compute the efficient frontier for the Markowitz Mean-Variance portfolio for 128 points using
+16 parallel CPU cores you can simply do:</p>
+<pre><code class="language-python">&gt;&gt;&gt; from skportfolio import MinimumVolatility
+&gt;&gt;&gt; from skportfolio.datasets import load_tech_stock_prices
+&gt;&gt;&gt; MinimumVolatility().estimate_frontier(load_tech_stock_prices(), num_portfolios=128)
+</code></pre></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.frontier._efficientfrontier._BaseEfficientFrontierPortfolioEstimator.add_constraints">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">add_constraints</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">cnstr</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Add a list of constraints to the convex optimization problem</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">cnstr</code>
+<span class="mkapi-item-type">(list)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">List of constraints, to be added to the optimization problem</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(object)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The portfolio estimator object</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.frontier._efficientfrontier.MinimumOmegaRisk.fit">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">fit</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Fit the portfolio model from asset prices.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(pd.DataFrame)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Asset prices</span></li>
+
+<li><code class="mkapi-item-name">y</code>
+<span class="mkapi-item-type">(None)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">There for compatibility</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>The current estimator</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../efficient_cdar_api/" class="btn btn-neutral float-left" title="Conditional Drawdown At Risk (CDaR)"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../efficient_mad_api/" class="btn btn-neutral float-right" title="Mean Absolute Deviation (MAD)">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/CarloNicolini/scikit-portfolio" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../efficient_cdar_api/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../efficient_mad_api/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/mkapi.js" defer></script>
+      <script src="../javascripts/config.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

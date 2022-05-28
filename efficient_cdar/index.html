@@ -111,6 +111,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul>
@@ -118,8 +120,31 @@
                   </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -156,13 +181,29 @@ Drawdown is a measure of downside risk.</p>
 That threshold is referred to as drawdown-at-risk. It is very similar to how expected shortfall is defined.</p>
 <p>CDar in the context of portfolio optimization was first proposed by Alexeei Chekhlov, Stanislav Uryasev and Michael Zabarankin in 2003. 
 The main goal of their paper was to show that the optimization of CDar can be solved using linear programming, a kind of problems that <code>cvxpy</code> is very good at solving.</p>
+<p>Following the specifics present at the <a href="https://pyportfolioopt.readthedocs.io/en/latest/GeneralEfficientFrontier.html#efficientcdar">PyPortfolioOpt documentation</a>, the notation required to formulate the drawdown concept mathematically is the following:</p>
+<p>\begin{equation}
+\textrm{CDaR}(\mathbf{w}, \beta) = \frac{1}{1-\beta} \int_{D(w,r,t) \geq \alpha(w)} D(w,r,t) p(r(t)) d r(t)
+\end{equation}
+In the above expression the quantities are</p>
+<ul>
+<li><span class="arithmatex">\(\mathbf{w}\)</span> is the vector of portfolio weights</li>
+<li><span class="arithmatex">\(\mathbf{r}\)</span> is the vector of cumulative asset returns (daily), with <a href="https://en.wikipedia.org/wiki/Probability_mass_function">p.m.f</a> <span class="arithmatex">\(p(\mathbf{r}(t))\)</span>.</li>
+<li><span class="arithmatex">\(D(\mathbf{w},\mathbf{r},t) = \max_{r &lt; t}\left( \mathbf{w}^T r(\tau) - \mathbf{w}^T\mathbf{r}(t)\right)\)</span> is the drawdown of the portfolio.</li>
+<li><span class="arithmatex">\(\alpha\)</span> is the portfolio drawdown (DaR) with confidence <span class="arithmatex">\(\beta\)</span>.</li>
+</ul>
 <p>The portfolio <em>conditional drawdown at risk</em> is based on using portoflio drawdowns rathar than returns.
 For the definition <a href="https://en.wikipedia.org/wiki/Drawdown_(economics)">look here</a> and the original <a href="https://pyportfolioopt.readthedocs.io/en/latest/GeneralEfficientFrontier.html#efficientcdar"><code>PyPortfolioOpt</code> version</a>.</p>
 <p>Here we offer three specific classes to handle the efficient CDar frontier, namely the portfolio with the Minimum CDar, and the portfolios of lowest CDar given target return or the highest return given CDar. </p>
 <h2 id="minimum-cdar-portfolio">Minimum CDar portfolio<a class="headerlink" href="#minimum-cdar-portfolio" title="Permanent link">&para;</a></h2>
-<p>The minimum CDar portfolio identifies the point with the least Conditional Drawdown at risk along the CDar efficient frontier.</p>
+<p>The minimum CDar portfolio identifies the point with the least Conditional Drawdown at risk along the CDar efficient frontier.
+The optimization problem is solved through the <code>MinimumCDar</code> class.</p>
 <h2 id="efficient-return-on-mean-cdar-frontier">Efficient return on mean-cdar frontier<a class="headerlink" href="#efficient-return-on-mean-cdar-frontier" title="Permanent link">&para;</a></h2>
+<p>The efficient return CDar-frontier portfolio identifies the point with the least Conditional Drawdown at risk along the CDar efficient frontier, conditioned on having at least the specified target return.
+The optimization problem is solved through the <code>CDarEfficientReturn</code> class.</p>
 <h2 id="efficient-risk-on-mean-cdar-frontier">Efficient risk on mean-cdar frontier<a class="headerlink" href="#efficient-risk-on-mean-cdar-frontier" title="Permanent link">&para;</a></h2>
+<p>The efficient risk CDar-frontier portfolio identifies the point with the highest return having at most the target Conditional Drawdown at risk.
+The optimization problem is solved through the <code>CDarEfficientRisk</code> class.</p>
 <h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
 <hr>
 

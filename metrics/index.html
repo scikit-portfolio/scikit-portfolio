@@ -153,6 +153,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul>
@@ -160,8 +162,31 @@
                   </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -385,7 +410,7 @@ Estimation, Confidence Intervals, and Hypothesis Testing
 <div class='mkapi-object-container'>
   <div class="mkapi-object function code top">
     <div class="mkapi-object-kind function top">function</div>
-    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">downside_risk</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">target_return=0.0</code>, <code class="mkapi-object-signature">frequency=252</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; float</span></div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">downside_risk</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">target_return=0.0</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; float</span></div>
   </div>
   
 </div>
@@ -630,14 +655,14 @@ r must be a Series or a DataFrame</p></div>
 <div class='mkapi-object-container'>
   <div class="mkapi-object function code top">
     <div class="mkapi-object-kind function top">function</div>
-    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">sharpe_ratio</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">riskfree_rate=0.0</code>, <code class="mkapi-object-signature">period=&#39;DAILY&#39;</code>, <code class="mkapi-object-signature">frequency=252</code><code class="mkapi-object-parenthesis">)</code><span class="mkapi-item-type"> &#x2192; float</span></div>
+    <div class="mkapi-object-body function top"><code class="mkapi-object-prefix">skportfolio.metrics.metrics.</code><code class="mkapi-object-name">sharpe_ratio</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">r</code>, <code class="mkapi-object-signature">riskfree_rate=0.0</code>, <code class="mkapi-object-signature">period=&#39;DAILY&#39;</code>, <code class="mkapi-object-signature">frequency=252</code><code class="mkapi-object-parenthesis">)</code></div>
   </div>
   
 </div>
 <div class="mkapi-docstring">
 <div class="mkapi-section">
-      <div class="mkapi-section-body"><p>Computes the annualized sharpe ratio of a set of returns.</p>
-<p>See the notes above about the annualization</p></div>
+      <div class="mkapi-section-body"><p>Computes the annualized sharpe ratio of a set of returns.
+See the notes above about the annualization</p></div>
     </div>
   </div>
 

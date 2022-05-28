@@ -94,21 +94,23 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#returns-estimator-base-class">Returns estimator base class</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#mean-historical-linear-returns-meanhistoricallinearreturns">Mean historical linear-returns MeanHistoricalLinearReturns</a>
+    <li class="toctree-l2"><a class="reference internal" href="#mean-historical-linear-returns-meanhistoricallinearreturns">Mean historical linear-returns MeanHistoricalLinearReturns  📖</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#compounded-historical-linear-returns-compoundedhistoricallinearreturns">Compounded historical linear-returns CompoundedHistoricalLinearReturns</a>
+    <li class="toctree-l2"><a class="reference internal" href="#compounded-historical-linear-returns-compoundedhistoricallinearreturns">Compounded historical linear-returns CompoundedHistoricalLinearReturns 📖</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#mean-historical-log-returns-meanhistoricallogreturns">Mean historical log-returns MeanHistoricalLogReturns</a>
+    <li class="toctree-l2"><a class="reference internal" href="#mean-historical-log-returns-meanhistoricallogreturns">Mean historical log-returns MeanHistoricalLogReturns 📖</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#compounded-historical-log-returns-compoundedhistoricallogreturns">Compounded historical log-returns CompoundedHistoricalLogReturns</a>
+    <li class="toctree-l2"><a class="reference internal" href="#compounded-historical-log-returns-compoundedhistoricallogreturns">Compounded historical log-returns CompoundedHistoricalLogReturns 📖</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#median-historical-linear-returns-medianhistoricallinearreturns">Median historical linear returns MedianHistoricalLinearReturns</a>
+    <li class="toctree-l2"><a class="reference internal" href="#median-historical-linear-returns-medianhistoricallinearreturns">Median historical linear returns MedianHistoricalLinearReturns 📖</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#median-historical-log-returns-medianhistoricallogreturns">Median historical log returns MedianHistoricalLogReturns</a>
+    <li class="toctree-l2"><a class="reference internal" href="#median-historical-log-returns-medianhistoricallogreturns">Median historical log returns MedianHistoricalLogReturns 📖</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#exponential-moving-average-returns-emahistoricallinearreturns">Exponential Moving Average Returns EMAHistoricalLinearReturns</a>
+    <li class="toctree-l2"><a class="reference internal" href="#exponential-moving-average-returns-emahistoricallinearreturns">Exponential Moving Average Returns EMAHistoricalLinearReturns 📖</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#capm-expected-returns">CAPM expected returns</a>
+    <li class="toctree-l2"><a class="reference internal" href="#rolling-median-returns-rollingmedianreturns">Rolling Median Returns RollingMedianReturns 📖</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#capm-expected-returns-capmreturns">CAPM expected returns CAPMReturns 📖</a>
     </li>
     </ul>
                   </li>
@@ -123,6 +125,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul>
@@ -130,8 +134,31 @@
                   </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -169,7 +196,7 @@ Additionally, <code>scikit-portfolio</code> introduces other estimators for the 
 <p>This base class is at the core of all returns estimators. THe <code>.fit</code> method takes either <em>price</em> data or <em>return</em> data, depending on the initialization parameter <code>returns_data</code>. Moreover you can always modifiy the parameter with the '.set_returns_data(True|False)' method, returning a new estimator.</p>
 <hr>
 
-<h2 id="mean-historical-linear-returns-meanhistoricallinearreturns">Mean historical linear-returns <code>MeanHistoricalLinearReturns</code><a class="headerlink" href="#mean-historical-linear-returns-meanhistoricallinearreturns" title="Permanent link">&para;</a></h2>
+<h2 id="mean-historical-linear-returns-meanhistoricallinearreturns">Mean historical linear-returns <code>MeanHistoricalLinearReturns</code>  <a href="../returns_api#meanhistoricallinearreturns">📖</a><a class="headerlink" href="#mean-historical-linear-returns-meanhistoricallinearreturns" title="Permanent link">&para;</a></h2>
 <p>Mean historical returns are simply computed as the historical <strong>average</strong> of the geometric returns over all data.
 In other words, given the returns time series <span class="arithmatex">\(r_t\)</span> for <span class="arithmatex">\(t=1,\dots,\T\)</span>, the mean historical returns are obtained as</p>
 <div class="arithmatex">\[\begin{equation}
@@ -177,7 +204,7 @@ In other words, given the returns time series <span class="arithmatex">\(r_t\)</
 \end{equation}\]</div>
 <hr>
 
-<h2 id="compounded-historical-linear-returns-compoundedhistoricallinearreturns">Compounded historical linear-returns <code>CompoundedHistoricalLinearReturns</code><a class="headerlink" href="#compounded-historical-linear-returns-compoundedhistoricallinearreturns" title="Permanent link">&para;</a></h2>
+<h2 id="compounded-historical-linear-returns-compoundedhistoricallinearreturns">Compounded historical linear-returns <code>CompoundedHistoricalLinearReturns</code> <a href="../returns_api#compoundedhistoricallinearreturns">📖</a><a class="headerlink" href="#compounded-historical-linear-returns-compoundedhistoricallinearreturns" title="Permanent link">&para;</a></h2>
 <p>Compounded historical returns are simply computed as the geometric <strong>average</strong> of the linear historical returns.
 In other words, given the returns time series <span class="arithmatex">\(r_t\)</span> for <span class="arithmatex">\(t=1,\dots,\T\)</span>, the compounded historical returns are obtained as:</p>
 <div class="arithmatex">\[\begin{equation}
@@ -185,21 +212,21 @@ In other words, given the returns time series <span class="arithmatex">\(r_t\)</
 \end{equation}\]</div>
 <hr>
 
-<h2 id="mean-historical-log-returns-meanhistoricallogreturns">Mean historical log-returns <code>MeanHistoricalLogReturns</code><a class="headerlink" href="#mean-historical-log-returns-meanhistoricallogreturns" title="Permanent link">&para;</a></h2>
+<h2 id="mean-historical-log-returns-meanhistoricallogreturns">Mean historical log-returns <code>MeanHistoricalLogReturns</code> <a href="../returns_api#meanhistoricallogreturns">📖</a><a class="headerlink" href="#mean-historical-log-returns-meanhistoricallogreturns" title="Permanent link">&para;</a></h2>
 <p>Here, rather than using linear returns, we compute the average of the log returns <span class="arithmatex">\(\log(p_t/p_{t-1})\)</span>:</p>
 <div class="arithmatex">\[\begin{equation}
 \hat{\boldsymbol \mu} = \frac{1}{T} \sum_{t=1}^T \left( \log p_t - \log p_{t-1} \right)
 \end{equation}\]</div>
 <hr>
 
-<h2 id="compounded-historical-log-returns-compoundedhistoricallogreturns">Compounded historical log-returns <code>CompoundedHistoricalLogReturns</code><a class="headerlink" href="#compounded-historical-log-returns-compoundedhistoricallogreturns" title="Permanent link">&para;</a></h2>
+<h2 id="compounded-historical-log-returns-compoundedhistoricallogreturns">Compounded historical log-returns <code>CompoundedHistoricalLogReturns</code> <a href="../returns_api#compoundedhistoricallogreturns">📖</a><a class="headerlink" href="#compounded-historical-log-returns-compoundedhistoricallogreturns" title="Permanent link">&para;</a></h2>
 <p>Here, rather than using linear returns, we compute the average of the log returns <span class="arithmatex">\(\log(p_t/p_{t-1})\)</span>, and geometric average</p>
 <div class="arithmatex">\[\begin{equation}
 \hat{\boldsymbol \mu} = \left(\prod_{t=1}^T 1 + (\log p_t - \log p_{t-1})\right)^{1/T} 
 \end{equation}\]</div>
 <hr>
 
-<h2 id="median-historical-linear-returns-medianhistoricallinearreturns">Median historical linear returns <code>MedianHistoricalLinearReturns</code><a class="headerlink" href="#median-historical-linear-returns-medianhistoricallinearreturns" title="Permanent link">&para;</a></h2>
+<h2 id="median-historical-linear-returns-medianhistoricallinearreturns">Median historical linear returns <code>MedianHistoricalLinearReturns</code> <a href="../returns_api#medianhistoricallinearreturns">📖</a><a class="headerlink" href="#median-historical-linear-returns-medianhistoricallinearreturns" title="Permanent link">&para;</a></h2>
 <p>Like for <code>MeanHistoricalLinearReturns</code>, but using <strong>median</strong> rather than average.
 In other words, given the returns time series <span class="arithmatex">\(r_t\)</span> for <span class="arithmatex">\(t=1,\dots,T\)</span>, the median historical returns are obtained as</p>
 <div class="arithmatex">\[\begin{equation}
@@ -207,7 +234,7 @@ In other words, given the returns time series <span class="arithmatex">\(r_t\)</
 \end{equation}\]</div>
 <hr>
 
-<h2 id="median-historical-log-returns-medianhistoricallogreturns">Median historical log returns <code>MedianHistoricalLogReturns</code><a class="headerlink" href="#median-historical-log-returns-medianhistoricallogreturns" title="Permanent link">&para;</a></h2>
+<h2 id="median-historical-log-returns-medianhistoricallogreturns">Median historical log returns <code>MedianHistoricalLogReturns</code> <a href="../returns_api#medianhistoricallogreturns">📖</a><a class="headerlink" href="#median-historical-log-returns-medianhistoricallogreturns" title="Permanent link">&para;</a></h2>
 <p>Like for <code>MeanHistoricalLinearReturns</code>, but using <strong>median</strong> rather than average.
 In other words, given the log-returns time series <span class="arithmatex">\(\log p_t/p_{t-1}\)</span> for <span class="arithmatex">\(t=1,\dots,T\)</span>, the median historical log-returns are obtained as:</p>
 <div class="arithmatex">\[\begin{equation}
@@ -215,12 +242,14 @@ In other words, given the log-returns time series <span class="arithmatex">\(\lo
 \end{equation}\]</div>
 <hr>
 
-<h2 id="exponential-moving-average-returns-emahistoricallinearreturns">Exponential Moving Average Returns <code>EMAHistoricalLinearReturns</code><a class="headerlink" href="#exponential-moving-average-returns-emahistoricallinearreturns" title="Permanent link">&para;</a></h2>
+<h2 id="exponential-moving-average-returns-emahistoricallinearreturns">Exponential Moving Average Returns <code>EMAHistoricalLinearReturns</code> <a href="../returns_api#emahistoricalreturns">📖</a><a class="headerlink" href="#exponential-moving-average-returns-emahistoricallinearreturns" title="Permanent link">&para;</a></h2>
 <p>Estimates the (annualized if frequency=252) expected returns as the exponential moving average of linear historical returns.
 Compounding is set to false by default.</p>
 <hr>
 
-<h2 id="capm-expected-returns">CAPM expected returns<a class="headerlink" href="#capm-expected-returns" title="Permanent link">&para;</a></h2>
+<h2 id="rolling-median-returns-rollingmedianreturns">Rolling Median Returns <code>RollingMedianReturns</code> <a href="../returns_api#rollingmedianreturns">📖</a><a class="headerlink" href="#rolling-median-returns-rollingmedianreturns" title="Permanent link">&para;</a></h2>
+<p>Estimates the returns from the average of the rolling median over a <code>window</code> of 20 observations, by default.</p>
+<h2 id="capm-expected-returns-capmreturns">CAPM expected returns <code>CAPMReturns</code> <a href="../returns_api#capmreturns">📖</a><a class="headerlink" href="#capm-expected-returns-capmreturns" title="Permanent link">&para;</a></h2>
 <p>Compute a return estimate using the Capital Asset Pricing Model. Under the CAPM, asset returns are equal to market returns plus a <span class="arithmatex">\(\beta\)</span> term encoding the relative risk of the asset.
 The formula for calculating the expected return of an asset given its risk is as follows:</p>
 <div class="arithmatex">\[\begin{equation}
@@ -228,7 +257,7 @@ The formula for calculating the expected return of an asset given its risk is as
 \end{equation}\]</div>
 <p>where
 - <span class="arithmatex">\(\mathbb{E}[R_i]\)</span> is the expected return of asset <span class="arithmatex">\(i\)</span>
-- <span class="arithmatex">\(r_f\)</span> is the risk-free rate
+- <span class="arithmatex">\(r_f\)</span> is the risk-free rate (default value is <code>0</code>)
 - <span class="arithmatex">\(\beta_i\)</span> is the beta of the investment
 - $ \left( \mathbb{E}\lbrackR_m\rbrack - r_f\right)$ is the market risk premium</p>
 <p>The beta of a potential investment is a measure of how much risk the investment will add to a portfolio that looks like the market. If a stock is riskier than the market, it will have a beta greater than one. If a stock has a beta of less than one, the formula assumes it will reduce the risk of a portfolio.</p>

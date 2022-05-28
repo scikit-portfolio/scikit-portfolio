@@ -75,11 +75,11 @@
                 </li>
                 <li class="toctree-l2 current"><a class="reference internal current" href="./">Mean Absolute Deviation (MAD)</a>
     <ul class="current">
-    <li class="toctree-l3"><a class="reference internal" href="#minimum-mad-portfolio-minimummad">🔴 Minimum MAD Portfolio MinimumMAD</a>
+    <li class="toctree-l3"><a class="reference internal" href="#minimum-mad-portfolio">Minimum MAD Portfolio 📖</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#efficient-return-optimization-on-mad-frontier">🟢 Efficient return optimization on MAD frontier</a>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-return-optimization-on-mad-frontier">Efficient return optimization on MAD frontier 📖</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#efficient-risk-optimization-on-mad-frontier">🟣 Efficient risk optimization on MAD frontier</a>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-risk-optimization-on-mad-frontier">Efficient risk optimization on MAD frontier 📖</a>
     </li>
     </ul>
                 </li>
@@ -111,6 +111,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul>
@@ -118,8 +120,31 @@
                   </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -182,7 +207,7 @@ The solid line is the target return <span class="arithmatex">\(\approx 0.011\)</
 The black dot ⚫️indicates the asset with the highest return and highest risk. 
 The <span style="text-color:red">red</span> dot 🔴️ indicates the minimum MAD portfolio.</p>
 </div>
-<h2 id="minimum-mad-portfolio-minimummad">🔴 Minimum MAD Portfolio <code>MinimumMAD</code><a class="headerlink" href="#minimum-mad-portfolio-minimummad" title="Permanent link">&para;</a></h2>
+<h2 id="minimum-mad-portfolio">Minimum MAD Portfolio <a href="../efficient_mad_api/#minimum-mad-portfolio-minimummad">📖</a><a class="headerlink" href="#minimum-mad-portfolio" title="Permanent link">&para;</a></h2>
 <p>It calculates the portfolio minimizing the above L1-risk model, with the weight constraints.</p>
 <p>The optimization problem is the following:</p>
 <div class="arithmatex">\[\begin{split}\begin{equation*}
@@ -194,7 +219,7 @@ The <span style="text-color:red">red</span> dot 🔴️ indicates the minimum MA
 \end{equation*}\end{split}\]</div>
 <hr>
 
-<h2 id="efficient-return-optimization-on-mad-frontier">🟢 Efficient return optimization on MAD frontier<a class="headerlink" href="#efficient-return-optimization-on-mad-frontier" title="Permanent link">&para;</a></h2>
+<h2 id="efficient-return-optimization-on-mad-frontier">Efficient return optimization on MAD frontier <a href="../efficient_mad_api//#efficient-return-optimization-on-mad-frontier">📖</a><a class="headerlink" href="#efficient-return-optimization-on-mad-frontier" title="Permanent link">&para;</a></h2>
 <p>It calculates the MAD efficient return portfolio, by minimizing the above L1-risk model, subject to a minimum portfolio return above the target return.
 The optimization problem is the following:</p>
 <div class="arithmatex">\[\begin{split}\begin{equation*}
@@ -207,7 +232,7 @@ The optimization problem is the following:</p>
 \end{equation*}\end{split}\]</div>
 <hr>
 
-<h2 id="efficient-risk-optimization-on-mad-frontier">🟣 Efficient risk optimization on MAD frontier<a class="headerlink" href="#efficient-risk-optimization-on-mad-frontier" title="Permanent link">&para;</a></h2>
+<h2 id="efficient-risk-optimization-on-mad-frontier">Efficient risk optimization on MAD frontier <a href="../efficient_mad_api//#efficient-risk-optimization-on-mad-frontier">📖</a><a class="headerlink" href="#efficient-risk-optimization-on-mad-frontier" title="Permanent link">&para;</a></h2>
 <p>It calculates the MAD efficient risk portfolio, by maximizing the portfolio return, subject to a L1-risk above the target risk. The optimization problem is the following:</p>
 <div class="arithmatex">\[\begin{split}\begin{equation*}
 \begin{aligned}
@@ -227,22 +252,22 @@ This is likely caused  by slight differences between the ECOS solver in <code>sc
 <p class="admonition-title">Warning</p>
 <p>To reproduce this result you need the Matlab Financial Toolbox. This example has been run on Matlab 2021b.</p>
 </div>
-<div class="highlight"><pre><span></span><code><span class="n">m</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.05</span><span class="p">;</span><span class="w"> </span><span class="mf">0.1</span><span class="p">;</span><span class="w"> </span><span class="mf">0.12</span><span class="p">;</span><span class="w"> </span><span class="mf">0.18</span><span class="w"> </span><span class="p">];</span><span class="w"></span>
-<span class="n">C</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="mf">0.0064</span><span class="w"> </span><span class="mf">0.00408</span><span class="w"> </span><span class="mf">0.00192</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span>
-<span class="w">    </span><span class="mf">0.00408</span><span class="w"> </span><span class="mf">0.0289</span><span class="w"> </span><span class="mf">0.0204</span><span class="w"> </span><span class="mf">0.0119</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="mf">0.00192</span><span class="w"> </span><span class="mf">0.0204</span><span class="w"> </span><span class="mf">0.0576</span><span class="w"> </span><span class="mf">0.0336</span><span class="p">;</span><span class="w"></span>
-<span class="w">    </span><span class="n">0</span><span class="w"> </span><span class="s">0.0119</span><span class="w"> </span><span class="s">0.0336</span><span class="w"> </span><span class="s">0.1225</span><span class="w"> </span><span class="s">]</span><span class="p">;</span><span class="w"></span>
-<span class="n">m</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">m</span><span class="o">/</span><span class="mi">12</span><span class="p">;</span><span class="w"></span>
-<span class="n">C</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">C</span><span class="o">/</span><span class="mi">12</span><span class="p">;</span><span class="w"></span>
+<pre><code class="language-matlab">m = [ 0.05; 0.1; 0.12; 0.18 ];
+C = [ 0.0064 0.00408 0.00192 0; 
+    0.00408 0.0289 0.0204 0.0119;
+    0.00192 0.0204 0.0576 0.0336;
+    0 0.0119 0.0336 0.1225 ];
+m = m/12;
+C = C/12;
 
-<span class="n">AssetScenarios</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">mvnrnd</span><span class="p">(</span><span class="n">m</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="mi">20000</span><span class="p">);</span><span class="w"></span>
-<span class="n">NumPortfolios</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="mi">10</span><span class="w"></span>
-<span class="c">% the output of estimateFrontier is a 10 assets x 4 portfolio weights</span><span class="w"></span>
-<span class="n">weights</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">estimateFrontier</span><span class="p">(</span><span class="n">setDefaultConstraints</span><span class="p">(</span><span class="n">PortfolioMAD</span><span class="p">(</span><span class="s">&#39;AssetScenarios&#39;</span><span class="p">,</span><span class="n">AssetScenarios</span><span class="p">)),</span><span class="n">NumPortfolios</span><span class="p">)</span><span class="w"></span>
-<span class="n">weights</span><span class="o">&#39;</span><span class="w"></span>
-</code></pre></div>
+AssetScenarios = mvnrnd(m, C, 20000);
+NumPortfolios = 10
+% the output of estimateFrontier is a 10 assets x 4 portfolio weights
+weights = estimateFrontier(setDefaultConstraints(PortfolioMAD('AssetScenarios',AssetScenarios)),NumPortfolios)
+weights'
+</code></pre>
 <p>The result are the following weights, a 10 by 4 matrix, whose rows sum to 1, with the first row representing the minimum MAD portfolio, and the last row the riskiest portfolio composed by a single asset.</p>
-<div class="highlight"><pre><span></span><code>ans =
+<pre><code class="language-markdown">ans =
 
     0.8924    0.0365    0.0374    0.0337
     0.7235    0.1323    0.0413    0.1029
@@ -254,19 +279,19 @@ This is likely caused  by slight differences between the ECOS solver in <code>sc
          0    0.3076    0.0123    0.6801
          0    0.1588         0    0.8412
          0         0         0    1.0000
-</code></pre></div>
+</code></pre>
 <p>Now verify the results by manually reconstructing the frontier by returns with <code>scikit-portfolio</code>.
 It is very easy to generate the efficient frontier together with its weights with the <code>.estimate_frontier</code> method</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span>  <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="c1"># here the same parameters as those from MATLAB example</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">0.05</span><span class="p">,</span>  <span class="mf">0.1</span><span class="p">,</span>  <span class="mf">0.12</span><span class="p">,</span>  <span class="mf">0.18</span> <span class="p">])</span>
-<span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mf">0.0064</span><span class="p">,</span> <span class="mf">0.00408</span><span class="p">,</span> <span class="mf">0.00192</span><span class="p">,</span> <span class="mi">0</span><span class="p">,],</span> <span class="p">[</span><span class="mf">0.00408</span><span class="p">,</span> <span class="mf">0.0289</span><span class="p">,</span> <span class="mf">0.0204</span><span class="p">,</span> <span class="mf">0.0119</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.00192</span><span class="p">,</span> <span class="mf">0.0204</span><span class="p">,</span> <span class="mf">0.0576</span><span class="p">,</span> <span class="mf">0.0336</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.0119</span><span class="p">,</span> <span class="mf">0.0336</span><span class="p">,</span> <span class="mf">0.1225</span><span class="p">,]])</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">m</span><span class="o">/</span><span class="mi">12</span>
-<span class="n">C</span> <span class="o">=</span> <span class="n">C</span><span class="o">/</span><span class="mi">12</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">m</span><span class="p">,</span><span class="n">cov</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20000</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">MinimumMAD</span>
-<span class="n">MinimumMAD</span><span class="p">(</span><span class="n">returns_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">set_n_jobs</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">estimate_frontier</span><span class="p">(</span><span class="n">r</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
-</code></pre></div>
+<pre><code class="language-python">import  numpy as np
+# here the same parameters as those from MATLAB example
+m = np.array([ 0.05,  0.1,  0.12,  0.18 ])
+C = np.array([[ 0.0064, 0.00408, 0.00192, 0,], [0.00408, 0.0289, 0.0204, 0.0119], [0.00192, 0.0204, 0.0576, 0.0336], [0, 0.0119, 0.0336, 0.1225,]])
+m = m/12
+C = C/12
+r = np.random.multivariate_normal(mean=m,cov=C, size=20000)
+from skportfolio import MinimumMAD
+MinimumMAD(returns_data=True).set_n_jobs(-1).estimate_frontier(r)[2]
+</code></pre>
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -354,58 +379,58 @@ It is very easy to generate the efficient frontier together with its weights wit
 <p>The resulting output is shown above following, and it only takes 4 seconds!
 Given the large number of samples (<span class="arithmatex">\(T=20,000\)</span>) we converge to the same result as from MATLAB, but <strong>twice as fast</strong>!</p>
 <p>For completeness here we also report the entire self-explaining code for the generation of 10 points along the efficient frontier.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span>  <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">skportfolio.frontier._mad</span> <span class="kn">import</span> <span class="n">EfficientMeanAbsoluteDeviation</span>
-<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
-<span class="c1"># here the same parameters as those from MATLAB example</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="mf">0.05</span><span class="p">,</span>  <span class="mf">0.1</span><span class="p">,</span>  <span class="mf">0.12</span><span class="p">,</span>  <span class="mf">0.18</span> <span class="p">])</span>
-<span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="mf">0.0064</span><span class="p">,</span> <span class="mf">0.00408</span><span class="p">,</span> <span class="mf">0.00192</span><span class="p">,</span> <span class="mi">0</span><span class="p">,],</span> <span class="p">[</span><span class="mf">0.00408</span><span class="p">,</span> <span class="mf">0.0289</span><span class="p">,</span> <span class="mf">0.0204</span><span class="p">,</span> <span class="mf">0.0119</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.00192</span><span class="p">,</span> <span class="mf">0.0204</span><span class="p">,</span> <span class="mf">0.0576</span><span class="p">,</span> <span class="mf">0.0336</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.0119</span><span class="p">,</span> <span class="mf">0.0336</span><span class="p">,</span> <span class="mf">0.1225</span><span class="p">,]])</span>
-<span class="n">m</span> <span class="o">=</span> <span class="n">m</span><span class="o">/</span><span class="mi">12</span>
-<span class="n">C</span> <span class="o">=</span> <span class="n">C</span><span class="o">/</span><span class="mi">12</span>
-<span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">multivariate_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="n">m</span><span class="p">,</span><span class="n">cov</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20000</span><span class="p">)</span>
-<span class="c1"># creates a well-formed dataframe</span>
-<span class="n">returns</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">,</span><span class="s1">&#39;D&#39;</span><span class="p">])</span>
-<span class="n">mu</span> <span class="o">=</span> <span class="n">returns</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-<span class="c1"># minimum risk portfolio, frontier starts here</span>
-<span class="n">w_min</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
-    <span class="n">EfficientMeanAbsoluteDeviation</span><span class="p">(</span>
-        <span class="n">expected_returns</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span>
-        <span class="n">returns</span><span class="o">=</span><span class="n">returns</span>
-    <span class="p">)</span><span class="o">.</span><span class="n">min_risk</span><span class="p">(),</span>
-    <span class="n">index</span><span class="o">=</span><span class="n">returns</span><span class="o">.</span><span class="n">columns</span>
-<span class="p">)</span>
-<span class="n">NumPortfolios</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="c1"># minimum MAD risk proxy </span>
-<span class="n">min_risk</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">w_min</span><span class="o">@</span><span class="p">(</span><span class="n">returns</span> <span class="o">-</span> <span class="n">mu</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
-<span class="c1"># minimum portfolio return of the corresponding weight</span>
-<span class="n">min_ret</span> <span class="o">=</span> <span class="n">w_min</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">mu</span>
-<span class="c1"># compute frontier from efficient returns</span>
-<span class="c1"># the 1E-6 is needed to help converge nicely to the highest risk portfolio</span>
-<span class="n">rets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">min_ret</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span><span class="o">-</span><span class="mf">1E-6</span><span class="p">,</span> <span class="n">NumPortfolios</span><span class="p">)</span>
-<span class="n">risks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span><span class="o">*</span><span class="n">NumPortfolios</span><span class="p">)</span>
-<span class="n">all_weights</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rets</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">MAD</span> <span class="o">=</span> <span class="n">EfficientMeanAbsoluteDeviation</span><span class="p">(</span>
-            <span class="n">expected_returns</span><span class="o">=</span><span class="n">mu</span><span class="p">,</span>
-            <span class="n">returns</span><span class="o">=</span><span class="n">returns</span>
-        <span class="p">)</span>
-        <span class="n">weights</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
-            <span class="n">MAD</span><span class="o">.</span><span class="n">efficient_return</span><span class="p">(</span><span class="n">target_return</span><span class="o">=</span><span class="n">r</span><span class="p">),</span>
-            <span class="n">index</span><span class="o">=</span><span class="n">returns</span><span class="o">.</span><span class="n">columns</span>
-        <span class="p">)</span>
-        <span class="n">risks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">weights</span><span class="o">@</span><span class="p">(</span><span class="n">returns</span><span class="o">-</span><span class="n">mu</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
-        <span class="n">all_weights</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-        <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">))</span> <span class="c1">## in case some solver error is raised, we simply print a warning</span>
+<pre><code class="language-python">import numpy as np
+import pandas as pd
+from skportfolio.frontier._mad import EfficientMeanAbsoluteDeviation
+from warnings import warn
+# here the same parameters as those from MATLAB example
+m = np.array([ 0.05,  0.1,  0.12,  0.18 ])
+C = np.array([[ 0.0064, 0.00408, 0.00192, 0,], [0.00408, 0.0289, 0.0204, 0.0119], [0.00192, 0.0204, 0.0576, 0.0336], [0, 0.0119, 0.0336, 0.1225,]])
+m = m/12
+C = C/12
+r = np.random.multivariate_normal(mean=m,cov=C, size=20000)
+# creates a well-formed dataframe
+returns = pd.DataFrame(r, columns=['A','B','C','D'])
+mu = returns.mean()
+# minimum risk portfolio, frontier starts here
+w_min = pd.Series(
+    EfficientMeanAbsoluteDeviation(
+        expected_returns=mu,
+        returns=returns
+    ).min_risk(),
+    index=returns.columns
+)
+NumPortfolios = 10
+# minimum MAD risk proxy 
+min_risk = np.mean(np.abs(w_min@(returns - mu).T))
+# minimum portfolio return of the corresponding weight
+min_ret = w_min.T @ mu
+# compute frontier from efficient returns
+# the 1E-6 is needed to help converge nicely to the highest risk portfolio
+rets = np.linspace(min_ret, np.max(mu)-1E-6, NumPortfolios)
+risks = np.array([np.nan]*NumPortfolios)
+all_weights = []
+for i,r in enumerate(rets):
+    try:
+        MAD = EfficientMeanAbsoluteDeviation(
+            expected_returns=mu,
+            returns=returns
+        )
+        weights = pd.Series(
+            MAD.efficient_return(target_return=r),
+            index=returns.columns
+        )
+        risks[i] = np.mean(np.abs(weights@(returns-mu).T))
+        all_weights.append(weights)
+    except Exception as ex:
+        warn(str(ex)) ## in case some solver error is raised, we simply print a warning
 
-<span class="n">risks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">risks</span><span class="p">)</span>
-<span class="n">all_weights</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">all_weights</span><span class="p">)</span>
-<span class="n">all_weights</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-</code></pre></div>
-<p>It is great to see that <code>scikit-portfolio</code> results are highly consistent with those from Matlab's  🎉️🎉️🎉️
-<div class="highlight"><pre><span></span><code>array([[0.8916, 0.037 , 0.0373, 0.034 ],
+risks = np.array(risks)
+all_weights = np.array(all_weights)
+all_weights.round(4)
+</code></pre>
+<p>It is great to see that <code>scikit-portfolio</code> results are highly consistent with those from Matlab's  🎉️🎉️🎉️</p>
+<pre><code>array([[0.8916, 0.037 , 0.0373, 0.034 ],
        [0.7228, 0.1328, 0.0412, 0.1032],
        [0.5559, 0.2269, 0.0436, 0.1736],
        [0.3899, 0.3204, 0.045 , 0.2447],
@@ -415,8 +440,8 @@ Given the large number of samples (<span class="arithmatex">\(T=20,000\)</span>)
        [0.    , 0.3074, 0.0124, 0.6803],
        [0.    , 0.1588, 0.    , 0.8412],
        [0.    , 0.    , 0.    , 1.    ]])
-</code></pre></div>
-As you can see the portfolio weights are almost equal among the two systems, certifying the goodness of the <code>scikit-portfolio</code> implementation.</p>
+</code></pre>
+<p>As you can see the portfolio weights are almost equal among the two systems, certifying the goodness of the <code>scikit-portfolio</code> implementation.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><img alt="mad_matlab_vs_skportfolio" src="../imgs/mad_matlab_vs_skportfolio.svg" /></p>

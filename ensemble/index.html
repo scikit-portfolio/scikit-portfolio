@@ -111,6 +111,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul>
@@ -118,8 +120,31 @@
                   </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -189,31 +214,31 @@ classical efficient frontier approach.</p>
 the <code>MichaudEfficientFrontier</code> object and the desidered portfolio estimator. Here we produce an ensemble estimate of 
 the <code>MaxSharpeRatio</code> portfolio, a method that is known to produce highly skewed allocations because of the strong 
 sensitivity on expected returns.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">skportfolio.ensemble</span> <span class="kn">import</span> <span class="n">MichaudResampledFrontier</span>
-<span class="kn">from</span> <span class="nn">skportfolio.frontier</span> <span class="kn">import</span> <span class="n">MaxSharpe</span>
-<span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">SampleCovariance</span><span class="p">,</span><span class="n">MeanHistoricalLinearReturns</span>
-<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+<pre><code class="language-python">import pandas as pd
+from skportfolio.ensemble import MichaudResampledFrontier
+from skportfolio.frontier import MaxSharpe
+from skportfolio import SampleCovariance,MeanHistoricalLinearReturns
+from skportfolio.datasets import load_tech_stock_prices
 
-<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
-<span class="c1"># create a Maximum sharpe ratio portfolio estimator to be fed to resampled frontier meta-estimator</span>
-<span class="n">ptf</span> <span class="o">=</span> <span class="n">MaxSharpe</span><span class="p">(</span>
-    <span class="n">returns_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">risk_free_rate</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
-    <span class="n">frequency</span><span class="o">=</span><span class="mi">252</span><span class="p">,</span>
-    <span class="n">rets_estimator</span><span class="o">=</span><span class="n">MeanHistoricalLinearReturns</span><span class="p">()</span>
-<span class="p">)</span>
-<span class="n">ensemble</span> <span class="o">=</span> <span class="n">MichaudResampledFrontier</span><span class="p">(</span>
-    <span class="n">ptf_estimator</span><span class="o">=</span><span class="n">ptf</span><span class="p">,</span>
-    <span class="n">rets_estimator</span><span class="o">=</span><span class="n">MeanHistoricalLinearReturns</span><span class="p">(),</span> 
-    <span class="n">risk_estimator</span><span class="o">=</span><span class="n">SampleCovariance</span><span class="p">(),</span>
-    <span class="n">n_iter</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
-    <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span>
-<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
+prices = load_tech_stock_prices()
+# create a Maximum sharpe ratio portfolio estimator to be fed to resampled frontier meta-estimator
+ptf = MaxSharpe(
+    returns_data=False,
+    risk_free_rate=0.0,
+    frequency=252,
+    rets_estimator=MeanHistoricalLinearReturns()
+)
+ensemble = MichaudResampledFrontier(
+    ptf_estimator=ptf,
+    rets_estimator=MeanHistoricalLinearReturns(), 
+    risk_estimator=SampleCovariance(),
+    n_iter=512,
+    n_jobs=-1
+).fit(prices)
 
-<span class="n">W</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">all_weights_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">W</span><span class="o">.</span><span class="n">T</span><span class="o">.</span><span class="n">expanding</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-</code></pre></div>
+W = pd.concat(ensemble.all_weights_, axis=1)
+W.T.expanding().mean().plot()
+</code></pre>
 <p>Here we show the cumulative average of asset weights under the resampled frontier allocation. It is evident that 
 after enough scenarios, the weights averages tend to stabilize around the correct values for the optimal 
 maximum sharpe ratio allocation.</p>
@@ -224,38 +249,38 @@ maximum sharpe ratio allocation.</p>
 </div>
 <p>We could stop here, but we want to show how to use the Resampled Frontier portfolio also to estimate Maximum Omega 
 Ratio portfolios, to reduce the estimation error.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">skportfolio.ensemble</span> <span class="kn">import</span> <span class="n">MichaudResampledFrontier</span>
-<span class="kn">from</span> <span class="nn">skportfolio.frontier</span> <span class="kn">import</span> <span class="n">MaxOmegaRatio</span>
-<span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">SampleCovariance</span><span class="p">,</span><span class="n">MeanHistoricalLinearReturns</span>
+<pre><code class="language-python">import pandas as pd
+from skportfolio.ensemble import MichaudResampledFrontier
+from skportfolio.frontier import MaxOmegaRatio
+from skportfolio import SampleCovariance,MeanHistoricalLinearReturns
 
-<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+from skportfolio.datasets import load_tech_stock_prices
 
-<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
-<span class="n">returns</span> <span class="o">=</span> <span class="n">prices</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-<span class="c1"># create a Maximum sharpe ratio portfolio estimator to be fed to resampled frontier meta-estimator</span>
-<span class="n">ptf</span> <span class="o">=</span> <span class="n">MaxOmegaRatio</span><span class="p">(</span>
-    <span class="n">returns_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">frequency</span><span class="o">=</span><span class="mi">252</span>
-<span class="p">)</span>
+prices = load_tech_stock_prices()
+returns = prices.pct_change().dropna()
+# create a Maximum sharpe ratio portfolio estimator to be fed to resampled frontier meta-estimator
+ptf = MaxOmegaRatio(
+    returns_data=False,
+    frequency=252
+)
 
-<span class="n">ensemble</span> <span class="o">=</span> <span class="n">MichaudResampledFrontier</span><span class="p">(</span>
-    <span class="n">ptf_estimator</span><span class="o">=</span><span class="n">ptf</span><span class="p">,</span>
-    <span class="n">rets_estimator</span><span class="o">=</span><span class="n">MeanHistoricalLinearReturns</span><span class="p">(),</span>
-    <span class="n">risk_estimator</span><span class="o">=</span><span class="n">SampleCovariance</span><span class="p">(),</span>
-    <span class="n">n_iter</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
-    <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span>
-<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
+ensemble = MichaudResampledFrontier(
+    ptf_estimator=ptf,
+    rets_estimator=MeanHistoricalLinearReturns(),
+    risk_estimator=SampleCovariance(),
+    n_iter=512,
+    n_jobs=-1
+).fit(prices)
 
-<span class="c1">## Plotting part</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+## Plotting part
+import matplotlib.pyplot as plt
 
-<span class="n">W</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">all_weights_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
-<span class="n">W</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;scenario&#39;</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Cumulative average weight&#39;</span><span class="p">)</span>
-</code></pre></div>
+W = pd.concat(ensemble.all_weights_, axis=1).T
+fig, ax = plt.subplots(figsize=(12, 7))
+W.plot(ax=ax)
+ax.set_xlabel('scenario')
+ax.set_ylabel('Cumulative average weight')
+</code></pre>
 <p>The allocation weights are slightly different with the Omega ratio efficient frontier, but nonetheless we still 
 observe a tendency to stabilization of portfolio weights when considering the cumulative average. The optimal number 
 of scenarios should be chosen in a way such that the cumulative averages are self-stabilizing. The default value of 
@@ -288,23 +313,23 @@ controls a smooth blending between the equally weighted portfolio and the single
 the <code>prices</code> dataset. By setting the <code>subset_size=0.5</code> we implement what suggested by the original authors and pick 
 on each iteration a number of columns equivalent to <span class="arithmatex">\(5^{0.5}\)</span> (with integer approximation). While does not make much 
 sense for our data, as we only have 5 stocks in the data, it illustrates well the point.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio.frontier</span> <span class="kn">import</span> <span class="n">MaxSharpe</span>
-<span class="kn">from</span> <span class="nn">skportfolio.ensemble</span> <span class="kn">import</span> <span class="n">SubsetResampling</span>
-<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+<pre><code class="language-python">from skportfolio.frontier import MaxSharpe
+from skportfolio.ensemble import SubsetResampling
+from skportfolio.datasets import load_tech_stock_prices
 
-<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
-<span class="c1"># fit on price data and average over 64 estimates, </span>
-<span class="c1"># considering ceil(5**0.5) = 3 stocks per subsample</span>
-<span class="n">ptf</span> <span class="o">=</span> <span class="n">SubsetResampling</span><span class="p">(</span>
-    <span class="n">ptf_estimator</span><span class="o">=</span><span class="n">MaxSharpe</span><span class="p">(),</span>
-    <span class="n">subset_size</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-    <span class="n">n_iter</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
-    <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">agg_func</span><span class="o">=</span><span class="s2">&quot;median&quot;</span>
-<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
+prices = load_tech_stock_prices()
+# fit on price data and average over 64 estimates, 
+# considering ceil(5**0.5) = 3 stocks per subsample
+ptf = SubsetResampling(
+    ptf_estimator=MaxSharpe(),
+    subset_size=0.5,
+    n_iter=64,
+    n_jobs=-1,
+    agg_func=&quot;median&quot;
+).fit(prices)
 
-<span class="n">ptf</span><span class="o">.</span><span class="n">weights_</span>
-</code></pre></div>
+ptf.weights_
+</code></pre>
 <p>One can also access the list of weights in the <code>ptf.all_weights_</code> variable, which in this case is a <span class="arithmatex">\(64 \times 5\)</span> array 
 containing all  weights, in order to create nice visualizations.</p>
 <p>Here is a picture of a 2D embedding of all portfolio weights using the dimensionality reduction method <a href="https://umap-learn.readthedocs.io/en/latest/plotting.html">UMAP</a> from data related to cryptocurrencies prices over 2 years, for a total of more than 200 assets.</p>
@@ -333,18 +358,18 @@ locations account for estimation risk over a whole range of market parameters. <
 <p>Here we consider robust Bayesian decisions that also account for the estimation error in the covariances and that, unlike in the Black-Litterman framework, explicitly process the information from the market, namely the observed time series of the past returns.
 As it turns out, the multi-parameter, non-conically constrained mean-variance optimization simplifies to a parsimonious Bayesian efficient frontier that resembles the classical frontier, except that
 the classical parameterization in terms of the exposure to market risk becomes in this context a parameterization in terms of the exposure to both market risk and estimation risk.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio.ensemble</span> <span class="kn">import</span> <span class="n">RobustBayesian</span>
-<span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">MeanHistoricalLinearReturns</span><span class="p">,</span><span class="n">SampleCovariance</span>
-<span class="n">RobustBayesian</span><span class="p">(</span>
-    <span class="n">window</span><span class="o">=</span><span class="mi">180</span><span class="p">,</span>
-    <span class="n">rets_estimator</span><span class="o">=</span><span class="n">MeanHistoricalLinearReturns</span><span class="p">(),</span>
-    <span class="n">risk_estimator</span><span class="o">=</span><span class="n">SampleCovariance</span><span class="p">(),</span>
-    <span class="n">n_portfolios</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
-    <span class="n">robustness_param_loc</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-    <span class="n">robustness_param_scatter</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-    <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span>
-<span class="p">)</span>
-</code></pre></div>
+<pre><code class="language-python">from skportfolio.ensemble import RobustBayesian
+from skportfolio import MeanHistoricalLinearReturns,SampleCovariance
+RobustBayesian(
+    window=180,
+    rets_estimator=MeanHistoricalLinearReturns(),
+    risk_estimator=SampleCovariance(),
+    n_portfolios=16,
+    robustness_param_loc=0.1,
+    robustness_param_scatter=0.1,
+    n_jobs=-1
+)
+</code></pre>
 <h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
 <div class="footnote">
 <hr />

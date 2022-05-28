@@ -109,6 +109,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul>
@@ -116,8 +118,31 @@
                   </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -148,52 +173,50 @@
                 <h1 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h1>
 <h2 id="via-pip-python-package-manager">Via <strong>pip</strong> python package manager...<a class="headerlink" href="#via-pip-python-package-manager" title="Permanent link">&para;</a></h2>
 <p>The simplest way to install the library is through the <strong>pip</strong> python package manager, all the dependencies are automatically installed for you.</p>
-<div class="highlight"><pre><span></span><code>pip install scikit-portfolio
-</code></pre></div>
+<pre><code class="language-bash">pip install scikit-portfolio
+</code></pre>
 <h2 id="or-from-source-via-the-scikit-portfolio-repository">...or from source via the <code>scikit-portfolio</code> repository<a class="headerlink" href="#or-from-source-via-the-scikit-portfolio-repository" title="Permanent link">&para;</a></h2>
 <p>Scikit-portfolio is an open source portfolio management library, whose code is hosted on <a href="https://github.com/carlonicolini/scikit-portfolio">github.com/carlonicolini/scikit-portfolio</a>.
 We reccomend you install on a virtual envinronment. If you are on Mac/Linux, the make sure to have virtualenv installed.</p>
 <ol>
-<li>
-<p>Download the latest version of scikit-portfolio from public repository:
-<div class="highlight"><pre><span></span><code>git clone https://github.com/carlonicolini/scikit-portfolio.git
-</code></pre></div></p>
-</li>
-<li>
-<p>Enter downloaded directory
-<div class="highlight"><pre><span></span><code><span class="nb">cd</span> scikitportfolio
-</code></pre></div></p>
-</li>
-<li>
-<p>Create and activate a virtual envinronment named <code>venv</code>:
-<div class="highlight"><pre><span></span><code>virtualenv venv
-<span class="nb">source</span> venv/bin/activate
-</code></pre></div></p>
-</li>
-<li>
-<p>Either select the stable version:
-<div class="highlight"><pre><span></span><code>git checkout master
-</code></pre></div></p>
-</li>
-<li>
-<p>or, if you are a developer, switch to the <code>development</code> branch, where you can send <em>pull requests</em>: 
-<div class="highlight"><pre><span></span><code>git checkout develop
-</code></pre></div></p>
-</li>
-<li>
-<p>Then install the library with <code>pip</code>.
-<div class="highlight"><pre><span></span><code>pip install .
-</code></pre></div></p>
-</li>
-<li>
-<p>To run all tests, you need to have <strong>pytest</strong>* installed. For this you need the <code>requirements_dev</code> packages:
-<div class="highlight"><pre><span></span><code>pip install -r requirements_dev.txt
-</code></pre></div>
-then run <code>tox</code>
-<div class="highlight"><pre><span></span><code>make <span class="nb">test</span>
-</code></pre></div></p>
-</li>
+<li>Download the latest version of scikit-portfolio from public repository:</li>
 </ol>
+<pre><code class="language-shell">git clone https://github.com/carlonicolini/scikit-portfolio.git
+</code></pre>
+<ol>
+<li>Enter downloaded directory</li>
+</ol>
+<pre><code class="language-shell">cd scikitportfolio
+</code></pre>
+<ol>
+<li>Create and activate a virtual envinronment named <code>venv</code>:</li>
+</ol>
+<pre><code class="language-shell">virtualenv venv
+source venv/bin/activate
+</code></pre>
+<ol>
+<li>Either select the stable version:</li>
+</ol>
+<pre><code class="language-shell">git checkout master
+</code></pre>
+<ol>
+<li>or, if you are a developer, switch to the <code>development</code> branch, where you can send <em>pull requests</em>: </li>
+</ol>
+<pre><code class="language-shell">git checkout develop
+</code></pre>
+<ol>
+<li>Then install the library with <code>pip</code>.</li>
+</ol>
+<pre><code class="language-shell">pip install .
+</code></pre>
+<ol>
+<li>To run all tests, you need to have <strong>pytest</strong>* installed. For this you need the <code>requirements_dev</code> packages:</li>
+</ol>
+<pre><code class="language-shell">pip install -r requirements_dev.txt
+</code></pre>
+<p>then run <code>tox</code></p>
+<pre><code class="language-shell">make test
+</code></pre>
               
             </div>
           </div><footer>

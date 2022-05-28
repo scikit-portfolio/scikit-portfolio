@@ -75,7 +75,7 @@
     <ul class="current">
     <li class="toctree-l3"><a class="reference internal" href="#maximum-omega-ratio">Maximum Omega ratio</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#minimum-omega-risk">Minimum Omega Risk</a>
+    <li class="toctree-l3"><a class="reference internal" href="#minimum-omega-risk">Minimum Omega Risk 📖</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#efficient-risk-on-omega-ratio-frontier">Efficient risk on omega-ratio frontier</a>
     </li>
@@ -113,6 +113,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul>
@@ -120,8 +122,31 @@
                   </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -155,7 +180,7 @@
 when the portfolio return is elliptically distributed, as it only takes into account only first and second moments of 
 the returns distribution, neglecting other higher order moments. Especially, when the portfolio return is skewed or
 exhibits fat tails, then the Sharpe Ratio might result in counterintuitive performance evaluations and rankings.</p>
-<p>To address this issue, <strong>Omega ratio</strong> has been introducede as a measure of the ratio between risk and rewards that 
+<p>To address this issue, <strong>Omega ratio</strong> has been introduced as a measure of the ratio between risk and rewards that 
 takes into consideration all moments of the portfolio returns distribution. 
 It captures both the downside and upside potential of the constructed portfolio, while remaining consistent with utility maximization. </p>
 <p>The Omega Ratio makes use of a threshold value <span class="arithmatex">\(\tau\)</span>, or <em>minimum acceptable return</em> to distinguish the upside from the downside.
@@ -238,7 +263,7 @@ Please refer to the <code>EfficientOmegaRatio</code> class documentation, for th
 </div>
 <hr>
 
-<h2 id="minimum-omega-risk">Minimum Omega Risk<a class="headerlink" href="#minimum-omega-risk" title="Permanent link">&para;</a></h2>
+<h2 id="minimum-omega-risk">Minimum Omega Risk <a href="../efficient_omega_api#minimum-omega-risk">📖</a><a class="headerlink" href="#minimum-omega-risk" title="Permanent link">&para;</a></h2>
 <p>This portfolio minimizes the denominator in the Omega ratio. It is indeed very similar to the objective function of 
 the Minimum Absolute Deviation portfolio. The minimum Omega risk optimization problem is solved through the 
 <code>EfficientOmegaFrontier</code> interface:</p>
@@ -281,8 +306,6 @@ The following optimization problem is solved through the <code>EfficientOmegaFro
 \end{aligned}
 \end{equation*}
 \end{split}\]</div>
-<hr>
-
 <h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
 <div class="footnote">
 <hr />

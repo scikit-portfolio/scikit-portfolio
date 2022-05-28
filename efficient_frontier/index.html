@@ -65,19 +65,19 @@
     <ul class="current">
                 <li class="toctree-l2 current"><a class="reference internal current" href="./">Classical Mean-Variance</a>
     <ul class="current">
-    <li class="toctree-l3"><a class="reference internal" href="#minimum-volatility">Minimum volatility</a>
+    <li class="toctree-l3"><a class="reference internal" href="#minimum-volatility">Minimum volatility 📖</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#example-usage">Example usage</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#efficient-return-on-mean-variance-frontier">Efficient return on mean variance frontier</a>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-return-on-mean-variance-frontier">Efficient return on mean variance frontier 📖</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#example-usage_1">Example usage</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#efficient-risk-on-mean-variance-frontier">Efficient risk on mean variance frontier</a>
+    <li class="toctree-l3"><a class="reference internal" href="#efficient-risk-on-mean-variance-frontier">Efficient risk on mean variance frontier 📖</a>
         <ul>
     <li class="toctree-l4"><a class="reference internal" href="#example-usage_2">Example usage</a>
     </li>
@@ -129,6 +129,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul>
@@ -136,8 +138,31 @@
                   </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -182,7 +207,7 @@ The <strong>minimum risk</strong> portfolio instead corresponds to the 🟢 gree
 </div>
 <hr>
 
-<h2 id="minimum-volatility">Minimum volatility<a class="headerlink" href="#minimum-volatility" title="Permanent link">&para;</a></h2>
+<h2 id="minimum-volatility">Minimum volatility <a href="../efficient_frontier_api/#minimum-volatility">📖</a><a class="headerlink" href="#minimum-volatility" title="Permanent link">&para;</a></h2>
 <p>Calculates the portfolio with the least volatility over the efficient frontier, namely the green dot 🟢 in the Markowitz mean-variance efficient frontier. This portfolio algorithm requires no estimates on expected returns, hence its estimation is typically considered more robust than other points along the frontier. 
 The optimal weights are determined by the following portfolio optimization problem, where portfolio volatility is minimized:</p>
 <div class="arithmatex">\[\begin{split}\begin{equation*}
@@ -195,30 +220,30 @@ The optimal weights are determined by the following portfolio optimization probl
 <p>Additional constraints can be added manually by specifiying with the <code>add_constraint</code> method</p>
 <h3 id="example-usage">Example usage<a class="headerlink" href="#example-usage" title="Permanent link">&para;</a></h3>
 <p>The basic usage of the class is very easy, in one line you fit the <code>MinimumVolatility</code> portfolio and get the weights</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio.frontier</span> <span class="kn">import</span> <span class="n">MinimumVolatility</span>
-<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+<pre><code class="language-python">from skportfolio.frontier import MinimumVolatility
+from skportfolio.datasets import load_tech_stock_prices
 
-<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
-<span class="n">returns</span> <span class="o">=</span> <span class="n">prices</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-<span class="c1"># fit portfolio directly on prices</span>
-<span class="n">MinimumVolatility</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span><span class="o">.</span><span class="n">weights_</span>
-<span class="c1"># or fit portfolio on returns, but apply weights on prices</span>
-<span class="n">MinimumVolatility</span><span class="p">(</span><span class="n">returns_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
-</code></pre></div>
+prices = load_tech_stock_prices()
+returns = prices.pct_change().dropna()
+# fit portfolio directly on prices
+MinimumVolatility().fit(prices).weights_
+# or fit portfolio on returns, but apply weights on prices
+MinimumVolatility(returns_data=True).fit(returns).predict(prices)
+</code></pre>
 <p>Altenatively, one can modify the risk estimator. Rather than the <code>SampleCovariance</code>, other covariance estimators can be chosen, such as the weighted exponential moving average of covariance <code>CovarianceExp</code> (see the <a href="../returns/">returns and risk estimators section</a>:</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">CovarianceExp</span>
-<span class="kn">from</span> <span class="nn">skportfolio.frontier</span> <span class="kn">import</span> <span class="n">MinimumVolatility</span>
-<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<pre><code class="language-python">from skportfolio import CovarianceExp
+from skportfolio.frontier import MinimumVolatility
+from skportfolio.datasets import load_tech_stock_prices
+import matplotlib.pyplot as plt
+import pandas as pd
 
-<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
-<span class="c1"># compare the two allocations between sample covariance and exponentially moving weighted average covariance with a span of 180 days</span>
-<span class="n">w_sample_cov</span> <span class="o">=</span> <span class="n">MinimumVolatility</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="mi">252</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span><span class="o">.</span><span class="n">weights_</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;Min Vol - sample covariance&#39;</span><span class="p">)</span>
-<span class="n">w_cov_exp</span> <span class="o">=</span> <span class="n">MinimumVolatility</span><span class="p">(</span><span class="n">risk_estimator</span><span class="o">=</span><span class="n">CovarianceExp</span><span class="p">(</span><span class="n">frequency</span><span class="o">=</span><span class="mi">252</span><span class="p">,</span> <span class="n">span</span><span class="o">=</span><span class="mi">180</span><span class="p">),</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">252</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">load_tech_stock_prices</span><span class="p">())</span><span class="o">.</span><span class="n">weights_</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;MinVol-CovarianceExp&#39;</span><span class="p">)</span>
-<span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">w_sample_cov</span><span class="p">,</span> <span class="n">w_cov_exp</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">bar</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-</code></pre></div>
+prices = load_tech_stock_prices()
+# compare the two allocations between sample covariance and exponentially moving weighted average covariance with a span of 180 days
+w_sample_cov = MinimumVolatility(frequency=252).fit(prices).weights_.rename('Min Vol - sample covariance')
+w_cov_exp = MinimumVolatility(risk_estimator=CovarianceExp(frequency=252, span=180), frequency=252).fit(load_tech_stock_prices()).weights_.rename('MinVol-CovarianceExp')
+pd.concat([w_sample_cov, w_cov_exp], axis=1).plot.bar()
+plt.grid(True)
+</code></pre>
 <p><img alt="sample_cov_vs_cov_exp" src="../imgs/minvol_sample_vs_covexp.svg" /></p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -229,7 +254,7 @@ For more information, look at the <a href="../hyperparameters/">backtesting</a> 
 </div>
 <hr>
 
-<h2 id="efficient-return-on-mean-variance-frontier">Efficient return on mean variance frontier<a class="headerlink" href="#efficient-return-on-mean-variance-frontier" title="Permanent link">&para;</a></h2>
+<h2 id="efficient-return-on-mean-variance-frontier">Efficient return on mean variance frontier <a href="../efficient_frontier_api/#meanvarianceefficientreturn">📖</a><a class="headerlink" href="#efficient-return-on-mean-variance-frontier" title="Permanent link">&para;</a></h2>
 <p>Calculates the portfolio over the efficient frontier given target portfolio return <span class="arithmatex">\(\rho_P^\star\)</span>.
 It explicitly solves the following optimization problem, where portfolio volatility is minimized given a lower bound on
 portfolio returns <span class="arithmatex">\(\mathbf{w}^T \boldsymbol \mu\)</span>:</p>
@@ -242,19 +267,19 @@ portfolio returns <span class="arithmatex">\(\mathbf{w}^T \boldsymbol \mu\)</spa
 \end{aligned}
 \end{equation*}\end{split}\]</div>
 <h3 id="example-usage_1">Example usage<a class="headerlink" href="#example-usage_1" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio.frontier</span> <span class="kn">import</span> <span class="n">MeanVarianceEfficientReturn</span>
-<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+<pre><code class="language-python">from skportfolio.frontier import MeanVarianceEfficientReturn
+from skportfolio.datasets import load_tech_stock_prices
 
-<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
-<span class="n">returns</span> <span class="o">=</span> <span class="n">prices</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-<span class="c1"># fit portfolio directly on prices, with target_return set in initialization</span>
-<span class="n">MeanVarianceEfficientReturn</span><span class="p">(</span><span class="n">target_return</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span><span class="o">.</span><span class="n">weights_</span>
-<span class="c1"># or fit portfolio on returns, changing target return and applying weights on prices</span>
-<span class="n">MeanVarianceEfficientReturn</span><span class="p">(</span><span class="n">returns_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">set_target_return</span><span class="p">(</span><span class="n">target_return</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
-</code></pre></div>
+prices = load_tech_stock_prices()
+returns = prices.pct_change().dropna()
+# fit portfolio directly on prices, with target_return set in initialization
+MeanVarianceEfficientReturn(target_return=0.05).fit(prices).weights_
+# or fit portfolio on returns, changing target return and applying weights on prices
+MeanVarianceEfficientReturn(returns_data=True).set_target_return(target_return=0.05).fit(returns).predict(prices)
+</code></pre>
 <hr>
 
-<h2 id="efficient-risk-on-mean-variance-frontier">Efficient risk on mean variance frontier<a class="headerlink" href="#efficient-risk-on-mean-variance-frontier" title="Permanent link">&para;</a></h2>
+<h2 id="efficient-risk-on-mean-variance-frontier">Efficient risk on mean variance frontier <a href="../efficient_frontier_api/#meanvarianceefficientrisk">📖</a><a class="headerlink" href="#efficient-risk-on-mean-variance-frontier" title="Permanent link">&para;</a></h2>
 <p>Calculates the portfolio over the efficient frontier given target portfolio volatility <span class="arithmatex">\(\sigma_P^\star\)</span>.
 It explicitly solves the following optimization problem, where portfolio return is maximized given an upper limit 
 to portfolio volatility <span class="arithmatex">\(\sigma^\star_P\)</span>.</p>
@@ -267,16 +292,16 @@ to portfolio volatility <span class="arithmatex">\(\sigma^\star_P\)</span>.</p>
 \end{aligned}
 \end{equation*}\end{split}\]</div>
 <h3 id="example-usage_2">Example usage<a class="headerlink" href="#example-usage_2" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio.frontier</span> <span class="kn">import</span> <span class="n">MeanVarianceEfficientRisk</span>
-<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
+<pre><code class="language-python">from skportfolio.frontier import MeanVarianceEfficientRisk
+from skportfolio.datasets import load_tech_stock_prices
 
-<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
-<span class="n">returns</span> <span class="o">=</span> <span class="n">prices</span><span class="o">.</span><span class="n">pct_change</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
-<span class="c1"># fit portfolio directly on prices, with target_return set in initialization</span>
-<span class="n">MeanVarianceEfficientRisk</span><span class="p">(</span><span class="n">target_return</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span><span class="o">.</span><span class="n">weights_</span>
-<span class="c1"># or fit portfolio on returns, changing target return and applying weights on prices</span>
-<span class="n">MeanVarianceEfficientRisk</span><span class="p">(</span><span class="n">returns_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">set_target_risk</span><span class="p">(</span><span class="n">target_return</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">returns</span><span class="p">)</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
-</code></pre></div>
+prices = load_tech_stock_prices()
+returns = prices.pct_change().dropna()
+# fit portfolio directly on prices, with target_return set in initialization
+MeanVarianceEfficientRisk(target_return=0.05).fit(prices).weights_
+# or fit portfolio on returns, changing target return and applying weights on prices
+MeanVarianceEfficientRisk(returns_data=True).set_target_risk(target_return=0.05).fit(returns).predict(prices)
+</code></pre>
 <h2 id="plotting-the-efficient-frontier">Plotting the efficient frontier<a class="headerlink" href="#plotting-the-efficient-frontier" title="Permanent link">&para;</a></h2>
 <p>You can simply create the specific portfolio object and call '.plot_frontier' specifying the number of points along the frontier to be computed.</p>
 <p>All the classes inheriting from <code>_BaseEfficientFrontierPortfolioEstimator</code> have the possibility to explore the efficient frontier, given <code>prices</code> or <code>returns</code> data.
@@ -292,24 +317,24 @@ Currently, these are the portfolio estimators supporting the <code>.estimate_fro
 <h3 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h3>
 <p>Plotting the efficient frontier is very easy. The <code>plot_frontier</code> method accepts a large number of aesthetic arguments to make the visualization more readable and content-rich.
 Look at the method documentation for further information.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">from</span> <span class="nn">skportfolio</span> <span class="kn">import</span> <span class="n">MinimumVolatility</span><span class="p">,</span> <span class="n">MeanVarianceEfficientRisk</span>
-<span class="kn">from</span> <span class="nn">skportfolio.datasets</span> <span class="kn">import</span> <span class="n">load_tech_stock_prices</span>
-<span class="n">prices</span> <span class="o">=</span> <span class="n">load_tech_stock_prices</span><span class="p">()</span>
+<pre><code class="language-python">from skportfolio import MinimumVolatility, MeanVarianceEfficientRisk
+from skportfolio.datasets import load_tech_stock_prices
+prices = load_tech_stock_prices()
 
-<span class="n">ax</span> <span class="o">=</span> <span class="n">MinimumVolatility</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span><span class="o">.</span><span class="n">plot_frontier</span><span class="p">(</span><span class="n">prices</span><span class="p">,</span> <span class="n">num_portfolios</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-<span class="n">ax</span> <span class="o">=</span> <span class="p">(</span>
-    <span class="n">MeanVarianceEfficientRisk</span><span class="p">()</span>
-        <span class="o">.</span><span class="n">set_target_risk</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prices</span><span class="p">)</span>
-        <span class="o">.</span><span class="n">plot_frontier</span><span class="p">(</span>
-        <span class="n">prices</span><span class="p">,</span>
-        <span class="n">num_portfolios</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-        <span class="n">show_assets</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">show_only_portfolio</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
-    <span class="p">)</span>
-<span class="p">)</span>
-</code></pre></div>
+ax = MinimumVolatility().fit(prices).plot_frontier(prices, num_portfolios=20)
+ax = (
+    MeanVarianceEfficientRisk()
+        .set_target_risk(0.5)
+        .fit(prices)
+        .plot_frontier(
+        prices,
+        num_portfolios=20,
+        show_assets=True,
+        show_only_portfolio=True,
+        ax=ax
+    )
+)
+</code></pre>
 <p>The result is the following:</p>
 <p><img alt="efficient_frontier_multiple_portfolios" src="../imgs/efficient_frontier_multiple_assets.svg" /></p>
 <h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>

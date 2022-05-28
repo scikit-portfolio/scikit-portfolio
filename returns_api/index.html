@@ -1,0 +1,1858 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://scikit-portfolio.github.io/returns_api/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Returns estimators - scikit-portfolio</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/styles/github.min.css" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/all.css" rel="stylesheet" />
+        <link href="//use.fontawesome.com/releases/v5.8.1/css/v4-shims.css" rel="stylesheet" />
+        <link href="../css/mkapi-common.css" rel="stylesheet" />
+        <link href="../css/mkapi-readthedocs.css" rel="stylesheet" />
+        <link href="../assets/_mkdocstrings.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Returns estimators";
+        var mkdocs_page_input_path = "returns_api.md";
+        var mkdocs_page_url = "/returns_api/";
+      </script>
+    
+    <script src="../js/jquery-3.6.0.min.js" defer></script>
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.5.0/highlight.min.js"></script>
+      <script>hljs.initHighlightingOnLoad();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="..">
+          <img src="../imgs/scikit_portfolio.png" class="logo" alt="Logo"/>
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Basics</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../getting_started/">Getting started</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_optimization_theory/">Portfolio optimization theory</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Algorithms</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Efficient frontier</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_frontier/">Classical Mean-Variance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_semivariance/">Mean-Semivariance</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cvar/">Conditional Value At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_cdar/">Conditional Drawdown At Risk</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_omega/">Omega ratio</a>
+                </li>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_mad/">Mean Absolute Deviation (MAD)</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="#">Information theory</a>
+    <ul>
+                <li class="toctree-l2"><a class="reference internal" href="../efficient_repo/">REPO</a>
+                </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../ensemble/">Ensemble methods</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../miscellaneous/">Miscellaneous</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Risk and returns</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns/">Returns estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk/">Risk estimators</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Model selection</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../metrics/">Metrics and scorers</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../splitters/">Cross validation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Developing new methods</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../portfolio_estimator/">Estimators</a>
+                  </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul class="current">
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="./">Returns estimators</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#capmreturns">CAPMReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#compoundedhistoricallinearreturns">CompoundedHistoricalLinearReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#compoundedhistoricallogreturns">CompoundedHistoricalLogReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#emahistoricalreturns">EMAHistoricalReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#meanhistoricallinearreturns">MeanHistoricalLinearReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#meanhistoricallogreturns">MeanHistoricalLogReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#medianhistoricallinearreturns">MedianHistoricalLinearReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#medianhistoricallogreturns">MedianHistoricalLogReturns</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#rollingmedianreturns">RollingMedianReturns</a>
+    </li>
+    </ul>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">scikit-portfolio</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" alt="Docs"></a> &raquo;</li>
+          <li>API &raquo;</li><li>Returns estimators</li>
+    <li class="wy-breadcrumbs-aside">
+        <a href="https://github.com/CarloNicolini/scikit-portfolio/edit/master/docs/returns_api.md"
+          class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="returns-estimators-api">Returns estimators API<a class="headerlink" href="#returns-estimators-api" title="Permanent link">&para;</a></h1>
+<h2 id="capmreturns">CAPMReturns<a class="headerlink" href="#capmreturns" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.CAPMReturns">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">skportfolio.riskreturn._returns_estimators.</code><code class="mkapi-object-name">CAPMReturns</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">risk_free_rate=0.0</code>, <code class="mkapi-object-signature">benchmark=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section bases">
+      <div class="mkapi-section-name bases">
+          <span class="mkapi-section-name-body bases">Bases</span> 
+        </div>
+      <div class="mkapi-section-body bases">
+<span class="mkapi-base">skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator</span>
+
+<span class="mkapi-base">sklearn.base.TransformerMixin</span>
+
+<span class="mkapi-base">sklearn.base.BaseEstimator</span>
+</div>
+    </div>
+  <div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Base class for return estimator.
+It provides the basic infrastructure for all estimators of expected returns.
+It either can take price data or returns data, by specifying the <code>returns_data=False</code> or <code>True</code> respectively.
+The returns calculation is done with the standard <code>.pct_change()</code> of Pandas, unless otherwise specified by
+specification of the <code>returns_function</code> callable.</p></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">fit_transform</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Fit to data, then transform it.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.get_params">get_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(params : dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Get parameters for this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.set_params">set_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self : estimator instance)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Set the parameters of this estimator.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.get_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">get_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep=True</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Get parameters for this estimator.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">deep</code>
+<span class="mkapi-item-type">(bool, default=True)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">If True, will return the parameters for this estimator and
+contained subobjects that are estimators.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(params : dict)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Parameter names mapped to their values.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.set_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as :class:<code>~sklearn.pipeline.Pipeline</code>). The latter have
+parameters of the form <code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's
+possible to update each component of a nested object.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">**params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimator parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self : estimator instance)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Estimator instance.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">fit_transform</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Fit to data, then transform it.</p>
+<p>Fits transformer to <code>X</code> and <code>y</code> with optional parameters <code>fit_params</code>
+and returns a transformed version of <code>X</code>.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples, n_features))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Input samples.</span></li>
+
+<li><code class="mkapi-item-name">y</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples,) or (n_samples, n_outputs),                 default=None)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Target values (None for unsupervised transformations).</span></li>
+
+<li><code class="mkapi-item-name">**fit_params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Additional fit parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Transformed array.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+
+<h2 id="compoundedhistoricallinearreturns">CompoundedHistoricalLinearReturns<a class="headerlink" href="#compoundedhistoricallinearreturns" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.CompoundedHistoricalLinearReturns">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">skportfolio.riskreturn._returns_estimators.</code><code class="mkapi-object-name">CompoundedHistoricalLinearReturns</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">returns_function=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section bases">
+      <div class="mkapi-section-name bases">
+          <span class="mkapi-section-name-body bases">Bases</span> 
+        </div>
+      <div class="mkapi-section-body bases">
+<span class="mkapi-base">skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator</span>
+
+<span class="mkapi-base">sklearn.base.TransformerMixin</span>
+
+<span class="mkapi-base">sklearn.base.BaseEstimator</span>
+</div>
+    </div>
+  <div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Base class for return estimator.
+It provides the basic infrastructure for all estimators of expected returns.
+It either can take price data or returns data, by specifying the <code>returns_data=False</code> or <code>True</code> respectively.
+The returns calculation is done with the standard <code>.pct_change()</code> of Pandas, unless otherwise specified by
+specification of the <code>returns_function</code> callable.</p></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">fit_transform</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Fit to data, then transform it.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.get_params">get_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(params : dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Get parameters for this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.set_params">set_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self : estimator instance)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Set the parameters of this estimator.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.get_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">get_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep=True</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Get parameters for this estimator.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">deep</code>
+<span class="mkapi-item-type">(bool, default=True)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">If True, will return the parameters for this estimator and
+contained subobjects that are estimators.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(params : dict)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Parameter names mapped to their values.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.set_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as :class:<code>~sklearn.pipeline.Pipeline</code>). The latter have
+parameters of the form <code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's
+possible to update each component of a nested object.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">**params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimator parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self : estimator instance)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Estimator instance.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">fit_transform</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Fit to data, then transform it.</p>
+<p>Fits transformer to <code>X</code> and <code>y</code> with optional parameters <code>fit_params</code>
+and returns a transformed version of <code>X</code>.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples, n_features))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Input samples.</span></li>
+
+<li><code class="mkapi-item-name">y</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples,) or (n_samples, n_outputs),                 default=None)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Target values (None for unsupervised transformations).</span></li>
+
+<li><code class="mkapi-item-name">**fit_params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Additional fit parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Transformed array.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+
+<h2 id="compoundedhistoricallogreturns">CompoundedHistoricalLogReturns<a class="headerlink" href="#compoundedhistoricallogreturns" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.CompoundedHistoricalLogReturns">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">skportfolio.riskreturn._returns_estimators.</code><code class="mkapi-object-name">CompoundedHistoricalLogReturns</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">returns_function=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section bases">
+      <div class="mkapi-section-name bases">
+          <span class="mkapi-section-name-body bases">Bases</span> 
+        </div>
+      <div class="mkapi-section-body bases">
+<span class="mkapi-base">skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator</span>
+
+<span class="mkapi-base">sklearn.base.TransformerMixin</span>
+
+<span class="mkapi-base">sklearn.base.BaseEstimator</span>
+</div>
+    </div>
+  <div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Base class for return estimator.
+It provides the basic infrastructure for all estimators of expected returns.
+It either can take price data or returns data, by specifying the <code>returns_data=False</code> or <code>True</code> respectively.
+The returns calculation is done with the standard <code>.pct_change()</code> of Pandas, unless otherwise specified by
+specification of the <code>returns_function</code> callable.</p></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">fit_transform</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Fit to data, then transform it.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.get_params">get_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(params : dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Get parameters for this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.set_params">set_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self : estimator instance)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Set the parameters of this estimator.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.get_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">get_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep=True</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Get parameters for this estimator.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">deep</code>
+<span class="mkapi-item-type">(bool, default=True)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">If True, will return the parameters for this estimator and
+contained subobjects that are estimators.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(params : dict)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Parameter names mapped to their values.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.set_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as :class:<code>~sklearn.pipeline.Pipeline</code>). The latter have
+parameters of the form <code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's
+possible to update each component of a nested object.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">**params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimator parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self : estimator instance)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Estimator instance.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">fit_transform</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Fit to data, then transform it.</p>
+<p>Fits transformer to <code>X</code> and <code>y</code> with optional parameters <code>fit_params</code>
+and returns a transformed version of <code>X</code>.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples, n_features))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Input samples.</span></li>
+
+<li><code class="mkapi-item-name">y</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples,) or (n_samples, n_outputs),                 default=None)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Target values (None for unsupervised transformations).</span></li>
+
+<li><code class="mkapi-item-name">**fit_params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Additional fit parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Transformed array.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+
+<h2 id="emahistoricalreturns">EMAHistoricalReturns<a class="headerlink" href="#emahistoricalreturns" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.EMAHistoricalReturns">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">skportfolio.riskreturn._returns_estimators.</code><code class="mkapi-object-name">EMAHistoricalReturns</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">span=180</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section bases">
+      <div class="mkapi-section-name bases">
+          <span class="mkapi-section-name-body bases">Bases</span> 
+        </div>
+      <div class="mkapi-section-body bases">
+<span class="mkapi-base">skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator</span>
+
+<span class="mkapi-base">sklearn.base.TransformerMixin</span>
+
+<span class="mkapi-base">sklearn.base.BaseEstimator</span>
+</div>
+    </div>
+  <div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Base class for return estimator.
+It provides the basic infrastructure for all estimators of expected returns.
+It either can take price data or returns data, by specifying the <code>returns_data=False</code> or <code>True</code> respectively.
+The returns calculation is done with the standard <code>.pct_change()</code> of Pandas, unless otherwise specified by
+specification of the <code>returns_function</code> callable.</p></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">fit_transform</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Fit to data, then transform it.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.get_params">get_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(params : dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Get parameters for this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.set_params">set_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self : estimator instance)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Set the parameters of this estimator.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.get_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">get_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep=True</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Get parameters for this estimator.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">deep</code>
+<span class="mkapi-item-type">(bool, default=True)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">If True, will return the parameters for this estimator and
+contained subobjects that are estimators.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(params : dict)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Parameter names mapped to their values.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.set_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as :class:<code>~sklearn.pipeline.Pipeline</code>). The latter have
+parameters of the form <code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's
+possible to update each component of a nested object.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">**params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimator parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self : estimator instance)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Estimator instance.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">fit_transform</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Fit to data, then transform it.</p>
+<p>Fits transformer to <code>X</code> and <code>y</code> with optional parameters <code>fit_params</code>
+and returns a transformed version of <code>X</code>.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples, n_features))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Input samples.</span></li>
+
+<li><code class="mkapi-item-name">y</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples,) or (n_samples, n_outputs),                 default=None)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Target values (None for unsupervised transformations).</span></li>
+
+<li><code class="mkapi-item-name">**fit_params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Additional fit parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Transformed array.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+
+<h2 id="meanhistoricallinearreturns">MeanHistoricalLinearReturns<a class="headerlink" href="#meanhistoricallinearreturns" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.MeanHistoricalLinearReturns">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">skportfolio.riskreturn._returns_estimators.</code><code class="mkapi-object-name">MeanHistoricalLinearReturns</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">returns_function=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section bases">
+      <div class="mkapi-section-name bases">
+          <span class="mkapi-section-name-body bases">Bases</span> 
+        </div>
+      <div class="mkapi-section-body bases">
+<span class="mkapi-base">skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator</span>
+
+<span class="mkapi-base">sklearn.base.TransformerMixin</span>
+
+<span class="mkapi-base">sklearn.base.BaseEstimator</span>
+</div>
+    </div>
+  <div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Base class for return estimator.
+It provides the basic infrastructure for all estimators of expected returns.
+It either can take price data or returns data, by specifying the <code>returns_data=False</code> or <code>True</code> respectively.
+The returns calculation is done with the standard <code>.pct_change()</code> of Pandas, unless otherwise specified by
+specification of the <code>returns_function</code> callable.</p></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">fit_transform</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Fit to data, then transform it.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.get_params">get_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(params : dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Get parameters for this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.set_params">set_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self : estimator instance)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Set the parameters of this estimator.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.get_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">get_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep=True</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Get parameters for this estimator.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">deep</code>
+<span class="mkapi-item-type">(bool, default=True)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">If True, will return the parameters for this estimator and
+contained subobjects that are estimators.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(params : dict)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Parameter names mapped to their values.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.set_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as :class:<code>~sklearn.pipeline.Pipeline</code>). The latter have
+parameters of the form <code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's
+possible to update each component of a nested object.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">**params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimator parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self : estimator instance)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Estimator instance.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">fit_transform</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Fit to data, then transform it.</p>
+<p>Fits transformer to <code>X</code> and <code>y</code> with optional parameters <code>fit_params</code>
+and returns a transformed version of <code>X</code>.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples, n_features))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Input samples.</span></li>
+
+<li><code class="mkapi-item-name">y</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples,) or (n_samples, n_outputs),                 default=None)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Target values (None for unsupervised transformations).</span></li>
+
+<li><code class="mkapi-item-name">**fit_params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Additional fit parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Transformed array.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+
+<h2 id="meanhistoricallogreturns">MeanHistoricalLogReturns<a class="headerlink" href="#meanhistoricallogreturns" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.MeanHistoricalLogReturns">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">skportfolio.riskreturn._returns_estimators.</code><code class="mkapi-object-name">MeanHistoricalLogReturns</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">returns_function=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section bases">
+      <div class="mkapi-section-name bases">
+          <span class="mkapi-section-name-body bases">Bases</span> 
+        </div>
+      <div class="mkapi-section-body bases">
+<span class="mkapi-base">skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator</span>
+
+<span class="mkapi-base">sklearn.base.TransformerMixin</span>
+
+<span class="mkapi-base">sklearn.base.BaseEstimator</span>
+</div>
+    </div>
+  <div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Base class for return estimator.
+It provides the basic infrastructure for all estimators of expected returns.
+It either can take price data or returns data, by specifying the <code>returns_data=False</code> or <code>True</code> respectively.
+The returns calculation is done with the standard <code>.pct_change()</code> of Pandas, unless otherwise specified by
+specification of the <code>returns_function</code> callable.</p></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">fit_transform</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Fit to data, then transform it.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.get_params">get_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(params : dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Get parameters for this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.set_params">set_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self : estimator instance)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Set the parameters of this estimator.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.get_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">get_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep=True</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Get parameters for this estimator.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">deep</code>
+<span class="mkapi-item-type">(bool, default=True)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">If True, will return the parameters for this estimator and
+contained subobjects that are estimators.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(params : dict)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Parameter names mapped to their values.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.set_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as :class:<code>~sklearn.pipeline.Pipeline</code>). The latter have
+parameters of the form <code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's
+possible to update each component of a nested object.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">**params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimator parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self : estimator instance)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Estimator instance.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">fit_transform</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Fit to data, then transform it.</p>
+<p>Fits transformer to <code>X</code> and <code>y</code> with optional parameters <code>fit_params</code>
+and returns a transformed version of <code>X</code>.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples, n_features))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Input samples.</span></li>
+
+<li><code class="mkapi-item-name">y</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples,) or (n_samples, n_outputs),                 default=None)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Target values (None for unsupervised transformations).</span></li>
+
+<li><code class="mkapi-item-name">**fit_params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Additional fit parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Transformed array.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+
+<h2 id="medianhistoricallinearreturns">MedianHistoricalLinearReturns<a class="headerlink" href="#medianhistoricallinearreturns" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.MedianHistoricalLinearReturns">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">skportfolio.riskreturn._returns_estimators.</code><code class="mkapi-object-name">MedianHistoricalLinearReturns</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">returns_function=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section bases">
+      <div class="mkapi-section-name bases">
+          <span class="mkapi-section-name-body bases">Bases</span> 
+        </div>
+      <div class="mkapi-section-body bases">
+<span class="mkapi-base">skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator</span>
+
+<span class="mkapi-base">sklearn.base.TransformerMixin</span>
+
+<span class="mkapi-base">sklearn.base.BaseEstimator</span>
+</div>
+    </div>
+  <div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Base class for return estimator.
+It provides the basic infrastructure for all estimators of expected returns.
+It either can take price data or returns data, by specifying the <code>returns_data=False</code> or <code>True</code> respectively.
+The returns calculation is done with the standard <code>.pct_change()</code> of Pandas, unless otherwise specified by
+specification of the <code>returns_function</code> callable.</p></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">fit_transform</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Fit to data, then transform it.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.get_params">get_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(params : dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Get parameters for this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.set_params">set_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self : estimator instance)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Set the parameters of this estimator.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.get_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">get_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep=True</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Get parameters for this estimator.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">deep</code>
+<span class="mkapi-item-type">(bool, default=True)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">If True, will return the parameters for this estimator and
+contained subobjects that are estimators.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(params : dict)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Parameter names mapped to their values.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.set_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as :class:<code>~sklearn.pipeline.Pipeline</code>). The latter have
+parameters of the form <code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's
+possible to update each component of a nested object.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">**params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimator parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self : estimator instance)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Estimator instance.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">fit_transform</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Fit to data, then transform it.</p>
+<p>Fits transformer to <code>X</code> and <code>y</code> with optional parameters <code>fit_params</code>
+and returns a transformed version of <code>X</code>.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples, n_features))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Input samples.</span></li>
+
+<li><code class="mkapi-item-name">y</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples,) or (n_samples, n_outputs),                 default=None)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Target values (None for unsupervised transformations).</span></li>
+
+<li><code class="mkapi-item-name">**fit_params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Additional fit parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Transformed array.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+
+<h2 id="medianhistoricallogreturns">MedianHistoricalLogReturns<a class="headerlink" href="#medianhistoricallogreturns" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.MedianHistoricalLogReturns">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">skportfolio.riskreturn._returns_estimators.</code><code class="mkapi-object-name">MedianHistoricalLogReturns</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">returns_function=None</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section bases">
+      <div class="mkapi-section-name bases">
+          <span class="mkapi-section-name-body bases">Bases</span> 
+        </div>
+      <div class="mkapi-section-body bases">
+<span class="mkapi-base">skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator</span>
+
+<span class="mkapi-base">sklearn.base.TransformerMixin</span>
+
+<span class="mkapi-base">sklearn.base.BaseEstimator</span>
+</div>
+    </div>
+  <div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Base class for return estimator.
+It provides the basic infrastructure for all estimators of expected returns.
+It either can take price data or returns data, by specifying the <code>returns_data=False</code> or <code>True</code> respectively.
+The returns calculation is done with the standard <code>.pct_change()</code> of Pandas, unless otherwise specified by
+specification of the <code>returns_function</code> callable.</p></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">fit_transform</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Fit to data, then transform it.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.get_params">get_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(params : dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Get parameters for this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.set_params">set_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self : estimator instance)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Set the parameters of this estimator.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.get_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">get_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep=True</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Get parameters for this estimator.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">deep</code>
+<span class="mkapi-item-type">(bool, default=True)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">If True, will return the parameters for this estimator and
+contained subobjects that are estimators.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(params : dict)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Parameter names mapped to their values.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.set_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as :class:<code>~sklearn.pipeline.Pipeline</code>). The latter have
+parameters of the form <code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's
+possible to update each component of a nested object.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">**params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimator parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self : estimator instance)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Estimator instance.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">fit_transform</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Fit to data, then transform it.</p>
+<p>Fits transformer to <code>X</code> and <code>y</code> with optional parameters <code>fit_params</code>
+and returns a transformed version of <code>X</code>.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples, n_features))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Input samples.</span></li>
+
+<li><code class="mkapi-item-name">y</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples,) or (n_samples, n_outputs),                 default=None)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Target values (None for unsupervised transformations).</span></li>
+
+<li><code class="mkapi-item-name">**fit_params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Additional fit parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Transformed array.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+
+<h2 id="rollingmedianreturns">RollingMedianReturns<a class="headerlink" href="#rollingmedianreturns" title="Permanent link">&para;</a></h2>
+<div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.RollingMedianReturns">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object class code top">
+    <div class="mkapi-object-kind class top">class</div>
+    <div class="mkapi-object-body class top"><code class="mkapi-object-prefix">skportfolio.riskreturn._returns_estimators.</code><code class="mkapi-object-name">RollingMedianReturns</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">returns_data=False</code>, <code class="mkapi-object-signature">frequency=252</code>, <code class="mkapi-object-signature">window=20</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section bases">
+      <div class="mkapi-section-name bases">
+          <span class="mkapi-section-name-body bases">Bases</span> 
+        </div>
+      <div class="mkapi-section-body bases">
+<span class="mkapi-base">skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator</span>
+
+<span class="mkapi-base">sklearn.base.TransformerMixin</span>
+
+<span class="mkapi-base">sklearn.base.BaseEstimator</span>
+</div>
+    </div>
+  <div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Base class for return estimator.
+It provides the basic infrastructure for all estimators of expected returns.
+It either can take price data or returns data, by specifying the <code>returns_data=False</code> or <code>True</code> respectively.
+The returns calculation is done with the standard <code>.pct_change()</code> of Pandas, unless otherwise specified by
+specification of the <code>returns_function</code> callable.</p></div>
+    </div>
+  <div class="mkapi-section methods">
+      <div class="mkapi-section-name methods">
+          <span class="mkapi-section-name-body methods">Methods</span> 
+        </div>
+      <div class="mkapi-section-body methods"><ul class="mkapi-items">
+<li class="method"><code class="mkapi-item-name"><a href="#skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">fit_transform</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Fit to data, then transform it.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.get_params">get_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(params : dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Get parameters for this estimator.</span></li>
+
+<li class="method"><code class="mkapi-item-name"><a href="#sklearn.base.BaseEstimator.set_params">set_params</a></code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code>
+<span class="mkapi-item-type">(self : estimator instance)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Set the parameters of this estimator.</span></li>
+
+
+</ul></div>
+    </div>
+  </div>
+
+  <div class="mkapi-members">
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.get_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">get_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">deep=True</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Get parameters for this estimator.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">deep</code>
+<span class="mkapi-item-type">(bool, default=True)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">If True, will return the parameters for this estimator and
+contained subobjects that are estimators.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(params : dict)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Parameter names mapped to their values.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="sklearn.base.BaseEstimator.set_params">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">set_params</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">**params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Set the parameters of this estimator.</p>
+<p>The method works on simple estimators as well as on nested objects
+(such as :class:<code>~sklearn.pipeline.Pipeline</code>). The latter have
+parameters of the form <code>&lt;component&gt;__&lt;parameter&gt;</code> so that it's
+possible to update each component of a nested object.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">**params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Estimator parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(self : estimator instance)</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Estimator instance.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+    <div class="mkapi-member">
+      <div class="mkapi-node" id="skportfolio.riskreturn._returns_estimators.BaseReturnsEstimator.fit_transform">
+<div class='mkapi-object-container'>
+  <div class="mkapi-object method code">
+    <div class="mkapi-object-kind method">method</div>
+    <div class="mkapi-object-body method"><code class="mkapi-object-name">fit_transform</code><code class="mkapi-object-parenthesis">(</code><code class="mkapi-object-signature">X</code>, <code class="mkapi-object-signature">y=None</code>, <code class="mkapi-object-signature">**fit_params</code><code class="mkapi-object-parenthesis">)</code></div>
+  </div>
+  
+</div>
+<div class="mkapi-docstring">
+<div class="mkapi-section">
+      <div class="mkapi-section-body"><p>Fit to data, then transform it.</p>
+<p>Fits transformer to <code>X</code> and <code>y</code> with optional parameters <code>fit_params</code>
+and returns a transformed version of <code>X</code>.</p></div>
+    </div>
+  <div class="mkapi-section parameters">
+      <div class="mkapi-section-name parameters">
+          <span class="mkapi-section-name-body parameters">Parameters</span> 
+        </div>
+      <div class="mkapi-section-body parameters"><ul class="mkapi-items">
+<li><code class="mkapi-item-name">X</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples, n_features))</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Input samples.</span></li>
+
+<li><code class="mkapi-item-name">y</code>
+<span class="mkapi-item-type">(array-like of shape (n_samples,) or (n_samples, n_outputs),                 default=None)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Target values (None for unsupervised transformations).</span></li>
+
+<li><code class="mkapi-item-name">**fit_params</code>
+<span class="mkapi-item-type">(dict)</span>
+<span class="mkapi-item-dash">&mdash;</span> <span class="mkapi-item-description">Additional fit parameters.</span></li>
+
+
+</ul></div>
+    </div>
+  <div class="mkapi-section returns">
+      <div class="mkapi-section-name returns">
+          <span class="mkapi-section-name-body returns">Returns</span> <span class="mkapi-item-type">(X_new : ndarray array of shape (n_samples, n_features_new))</span>
+        </div>
+      <div class="mkapi-section-body returns"><p>Transformed array.</p></div>
+    </div>
+  </div>
+
+</div>
+    </div>
+  
+  </div>
+
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../risk_api/" class="btn btn-neutral float-left" title="Risk estimators"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/CarloNicolini/scikit-portfolio" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../risk_api/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme_extra.js" defer></script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/mkapi.js" defer></script>
+      <script src="../javascripts/config.js" defer></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6" defer></script>
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

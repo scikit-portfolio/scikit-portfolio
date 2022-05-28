@@ -96,19 +96,25 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#risk-estimator-base-class">Risk estimator base class</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#sample-covariance-samplecovariance">Sample Covariance SampleCovariance</a>
+    <li class="toctree-l2"><a class="reference internal" href="#sample-covariance-samplecovariance">Sample Covariance SampleCovariance 📖</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#semicovariance-semicovariance">Semicovariance SemiCovariance</a>
+    <li class="toctree-l2"><a class="reference internal" href="#semicovariance-semicovariance">Semicovariance SemiCovariance 📖</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#covariancermt-covariancermt">CovarianceRMT CovarianceRMT</a>
+    <li class="toctree-l2"><a class="reference internal" href="#covariancermt-covariancermt">CovarianceRMT CovarianceRMT  📖</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#ledoit-wolf-covariance-estimator-covarianceledoitwolf">Ledoit-Wolf covariance estimator CovarianceLedoitWolf</a>
+    <li class="toctree-l3"><a class="reference internal" href="#ledoit-wolf-covariance-estimator-covarianceledoitwolf">Ledoit-Wolf covariance estimator CovarianceLedoitWolf 📖</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#covariance-glasso-covarianceglasso">Covariance GLASSO CovarianceGLASSO</a>
+    <li class="toctree-l2"><a class="reference internal" href="#covariance-glasso-covarianceglasso">Covariance GLASSO CovarianceGLASSO 📖</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#exponential-moving-average-covariance-covarianceexp">Exponential Moving Average Covariance CovarianceExp</a>
+    <li class="toctree-l3"><a class="reference internal" href="#exponential-moving-average-covariance-covarianceexp">Exponential Moving Average Covariance CovarianceExp 📖</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hierarchical-filtered-covariance-average-linkage">Hierarchical filtered covariance: average linkage 📖</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hierarchical-filtered-covariance-complete-linkage">Hierarchical filtered covariance: complete linkage 📖</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#hierarchical-filtered-covariance-single-linkage">Hierarchical filtered covariance: single linkage📖</a>
     </li>
         </ul>
     </li>
@@ -123,6 +129,8 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../hyperparameters/">Hyperparameters optimization</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../backtesting/">Backtesting</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">Developing new methods</span></p>
               <ul>
@@ -130,8 +138,31 @@
                   </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../docker/">Docker</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../datasets/">Datasets</a>
                 </li>
+              </ul>
+              <p class="caption"><span class="caption-text">API</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_frontier_api/">Mean Variance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_semivariance_api/">Mean semivariance frontier</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cvar_api/">Conditional Value At Risk (CVaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_cdar_api/">Conditional Drawdown At Risk (CDaR)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_omega_api/">Omega Ratio</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../efficient_mad_api/">Mean Absolute Deviation (MAD)</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../risk_api/">Risk estimators</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../returns_api/">Returns estimators</a>
+                  </li>
               </ul>
       </div>
     </div>
@@ -192,7 +223,7 @@ For more details see the paper from Andrew Lo <sup id="fnref:4"><a class="footno
 <p>For notation, please see <a href="../portfolio_optimization_theory/#notation">the notation section</a></p>
 <hr>
 
-<h2 id="sample-covariance-samplecovariance">Sample Covariance <code>SampleCovariance</code><a class="headerlink" href="#sample-covariance-samplecovariance" title="Permanent link">&para;</a></h2>
+<h2 id="sample-covariance-samplecovariance">Sample Covariance <code>SampleCovariance</code> <a href="../risk_api#samplecovariance">📖</a><a class="headerlink" href="#sample-covariance-samplecovariance" title="Permanent link">&para;</a></h2>
 <p>Sample covariance from the asset returns.
 For more information about the covariance estimator implemented here see the <a href="https://scikit-learn.org/stable/modules/covariance.html">scikit learn page on covariance estimation</a>.
 The <code>SampleCovariance</code> is obtained from the asset returns <span class="arithmatex">\(r_t^{(i)}\)</span> for <span class="arithmatex">\(i \in 1,\ldots,N\)</span> as follows: </p>
@@ -201,7 +232,7 @@ The <code>SampleCovariance</code> is obtained from the asset returns <span class
 \end{equation}\]</div>
 <hr>
 
-<h2 id="semicovariance-semicovariance">Semicovariance <code>SemiCovariance</code><a class="headerlink" href="#semicovariance-semicovariance" title="Permanent link">&para;</a></h2>
+<h2 id="semicovariance-semicovariance">Semicovariance <code>SemiCovariance</code> <a href="../risk_api#semicovariance">📖</a><a class="headerlink" href="#semicovariance-semicovariance" title="Permanent link">&para;</a></h2>
 <p>The semicovariance, a.k.a. the covariance matrix estimated from only the returns exceeding a given benchmark <span class="arithmatex">\(b\)</span> (typically 0).
 We adopt the definition as from <a href="https://pyportfolioopt.readthedocs.io/en/latest/RiskModels.html">pyportfolioopt</a>.
 There are multiple possible ways of defining a semicovariance matrix, the main differences lying in the 'pairwise' nature, i.e whether we should sum over <span class="arithmatex">\(\min(r_i,B)\min(r_j,b)\)</span>  or <span class="arithmatex">\(\min(r_i r_j,b)\)</span>.
@@ -211,7 +242,7 @@ In this implementation, we have followed the advice of Estrada (2007) <sup id="f
 \end{equation}\]</div>
 <hr>
 
-<h2 id="covariancermt-covariancermt">CovarianceRMT <code>CovarianceRMT</code><a class="headerlink" href="#covariancermt-covariancermt" title="Permanent link">&para;</a></h2>
+<h2 id="covariancermt-covariancermt">CovarianceRMT <code>CovarianceRMT</code>  <a href="../risk_api#covariancermt">📖</a><a class="headerlink" href="#covariancermt-covariancermt" title="Permanent link">&para;</a></h2>
 <p>The random matrix theory (RMT) postulates that a covariance matrix is built from a component related to bulk random gaussian noise and from a real signal, as described from the Marchenko-Pastur distribution.
 Here we follow the approach from MacMahon and Garlaschelli <sup id="fnref:5"><a class="footnote-ref" href="#fn:5">5</a></sup>.
 The calculation is based on the idea that a signal eigenspectrum consists in a continuos bulk and a "market-mode", to filter.
@@ -229,7 +260,7 @@ where <span class="arithmatex">\(\lambda_k\)</span> is the <span class="arithmat
 We refer the reader to the paper <sup id="fnref2:5"><a class="footnote-ref" href="#fn:5">5</a></sup> for more details, or looking into the <code>scikit-portfolio</code> documentation.</p>
 <hr>
 
-<h3 id="ledoit-wolf-covariance-estimator-covarianceledoitwolf">Ledoit-Wolf covariance estimator <code>CovarianceLedoitWolf</code><a class="headerlink" href="#ledoit-wolf-covariance-estimator-covarianceledoitwolf" title="Permanent link">&para;</a></h3>
+<h3 id="ledoit-wolf-covariance-estimator-covarianceledoitwolf">Ledoit-Wolf covariance estimator <code>CovarianceLedoitWolf</code> <a href="../risk_api#covarianceledoitwolf">📖</a><a class="headerlink" href="#ledoit-wolf-covariance-estimator-covarianceledoitwolf" title="Permanent link">&para;</a></h3>
 <p>One popular approach to dealing with estimation risk is to simply ignore parameters that are hard to estimate.
 A popular approach is thus to employ "shrinkage estimators" for key inputs.
 For example, Ledoit and Wolf (2004)<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>, propose shrinking the sample correlation matrix towards (a fancy way of saying "averaging it with") the constant correlation matrix. 
@@ -245,7 +276,7 @@ In practice, shrinkage boils down to a simple a convex transformation:</p>
 <p><img alt="covariance_estimators" src="https://scikit-learn.org/stable/_images/sphx_glr_plot_sparse_cov_001.png" /></p>
 <hr>
 
-<h2 id="covariance-glasso-covarianceglasso">Covariance GLASSO <code>CovarianceGLASSO</code><a class="headerlink" href="#covariance-glasso-covarianceglasso" title="Permanent link">&para;</a></h2>
+<h2 id="covariance-glasso-covarianceglasso">Covariance GLASSO <code>CovarianceGLASSO</code> <a href="../risk_api#covarianceglasso">📖</a><a class="headerlink" href="#covariance-glasso-covarianceglasso" title="Permanent link">&para;</a></h2>
 <p>The GLASSO covariance method estimates the true covariance matrix <span class="arithmatex">\(\boldsymbol \Sigma\)</span> by solving the following optimization problem in the precision matrix <span class="arithmatex">\(\boldsymbol \Theta\)</span> with a L1 regularization term, inducing sparsity in the recovered precision matrix:</p>
 <p>\begin{equation}
 \underset{\boldsymbol \Theta \succeq \mathbf{0}}{\textrm{argmin}} \left\lbrack \textrm{Tr}(\hat{\boldsymbol \Sigma} \boldsymbol \Theta) - \log \det(\boldsymbol \Theta)  + \lambda \sum_{i,j} | \Theta_{ij} |\right \rbrack
@@ -254,7 +285,7 @@ The latter is a convex optimization problem in <span class="arithmatex">\(\bolds
 <p>More details <a href="https://www.stata.com/meeting/us21/slides/US21_Dallakyan.pdf">here</a> and in the original paper by Tibshirani et al <sup id="fnref:6"><a class="footnote-ref" href="#fn:6">6</a></sup>.</p>
 <hr>
 
-<h3 id="exponential-moving-average-covariance-covarianceexp">Exponential Moving Average Covariance <code>CovarianceExp</code><a class="headerlink" href="#exponential-moving-average-covariance-covarianceexp" title="Permanent link">&para;</a></h3>
+<h3 id="exponential-moving-average-covariance-covarianceexp">Exponential Moving Average Covariance <code>CovarianceExp</code> <a href="../risk_api#covarianceexp">📖</a><a class="headerlink" href="#exponential-moving-average-covariance-covarianceexp" title="Permanent link">&para;</a></h3>
 <p>This method of computing the covariance takes into account with an exponential moving average only the most recent observations, given a decay factor governed by the parameter <code>span</code>. 
 Given a temporal span parameter <span class="arithmatex">\(K\)</span> the tensor <span class="arithmatex">\(\mathbf{Q} \in \mathbb{R}^{T \times N \times N}\)</span> is obtained as:</p>
 <div class="arithmatex">\[\begin{equation}
@@ -267,6 +298,9 @@ Q_{tij} = Z_{ti} Z_{tj}.
 <p>where <span class="arithmatex">\(\alpha\)</span> is the decay factor <span class="arithmatex">\(0\leq \alpha \leq 1\)</span>  uniquely specified by the <code>span</code> factor as <span class="arithmatex">\(\alpha = 2/(\textrm{span}+1)\)</span> for <span class="arithmatex">\(\textrm{span}\geq 1\)</span>.</p>
 <hr>
 
+<h3 id="hierarchical-filtered-covariance-average-linkage">Hierarchical filtered covariance: average linkage <a href="../risk_api#covariancehierarchicalfilteraverage">📖</a><a class="headerlink" href="#hierarchical-filtered-covariance-average-linkage" title="Permanent link">&para;</a></h3>
+<h3 id="hierarchical-filtered-covariance-complete-linkage">Hierarchical filtered covariance: complete linkage <a href="../risk_api#covariancehierarchicalfiltercomplete">📖</a><a class="headerlink" href="#hierarchical-filtered-covariance-complete-linkage" title="Permanent link">&para;</a></h3>
+<h3 id="hierarchical-filtered-covariance-single-linkage">Hierarchical filtered covariance: single linkage<a href="../risk_api#covariancehierarchicalfiltersingle">📖</a><a class="headerlink" href="#hierarchical-filtered-covariance-single-linkage" title="Permanent link">&para;</a></h3>
 <h1 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h1>
 <div class="footnote">
 <hr />
