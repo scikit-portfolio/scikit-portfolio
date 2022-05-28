@@ -109,3 +109,7 @@ class BaseConvexFrontier(BaseConvexOptimizer, metaclass=ABCMeta):
             raise InstantiationError(
                 "A new instance must be created when changing market_neutral."
             )
+
+    def populate_constraints(self, constraints):
+        for cnstr in constraints:
+            self.add_constraint(cnstr)

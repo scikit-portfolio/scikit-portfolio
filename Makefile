@@ -49,6 +49,7 @@ lint: ## check style with flake8
 	flake8 skportfolio tests
 
 test: ## run tests quickly with the default Python
+	pip install -r requirements_dev.txt
 	pytest
 
 tox: ## run tests on every Python version with tox
@@ -76,6 +77,7 @@ dist: clean ## builds source and wheel package
 
 install: clean ## install the package to the active Python's site-packages
 	python setup.py install
+	pip install -r requirements_dev.txt
 
 dependency_graph:
 	mkdir -p .pyreverse

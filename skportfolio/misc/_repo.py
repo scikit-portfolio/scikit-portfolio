@@ -8,10 +8,7 @@ from typing import Union
 
 import numpy as np
 import pandas as pd
-from optuna.distributions import CategoricalDistribution
-from optuna.distributions import IntLogUniformDistribution
-from optuna.distributions import LogUniformDistribution
-from optuna.distributions import UniformDistribution
+
 from pypfopt.expected_returns import returns_from_prices
 from scipy.optimize import minimize
 from scipy.stats import entropy as spentropy
@@ -199,25 +196,3 @@ class REPO(PortfolioEstimator, metaclass=ABCMeta):
             space_size=np.round(np.logspace(1, 4, 50)),
             rets_estimator=all_returns_estimators,
         )
-
-    def optuna_parameters(self):
-        return {
-            "kernel": CategoricalDistribution(self.grid_parameters()["kernel"]),
-            "alpha": LogUniformDistribution(
-                self.grid_parameters()["alpha"].min(),
-                self.grid_parameters()["alpha"].max(),
-            ),
-            "bandwidth": IntLogUniformDistribution(
-                self.grid_parameters()["bandwidth"].min(),
-                self.grid_parameters()["bandwidth"].max(),
-            ),
-            "space_size": IntLogUniformDistribution(
-                self.grid_parameters()["space_size"].min(),
-                self.grid_parameters()["bandwidth"].max(),
-            ),
-            "rets_estimator": CategoricalDistribution(
-                self.grid_parameters()["rets_estimator"]
-            ),
-            "min_weight": UniformDistribution(0.0, 0.2),
-            "max_weight": UniformDistribution(0.3, 1.0),
-        }

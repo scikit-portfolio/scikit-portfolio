@@ -1,6 +1,13 @@
+from typing import Dict, Any, Optional
+import warnings
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 from skportfolio.frontier._efficientfrontier import (
     _BaseEfficientFrontierPortfolioEstimator,
 )
+from skportfolio.backtest.backtester import Backtester
 
 
 def _validate_plotting_kwargs(**kwargs):
@@ -15,6 +22,10 @@ def _validate_plotting_kwargs(**kwargs):
         "risk_return_line_style",
         "show_only_portfolio",
         "frontier_line_color",
+        "show_tangency_line",
+        "tangency_line_color",
+        "tangency_line_style",
+        "autoset_lims",
     ]
     for k, v in kwargs.items():
         if k not in valid_kwargs:
@@ -29,6 +40,7 @@ def plot_frontier(
     num_portfolios: int = 20,
     show_assets=False,
     ax=None,
+    frontier_kwargs: Optional[Dict[str, Any]] = None,
     **kwargs,
 ):
     """
@@ -50,7 +62,8 @@ def plot_frontier(
         Whether to additionally display dots representing portfolios made uniquely by each single asset.
     ax: matplotlib axis object
         If None a new axis is created, otherwise plotting is done on the provided axis
-
+    frontier_kwargs: Dict[str,Any]
+        Dictionary of additional parameters to pass to estimate_frontier method.
     Other Parameters
     ----------------
     **kwargs:
@@ -78,12 +91,22 @@ def plot_frontier(
             multiple portfolios over the frontier. Default False, it draws the entire frontier.
         - frontier_line_color: str
             Color of the plot of the efficient frontier. Default None
+        - show_tangency_line: bool
+            Show the tangency line that has for 0 volatility the value of risk_free_rate
+        - tangency_line_color: str
+            Color of the tangency line
+        - tangency_line_style: str
+            Style of the tangency line
+        - autoset_lims: bool
+            Whether to automatically set the axes x-y limits. Default True
 
     Returns
     -------
     object
     matplotlib axis object containing the picture
     """
+    if frontier_kwargs is None:
+        frontier_kwargs = {}
     _validate_plotting_kwargs(**kwargs)
 
     if ax is None:
@@ -98,7 +121,13 @@ def plot_frontier(
         risks, returns, frontier_weights = ptf_estimator.estimate_frontier(
             X=prices_or_returns, num_portfolios=num_portfolios
         )
-        ax.plot(risks, returns, "-", color=kwargs.get("frontier_line_color", "C0"))
+        ax.plot(
+            risks,
+            returns,
+            "-",
+            color=kwargs.get("frontier_line_color", "C0"),
+            label=str(ptf_estimator),
+        )
 
     ax.set_ylabel("Portfolio return")
     ax.set_xlabel(
@@ -134,12 +163,16 @@ def plot_frontier(
             text=asset,
             fontsize=kwargs.get("fontsize", 8),
         )
-    if ptf_estimator.model is not None:
+
+    xmin, xmax = ax.get_xlim()
+    ymin, ymax = ax.get_ylim()
+
+    if hasattr(ptf_estimator, "model") and ptf_estimator.model is not None:
+
         x, y = ptf_estimator.risk_reward()
         ax.scatter(
             x,
             y,
-            label=str(ptf_estimator),
             color=kwargs.get("risk_return_color", "C0"),
         )
         ax.plot(
@@ -156,6 +189,178 @@ def plot_frontier(
             linestyle=kwargs.get("risk_return_line_style", "--"),
             linewidth=kwargs.get("risk_return_line_width", 1),
         )
-
+        if "show_tangency_line" in kwargs and hasattr(ptf_estimator, "risk_free_rate"):
+            ax.plot(
+                (0, x),
+                (ptf_estimator.risk_free_rate, y),
+                color=kwargs.get("tangency_line_color", "C1"),
+                linestyle=kwargs.get("tangency_line_style", "--"),
+                linewidth=0.8,
+            )
+        if kwargs.get("autoset_lims", True):
+            ax.set_xlim([xmin, xmax])
+            ax.set_ylim([ymin, ymax])
     ax.legend(loc=kwargs.get("legend_loc", 2))
     return ax
+
+
+def pie_chart(weights: pd.Series, threshold: int = 12, ax=None, **kwargs):
+    """
+    Plots a beautiful pie-chart from portfolio weights with automatic thresholding of least frequent weights.
+
+    Parameters
+    ----------
+    weights: pd.Series
+    threshold: int
+        Default 12+1 assets are shown. The other asset is named "Other"
+    ax:
+        Matplotlib axis
+    kwargs
+    Returns
+    -------
+    Matplotlib axis object
+    """
+    if ax is None:
+        try:
+            import matplotlib.pyplot as plt
+
+            fig, ax = plt.subplots(figsize=kwargs.get("figsize", None))
+        except ImportError as importerror:
+            raise importerror
+
+    n_weights = weights.shape[0]
+    if threshold < n_weights:
+        weights = weights.sort_values(ascending=False)
+        weights_thr = weights.head(threshold)
+        weights_thr = pd.concat(
+            [
+                weights_thr,
+                pd.Series(
+                    index=["Other"], data=weights.tail(n_weights - threshold).sum()
+                ),
+            ],
+            axis=0,
+        )
+        weights_thr = weights_thr.sample(
+            frac=1
+        )  # to shuffle the weights and avoid concentration in plot
+    else:
+        weights_thr = weights
+    wedges, texts = ax.pie(weights_thr, wedgeprops=dict(width=0.5), startangle=-40)
+
+    bbox_props = dict(
+        boxstyle="square,pad=0.3",
+        fc=kwargs.pop("backgroundcolor", None),
+        ec=kwargs.pop("linecolor", None),
+        lw=kwargs.pop("linewidth", 0.72),
+    )
+    kw = dict(arrowprops=dict(arrowstyle="-"), bbox=bbox_props, zorder=0, va="center")
+
+    for i, p in enumerate(wedges):
+        ang = (p.theta2 - p.theta1) / 2.0 + p.theta1
+        y = np.sin(np.deg2rad(ang))
+        x = np.cos(np.deg2rad(ang))
+        horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
+        connectionstyle = "angle,angleA=0,angleB={}".format(ang)
+        kw["arrowprops"].update(
+            {
+                "connectionstyle": connectionstyle,
+                "color": kwargs.pop("linecolor", f"C{i}"),
+            }
+        )
+        ax.annotate(
+            f"{weights_thr.index[i]}: {(100*weights_thr.iloc[i]):.1f}%",
+            xy=(x, y),
+            xytext=(1.35 * np.sign(x), 1.4 * y),
+            horizontalalignment=horizontalalignment,
+            **{**kw, **kwargs},
+        )
+
+    ax.set_title(f"{weights.name}", y=1.15)
+    return ax
+
+
+def risk_allocation_chart(
+    ptf_estimator: _BaseEfficientFrontierPortfolioEstimator,
+    prices_or_returns,
+    num_portfolios: int = 20,
+    show_assets=False,
+    ax=None,
+    **kwargs,
+):
+    """
+    Draws the allocation chart as an area plot over the risk axis.
+
+    Parameters
+    ----------
+    ptf_estimator
+    prices_or_returns
+    num_portfolios
+    show_assets
+    ax
+    kwargs
+
+    Returns
+    -------
+
+    """
+    risk, rewards, frontier_weights = ptf_estimator.estimate_frontier(
+        prices_or_returns, num_portfolios=num_portfolios
+    )
+
+    if ax is None:
+        try:
+            import matplotlib.pyplot as plt
+
+            fig, ax = plt.subplots(figsize=kwargs.get("figsize", None))
+        except ImportError as importerror:
+            raise importerror
+
+    frontier_weights[(frontier_weights < 1e-6) & (frontier_weights > -1e-6)] = 0
+    if (frontier_weights < 0).any():
+        warnings.warn("Only positive weights are supported. Setting absolute value")
+
+    pd.DataFrame(
+        index=risk, data=frontier_weights, columns=prices_or_returns.columns
+    ).abs().mul(100).plot.area(ax=ax)
+
+    ax.set_ylabel("Allocation %")
+    ax.set_xlabel(
+        ptf_estimator._min_risk_method_name.replace("min_", "")
+        .replace("_", " ")
+        .title()
+    )
+    ax.set_title(
+        kwargs.get("title", f"Allocation vs risk\n{ptf_estimator}"),
+    )
+    ax.grid(which="both")
+    if hasattr(ptf_estimator, "model") and ptf_estimator.model is not None:
+        x, y = ptf_estimator.risk_reward()
+        ax.axvline(x=x, ymin=0, ymax=1, color=kwargs.get("portfolio_line", "darkgrey"))
+        ax.scatter(
+            x=[x] * len(ptf_estimator.weights_),
+            y=ptf_estimator.weights_.mul(100).cumsum().values,
+            color=kwargs.get("color", "darkgrey"),
+        )
+    ax.set_xlim([risk.min(), risk.max()])
+    ax.set_ylim([0, 100])
+    return ax
+
+
+def plot_asset_value(backtester: Backtester):
+    """
+    Plot the value of each asset as an area plot, using a backtester as the object carrying the
+    results of the strategy.
+
+    Parameters
+    ----------
+    backtester
+
+    Returns
+    -------
+
+    See Also
+    --------
+    https://it.mathworks.com/help/finance/backtestengine.runbacktest.html
+    """
+    pass

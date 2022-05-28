@@ -81,7 +81,7 @@ def portfolio_cross_validate(
             )  # this prepends a level to columns with the estimator name
     elif all(isinstance(p, PortfolioEstimator) for p in estimator):
         cv_out = {
-            p.__class__.__name__: cross_validate(
+            str(p): cross_validate(
                 estimator=p,
                 X=prices_or_returns,
                 y=None,

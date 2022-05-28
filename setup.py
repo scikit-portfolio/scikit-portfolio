@@ -21,7 +21,7 @@ test_requirements = [
 setup(
     author="Carlo Nicolini",
     author_email="nicolini.carlo@gmail.com",
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     classifiers=[
         "Development Status :: 2 - Alpha",
         "Intended Audience :: Machine Learning Engineers, Portfolio Managers",

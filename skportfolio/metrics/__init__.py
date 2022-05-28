@@ -20,6 +20,7 @@ from .metrics import portfolio_return
 from .metrics import portfolio_vol
 from .metrics import semistd
 from .metrics import sharpe_ratio
+from .metrics import info_ratio
 from .metrics import kurtosis
 from .metrics import sharpe_ratio_se
 from .metrics import skewness
@@ -28,11 +29,14 @@ from .metrics import tail_ratio
 from .metrics import value_at_risk
 from .metrics import var_gaussian
 from .metrics import var_historic
+from .metrics import backtest
+from .metrics import equity_curve
 
 # Here is a list of sklearn compatible scorers
 sharpe_ratio_scorer = make_scorer(
     sharpe_ratio, greater_is_better=True, riskfree_rate=0.0
 )
+info_ratio_scorer = make_scorer(info_ratio, greater_is_better=True)
 omega_ratio_scorer = make_scorer(omega_ratio, greater_is_better=True, target_ret=0.0)
 sortino_ratio_scorer = make_scorer(
     sortino_ratio, greater_is_better=True, riskfree_rate=0.0

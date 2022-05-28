@@ -64,12 +64,6 @@
 #             **{"k": np.logspace(-3, 1, 10)},
 #         )
 #
-#     def optuna_parameters(self) -> Dict[str, BaseDistribution]:
-#         return dict(
-#             **super().optuna_parameters(),
-#             **{"k": LogUniformDistribution(10 ** (-3), 10)},
-#         )
-#
 #
 # class LogBarrier(LogMeanRisk):
 #     """

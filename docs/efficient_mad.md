@@ -41,7 +41,7 @@ Furthermore, the MAD model is more compatible with the fundamental principle of 
 	The black dot ⚫️indicates the asset with the highest return and highest risk. 
 	The <span style="text-color:red">red</span> dot 🔴️ indicates the minimum MAD portfolio.
 
-## 🔴 Minimum MAD Portfolio `MinimumMAD`
+## Minimum MAD Portfolio [📖](../efficient_mad_api/#minimum-mad-portfolio-minimummad)
 
 It calculates the portfolio minimizing the above L1-risk model, with the weight constraints.
 
@@ -57,7 +57,7 @@ The optimization problem is the following:
 
 <hr>
 
-## 🟢 Efficient return optimization on MAD frontier
+## Efficient return optimization on MAD frontier [📖](../efficient_mad_api//#efficient-return-optimization-on-mad-frontier)
 
 It calculates the MAD efficient return portfolio, by minimizing the above L1-risk model, subject to a minimum portfolio return above the target return.
 The optimization problem is the following:
@@ -73,7 +73,7 @@ The optimization problem is the following:
 
 <hr>
 
-## 🟣 Efficient risk optimization on MAD frontier
+## Efficient risk optimization on MAD frontier [📖](../efficient_mad_api//#efficient-risk-optimization-on-mad-frontier)
 
 It calculates the MAD efficient risk portfolio, by maximizing the portfolio return, subject to a L1-risk above the target risk. The optimization problem is the following:
 
@@ -237,7 +237,7 @@ For completeness here we also report the entire self-explaining code for the gen
 
 
 ```python
-import  numpy as np
+import numpy as np
 import pandas as pd
 from skportfolio.frontier._mad import EfficientMeanAbsoluteDeviation
 from warnings import warn

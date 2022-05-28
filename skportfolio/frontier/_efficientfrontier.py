@@ -1,7 +1,7 @@
 import warnings
 from abc import ABCMeta
 from abc import abstractmethod
-from copy import deepcopy
+from itertools import product
 from typing import Any
 from typing import Callable
 from typing import Dict
@@ -14,12 +14,6 @@ from typing import Union
 import numpy as np
 import pandas as pd
 from cvxpy.error import SolverError
-from joblib import Parallel
-from joblib import delayed
-from optuna.distributions import BaseDistribution
-from optuna.distributions import CategoricalDistribution
-from optuna.distributions import LogUniformDistribution
-from optuna.distributions import UniformDistribution
 from pypfopt import objective_functions
 from pypfopt.base_optimizer import BaseConvexOptimizer
 from pypfopt.exceptions import OptimizationError
@@ -28,8 +22,13 @@ from pypfopt.objective_functions import portfolio_return
 from pypfopt.objective_functions import portfolio_variance
 
 from skportfolio._base import PortfolioEstimator
-from skportfolio._constants import APPROX_BDAYS_PER_YEAR
-from skportfolio._constants import BASE_RISK_FREE_RATE
+from skportfolio._constants import (
+    APPROX_BDAYS_PER_YEAR,
+    BASE_RISK_FREE_RATE,
+    BASE_TARGET_RETURN,
+    BASE_TARGET_RISK,
+    BASE_MIN_ACCEPTABLE_RETURN,
+)
 from skportfolio.frontier._mixins import _EfficientCDarMixin
 from skportfolio.frontier._mixins import _EfficientCVarMixin
 from skportfolio.frontier._mixins import _EfficientMADMixin
@@ -42,8 +41,6 @@ from skportfolio.riskreturn import BaseReturnsEstimator
 from skportfolio.riskreturn import BaseRiskEstimator
 from skportfolio.riskreturn import MeanHistoricalLinearReturns
 from skportfolio.riskreturn import SampleCovariance
-from skportfolio.riskreturn import all_returns_estimators
-from skportfolio.riskreturn import all_risk_estimators
 
 
 class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABCMeta):
@@ -53,20 +50,16 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
     def __init__(
         self,
         returns_data: bool = False,
-        frequency=APPROX_BDAYS_PER_YEAR,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
         l2_gamma: float = 0.0,
-        min_weight: float = 0.0,
-        max_weight: float = 1.0,
-        n_jobs: int = 1,
     ):
-        super().__init__()
+        super().__init__(returns_data=returns_data)
         self.returns_data = returns_data
         self.frequency = frequency
+        self.weight_bounds = weight_bounds
         self.l2_gamma = l2_gamma
-        self.min_weight = min_weight
-        self.max_weight = max_weight
-        self.n_jobs = n_jobs
-        self.model = None
 
     @abstractmethod
     def _optimizer(self, X: pd.DataFrame) -> BaseConvexOptimizer:
@@ -83,31 +76,12 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
         )
 
     def grid_parameters(self) -> Dict[str, Sequence[Any]]:
+        xmin = np.linspace(0, 0.3, 11)
+        xmax = np.linspace(0.7, 1, 11)
+        all_weight_bounds = list(product(xmin, xmax))
         return {
-            "min_weight": np.linspace(0, 0.1, 5),
-            "max_weight": np.linspace(0.9, 1, 5),
+            "weight_bounds": all_weight_bounds,
             "l2_gamma": np.logspace(-4, 1, 10),
-        }
-
-    def optuna_parameters(self) -> Dict[str, BaseDistribution]:
-        """
-        Basic optuna parameters to pass in case optuna hyperparameters search is required
-        Returns
-        -------
-        Dict
-            The dictionary with key-value where key is a string, value is a Optuna distribution object
-        """
-        params = self.grid_parameters()
-        return {
-            "min_weight": UniformDistribution(
-                min(params["min_weight"]), max(params["min_weight"])
-            ),
-            "max_weight": UniformDistribution(
-                min(params["max_weight"]), max(params["max_weight"])
-            ),
-            "l2_gamma": LogUniformDistribution(
-                min(params["l2_gamma"]), max(params["l2_gamma"])
-            ),
         }
 
     def _fit_method(self, X, method: str, **kwargs) -> pd.Series:
@@ -141,38 +115,21 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
             return pd.Series(
                 self.model.clean_weights(),
                 index=X.columns,
-                name=self.__class__.__name__,
+                name=str(self),
             )
         except (SolverError, OptimizationError, ValueError) as ex:
             warnings.warn(str(ex))
             return pd.Series(
                 data=[np.nan] * X.shape[1],
                 index=X.columns,
-                name=self.__class__.__name__,
+                name=str(self),
             )
 
-    def add_constraint(self, cnstr: Union[Callable, List[Callable]]):
-        """
-        Add a list of constraints to the convex optimization problem
-        Parameters
-        ----------
-        cnstr: list
-            List of constraints, to be added to the optimization problem
-
-        Returns
-        -------
-        object
-            The portfolio estimator object
-        """
-        if self.model is None or not hasattr(self.model, "weights"):
-            raise AttributeError("Must fit portfolio to data first.")
-        if isinstance(cnstr, list):
-            for c in cnstr:
-                self.model.add_constraint(c)
-        return self
-
     def estimate_frontier(
-        self, X, num_portfolios: int = 20, random_seed: int = None
+        self,
+        X,
+        num_portfolios: int = 20,
+        random_seed: int = None,
     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         """
         Estimates the efficient frontier given either returns or prices (depending on `self.returns_data` attribute),
@@ -189,14 +146,12 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
         random_seed:
             Only when the portfolio returns estimator is PerturbedReturns, this is needed to lock the same stochastic
             sample of the expected returns across the entire frontier.
-
         Returns
         -------
         tuple
             The first two elements represent, the risk and return coordinates of the portfolios along the
             efficient frontier. The last element contains the portfolio weights.
             Portfolios are indexed from the least risky to the maximum return along the frontier.
-
         Examples
         --------
         If you need to compute the efficient frontier for the Markowitz Mean-Variance portfolio for 128 points using
@@ -204,12 +159,14 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
 
         >>> from skportfolio import MinimumVolatility
         >>> from skportfolio.datasets import load_tech_stock_prices
-        >>> MinimumVolatility().set_n_jobs(n_jobs=16).estimate_frontier(load_tech_stock_prices(), num_portfolios=128)
+        >>> MinimumVolatility().estimate_frontier(load_tech_stock_prices(), num_portfolios=128)
         """
         # First estimate the frontier limits in terms of risk and returns.
         n_assets = X.shape[1]
         self.rets_estimator.reseed(random_seed)
-        # 1. find minimum risk portfolio
+        # We must find 2 points with two coordinates of (risk,return), namely
+        # (MIN_RISK, RETURN_MIN_RISK) and (RISK_MAX_RETURN, MAX_RETURN)
+        # 1. We first find return of minimum risk portfolio
         min_risk_model: BaseConvexOptimizer = self._optimizer(X)
         # fill the internal values of min_risk_model by calling it
         # TODO refactoring this ugly call requires some rework of pyportfolio opt object oriented approach.
@@ -217,21 +174,20 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
         # reset it again
         self.rets_estimator.reseed(random_seed)
         min_return_model: BaseConvexOptimizer = self._optimizer(X)
+        # this workaround is necessary to get the return of the minimum risk portfolio
+        # however there is a catch here, that if the objective function contains regularization its
+        # objective value will be distorted
         try:
             min_return_model.efficient_risk(
                 self.risk_function(min_risk_model._opt.value)
             )
         except SolverError:
-            return (
-                np.nan * np.zeros(num_portfolios),
-                np.nan * np.zeros(num_portfolios),
-                np.nan * np.zeros(num_portfolios),
-            )
+            return (np.nan * np.zeros(num_portfolios),) * 3
         self.rets_estimator.reseed(random_seed)
         # if fitting was possible finds the return of the minimum risk portfolio
         min_return_value: float = self.risk_reward(min_return_model)[1]
         self.rets_estimator.reseed(random_seed)
-        # 2. find risk of maximum return portfolio
+        # 2. Then we find risk of maximum return portfolio
         max_return_value = self._optimizer(X)._max_return()
         risks = np.zeros(num_portfolios)
         # the returns y-axis
@@ -250,52 +206,57 @@ class _BaseEfficientFrontierPortfolioEstimator(PortfolioEstimator, metaclass=ABC
                 return [np.nan, np.nan * np.zeros(n_assets)]
             return self.risk_reward(_model_risk)[0], _model_risk.weights
 
-        if self.n_jobs is not None and self.n_jobs != 1:
-            # perform embarassingly parallel operations
-            out = Parallel(n_jobs=self.n_jobs)(
-                delayed(get_risk_weights)(r) for r in returns
-            )
-            risks = np.array([v[0] for v in out])
-            frontier_weights = np.array([v[1] for v in out])
-        else:
-            # do not even use joblib and sequentially creates all the points on the frontier
-            for i, ret in enumerate(returns):
-                risks[i], frontier_weights[i, :] = get_risk_weights(ret)
+        for i, ret in enumerate(returns):
+            risks[i], frontier_weights[i, :] = get_risk_weights(ret)
         # portfolio risks (x-coordinate), portfolio returns (y-coordinate) and associated portfolio weights
         return risks, returns, frontier_weights
 
+    def add_constraints(self, cnstr: Union[Callable, List[Callable]]):
+        """
+        Add a list of constraints to the convex optimization problem
+        Parameters
+        ----------
+        cnstr: list
+            List of constraints, to be added to the optimization problem
+
+        Returns
+        -------
+        object
+            The portfolio estimator object
+        """
+        if isinstance(cnstr, list):
+            self.constraints = cnstr
+        else:
+            raise TypeError("Only list of constraints supported")
+        return self
+
 
 class _BaseMeanVariancePortfolio(
-    _EfficientMeanVarianceMixin,
     _BaseEfficientFrontierPortfolioEstimator,
+    _EfficientMeanVarianceMixin,
     metaclass=ABCMeta,
 ):
     _min_risk_method_name = "min_volatility"
 
+    @abstractmethod
     def __init__(
         self,
         returns_data: bool = False,
-        frequency: float = APPROX_BDAYS_PER_YEAR,
-        risk_free_rate: float = BASE_RISK_FREE_RATE,
-        l2_gamma: float = 0,
-        min_weight: float = 0,
-        max_weight: float = 1,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
         rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
         risk_estimator: BaseRiskEstimator = SampleCovariance(),
     ):
         super().__init__(
             returns_data=returns_data,
-            l2_gamma=l2_gamma,
-            min_weight=min_weight,
-            max_weight=max_weight,
             frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
         )
-        self.risk_free_rate = risk_free_rate
-        self.rets_estimator: BaseReturnsEstimator = rets_estimator
-        self.risk_estimator: BaseRiskEstimator = risk_estimator
-        self.returns_data = returns_data
-        self.rets_estimator = self.rets_estimator
-        self.risk_estimator = self.risk_estimator
+        self.rets_estimator = rets_estimator
+        self.risk_estimator = risk_estimator
 
     def _optimizer(self, X) -> BaseConvexOptimizer:
         """
@@ -312,6 +273,7 @@ class _BaseMeanVariancePortfolio(
         -------
             The optimizer model
         """
+
         expected_returns = (
             self.rets_estimator.set_returns_data(self.returns_data)
             .set_frequency(self.frequency)
@@ -327,13 +289,17 @@ class _BaseMeanVariancePortfolio(
         eff_front_model = self._get_model(
             expected_returns=expected_returns,
             risk_matrix=cov_matrix,
-            weight_bounds=(self.min_weight, self.max_weight),
+            weight_bounds=self.weight_bounds,
         )
+        if hasattr(self, "constraints"):
+            for cnstr in self.constraints:
+                eff_front_model.add_constraint(cnstr)
+
         if self.l2_gamma > 0:
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma
             )
-        return deepcopy(eff_front_model)
+        return eff_front_model
 
     def risk_reward(self, model: BaseConvexOptimizer = None):
         """
@@ -356,23 +322,9 @@ class _BaseMeanVariancePortfolio(
 
     def grid_parameters(self) -> Dict[str, Sequence[Any]]:
         params = super().grid_parameters()
-        return dict(
-            **params,
-            **{
-                "risk_estimator": all_risk_estimators,
-                "rets_estimator": all_returns_estimators,
-            },
-        )
-
-    def optuna_parameters(self) -> Dict[str, BaseDistribution]:
-        params = super().optuna_parameters()
-        return dict(
-            **params,
-            **{
-                "risk_estimator": CategoricalDistribution(all_risk_estimators),
-                "rets_estimator": CategoricalDistribution(all_returns_estimators),
-            },
-        )
+        # params["rets_estimator"] = all_returns_estimators
+        # params["risk_estimator"] = all_risk_estimators
+        return params
 
 
 class MinimumVolatility(_BaseMeanVariancePortfolio):
@@ -381,6 +333,23 @@ class MinimumVolatility(_BaseMeanVariancePortfolio):
     estimation of the covariance matrix.
     The following optimization problem is being solved.
     """
+
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        risk_estimator: BaseRiskEstimator = SampleCovariance(),
+    ):
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
+            risk_estimator=risk_estimator,
+        )
 
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(X, method="min_volatility")
@@ -394,6 +363,27 @@ class MaxSharpe(_BaseMeanVariancePortfolio):
     By default here we use risk-free asset value of 0.
     """
 
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        risk_estimator: BaseRiskEstimator = SampleCovariance(),
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        risk_free_rate=BASE_RISK_FREE_RATE,
+    ):
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
+            rets_estimator=rets_estimator,
+            risk_estimator=risk_estimator,
+        )
+        self.risk_free_rate = risk_free_rate
+
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(
             X, "max_sharpe", risk_free_rate=self.risk_free_rate
@@ -406,6 +396,27 @@ class MeanVarianceEfficientRisk(_TargetRiskMixin, _BaseMeanVariancePortfolio):
     Efficient risk in the Markowitz's Mean Variance framework.
     """
 
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        risk_estimator: BaseRiskEstimator = SampleCovariance(),
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        target_risk: float = BASE_TARGET_RISK,
+    ):
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
+            rets_estimator=rets_estimator,
+            risk_estimator=risk_estimator,
+        )
+        self.target_risk = target_risk
+
     def fit(self, X, y=None, **kwargs) -> PortfolioEstimator:
         self.weights_ = self._fit_method(
             X, "efficient_risk", target_volatility=self.target_risk
@@ -414,6 +425,27 @@ class MeanVarianceEfficientRisk(_TargetRiskMixin, _BaseMeanVariancePortfolio):
 
 
 class MeanVarianceEfficientReturn(_TargetReturnMixin, _BaseMeanVariancePortfolio):
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        risk_estimator: BaseRiskEstimator = SampleCovariance(),
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        target_return: float = BASE_TARGET_RETURN,
+    ):
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
+            rets_estimator=rets_estimator,
+            risk_estimator=risk_estimator,
+        )
+        self.target_return = target_return
+
     def fit(self, X, y=None, **kwargs) -> PortfolioEstimator:
         self.weights_ = self._fit_method(
             X, "efficient_return", target_return=self.target_return
@@ -428,21 +460,21 @@ class _BaseMeanSemiVariancePortfolio(
 ):
     _min_risk_method_name = "min_semivariance"
 
+    @abstractmethod
     def __init__(
         self,
         returns_data: bool = False,
-        l2_gamma: float = 0,
-        min_weight: float = 0,
-        max_weight: float = 1,
-        frequency=APPROX_BDAYS_PER_YEAR,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
         rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
     ):
         super().__init__(
             returns_data=returns_data,
-            l2_gamma=l2_gamma,
-            min_weight=min_weight,
-            max_weight=max_weight,
             frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
         )
         self.frequency = frequency
         self.rets_estimator = rets_estimator
@@ -459,14 +491,17 @@ class _BaseMeanSemiVariancePortfolio(
         eff_front_model = self._get_model(
             expected_returns=expected_returns,
             returns=X if self.returns_data else returns_from_prices(X),
-            weight_bounds=(self.min_weight, self.max_weight),
+            weight_bounds=self.weight_bounds,
             frequency=self.frequency,
         )
+        if hasattr(self, "constraints"):
+            for cnstr in self.constraints:
+                eff_front_model.add_constraint(cnstr)
         if self.l2_gamma > 0:
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma
             )
-        return deepcopy(eff_front_model)
+        return eff_front_model
 
     def risk_reward(self, model: BaseConvexOptimizer = None):
         if model is None:
@@ -488,12 +523,44 @@ class MinimumSemiVolatility(
     Minimum semi-volatility portfolio.
     """
 
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+    ):
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
+        )
+
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(X, "min_semivariance")
         return self
 
 
 class MeanSemiVarianceEfficientRisk(_TargetRiskMixin, _BaseMeanSemiVariancePortfolio):
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        target_risk: float = BASE_TARGET_RISK,
+    ):
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
+        )
+        self.target_risk = target_risk
+
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(
             X, "efficient_risk", target_semideviation=self.target_risk
@@ -504,6 +571,23 @@ class MeanSemiVarianceEfficientRisk(_TargetRiskMixin, _BaseMeanSemiVariancePortf
 class MeanSemiVarianceEfficientReturn(
     _TargetReturnMixin, _BaseMeanSemiVariancePortfolio
 ):
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        target_return: float = BASE_TARGET_RETURN,
+    ):
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
+        )
+        self.target_return = target_return
+
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(
             X, "efficient_return", target_return=self.target_return
@@ -521,27 +605,26 @@ class _BaseCVarCDarEstimator(
     to the mixin classes _EfficientCVarMixin and _EfficientCDarMixin
     """
 
+    @abstractmethod
     def __init__(
         self,
         returns_data: bool = False,
-        frequency: float = APPROX_BDAYS_PER_YEAR,
-        l2_gamma: float = 0,
-        min_weight: float = 0,
-        max_weight: float = 1,
-        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
         beta: float = 0.95,
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
         market_neutral: bool = False,
     ):
         super().__init__(
             returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
             l2_gamma=l2_gamma,
-            min_weight=min_weight,
-            max_weight=max_weight,
         )
-        self.returns_data = returns_data
-        self.frequency = frequency
-        self.rets_estimator = rets_estimator
         self.beta = beta
+        self.rets_estimator = rets_estimator
         self.market_neutral = market_neutral
 
     def _optimizer(self, X) -> BaseConvexOptimizer:
@@ -555,14 +638,17 @@ class _BaseCVarCDarEstimator(
         eff_front_model = self._get_model(
             expected_returns=expected_returns,
             returns=X if self.returns_data else returns_from_prices(X),
-            weight_bounds=(self.min_weight, self.max_weight),
+            weight_bounds=self.weight_bounds,
             beta=self.beta,
         )
+        if hasattr(self, "constraints"):
+            for cnstr in self.constraints:
+                eff_front_model.add_constraint(cnstr)
         if self.l2_gamma > 0:
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma
             )
-        return deepcopy(eff_front_model)
+        return eff_front_model
 
 
 class _EfficientCVarEstimator(
@@ -594,6 +680,27 @@ class MinimumCVar(_EfficientCVarEstimator):
     Minimum Conditional Var portfolio
     """
 
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        beta: float = 0.95,
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        market_neutral: bool = False,
+    ):
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            l2_gamma=l2_gamma,
+            weight_bounds=weight_bounds,
+            beta=beta,
+            rets_estimator=rets_estimator,
+            market_neutral=market_neutral,
+        )
+
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(
             X, "min_cvar", market_neutral=self.market_neutral
@@ -605,6 +712,29 @@ class CVarEfficientRisk(_TargetRiskMixin, _EfficientCVarEstimator):
     """
     Efficient CVar at given target return
     """
+
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        beta: float = 0.95,
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        market_neutral: bool = False,
+        target_risk: float = BASE_TARGET_RISK,
+    ):
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            l2_gamma=l2_gamma,
+            weight_bounds=weight_bounds,
+            beta=beta,
+            rets_estimator=rets_estimator,
+            market_neutral=market_neutral,
+        )
+        self.target_risk = target_risk
 
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(
@@ -620,6 +750,29 @@ class CVarEfficientReturn(_TargetReturnMixin, _EfficientCVarEstimator):
     """
     Efficient return at given target CVar
     """
+
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        beta: float = 0.95,
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        market_neutral: bool = False,
+        target_return: float = BASE_TARGET_RETURN,
+    ):
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            l2_gamma=l2_gamma,
+            weight_bounds=weight_bounds,
+            beta=beta,
+            rets_estimator=rets_estimator,
+            market_neutral=market_neutral,
+        )
+        self.target_return = target_return
 
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(
@@ -660,6 +813,27 @@ class MinimumCDar(_EfficientCDarEstimator):
     Minimum Conditional DaR portfolio
     """
 
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        beta: float = 0.95,
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        market_neutral: bool = False,
+    ):
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            l2_gamma=l2_gamma,
+            weight_bounds=weight_bounds,
+            beta=beta,
+            rets_estimator=rets_estimator,
+            market_neutral=market_neutral,
+        )
+
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(
             X, "min_cdar", market_neutral=self.market_neutral
@@ -671,6 +845,29 @@ class CDarEfficientRisk(_TargetRiskMixin, _EfficientCDarEstimator):
     """
     Efficient CVar at given target return
     """
+
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        beta: float = 0.95,
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        market_neutral: bool = False,
+        target_risk: float = BASE_TARGET_RISK,
+    ):
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            l2_gamma=l2_gamma,
+            weight_bounds=weight_bounds,
+            beta=beta,
+            rets_estimator=rets_estimator,
+            market_neutral=market_neutral,
+        )
+        self.target_risk = target_risk
 
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(
@@ -686,6 +883,29 @@ class CDarEfficientReturn(_TargetReturnMixin, _EfficientCDarEstimator):
     """
     Efficient return at given target CVar
     """
+
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        beta: float = 0.95,
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        market_neutral: bool = False,
+        target_return: float = BASE_TARGET_RETURN,
+    ):
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            l2_gamma=l2_gamma,
+            weight_bounds=weight_bounds,
+            beta=beta,
+            rets_estimator=rets_estimator,
+            market_neutral=market_neutral,
+        )
+        self.target_return = target_return
 
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(
@@ -709,35 +929,27 @@ class _BaseOmegaPortfolio(
 ):
     _min_risk_method_name = "min_omega_risk"
 
+    @abstractmethod
     def __init__(
         self,
         returns_data: bool = False,
-        minimum_acceptable_return: float = 0.0,
-        l2_gamma: float = 0.0,
-        min_weight: float = 0,
-        max_weight: float = 1,
+        *,
         frequency=APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
         rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        minimum_acceptable_return: float = BASE_MIN_ACCEPTABLE_RETURN,
     ):
         """
-        Estimator of the maximum omega ratio portfolio.
-        Please consider that in using a non-zero target return one should look for returns specified in the same
-        frequency as those of the returns estimator.
-        Parameters
-        ----------
-        returns_data
-        l2_gamma
-        min_weight
-        max_weight
-        frequency
-        rets_estimator
+        Base estimator of the omega ratio portfolio.
+        Please consider that in using a non-zero minimum acceptable return one should look for returns specified in the
+        same frequency units as those of the returns estimator.
         """
         super().__init__(
             returns_data=returns_data,
-            l2_gamma=l2_gamma,
-            min_weight=min_weight,
-            max_weight=max_weight,
             frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
         )
         self.rets_estimator = rets_estimator
         self.minimum_acceptable_return = minimum_acceptable_return
@@ -752,11 +964,14 @@ class _BaseOmegaPortfolio(
             minimum_acceptable_return=self.minimum_acceptable_return,
             weight_bounds=self.weight_bounds,
         )
+        if hasattr(self, "constraints"):
+            for cnstr in self.constraints:
+                eff_front_model.add_constraint(cnstr)
         if self.l2_gamma > 0:
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma
             )
-        return deepcopy(eff_front_model)
+        return eff_front_model
 
     def risk_reward(self, model: Optional[BaseConvexOptimizer] = None):
         if model is None:
@@ -777,12 +992,62 @@ class _BaseOmegaPortfolio(
 
 
 class MaxOmegaRatio(_BaseOmegaPortfolio):
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency=APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        minimum_acceptable_return: float = BASE_MIN_ACCEPTABLE_RETURN,
+    ):
+        """
+        Estimator of the maximum omega ratio portfolio.
+        Please consider that in using a non-zero minimum acceptable return one should look for returns specified in the
+        same frequency units as those of the returns estimator.
+        """
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
+            rets_estimator=rets_estimator,
+            minimum_acceptable_return=minimum_acceptable_return,
+        )
+
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(X, "max_omega_ratio")
         return self
 
 
 class OmegaEfficientRisk(_TargetRiskMixin, _BaseOmegaPortfolio):
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency=APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        minimum_acceptable_return: float = BASE_MIN_ACCEPTABLE_RETURN,
+        target_risk: float = BASE_TARGET_RISK,
+    ):
+        """
+        Estimator of the maximum omega ratio portfolio.
+        Please consider that in using a non-zero minimum acceptable return one should look for returns specified in the
+        same frequency units as those of the returns estimator.
+        """
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
+            rets_estimator=rets_estimator,
+            minimum_acceptable_return=minimum_acceptable_return,
+        )
+        self.target_risk = target_risk
+
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(
             X, "efficient_risk", target_risk=self.target_risk
@@ -791,6 +1056,32 @@ class OmegaEfficientRisk(_TargetRiskMixin, _BaseOmegaPortfolio):
 
 
 class OmegaEfficientReturn(_TargetReturnMixin, _BaseOmegaPortfolio):
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency=APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        minimum_acceptable_return: float = BASE_MIN_ACCEPTABLE_RETURN,
+        target_return: float = BASE_TARGET_RETURN,
+    ):
+        """
+        Estimator of the maximum omega ratio portfolio.
+        Please consider that in using a non-zero minimum acceptable return one should look for returns specified in the
+        same frequency units as those of the returns estimator.
+        """
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
+            rets_estimator=rets_estimator,
+            minimum_acceptable_return=minimum_acceptable_return,
+        )
+        self.target_return = target_return
+
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(
             X, "efficient_return", target_return=self.target_return
@@ -799,6 +1090,30 @@ class OmegaEfficientReturn(_TargetReturnMixin, _BaseOmegaPortfolio):
 
 
 class MinimumOmegaRisk(_BaseOmegaPortfolio):
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency=APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        minimum_acceptable_return: float = BASE_MIN_ACCEPTABLE_RETURN,
+    ):
+        """
+        Estimator of the maximum omega ratio portfolio.
+        Please consider that in using a non-zero minimum acceptable return one should look for returns specified in the
+        same frequency units as those of the returns estimator.
+        """
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
+            rets_estimator=rets_estimator,
+            minimum_acceptable_return=minimum_acceptable_return,
+        )
+
     def fit(self, X, y=None) -> PortfolioEstimator:
         self.weights_ = self._fit_method(X, "min_omega_risk")
         return self
@@ -819,15 +1134,14 @@ class _BaseMADPortfolio(
     def __init__(
         self,
         returns_data: bool = False,
-        risk_free_rate: float = BASE_RISK_FREE_RATE,
-        l2_gamma: float = 0.0,
-        min_weight: float = 0,
-        max_weight: float = 1,
+        *,
         frequency=APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
         rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
     ):
         """
-        Estimator of the maximum omega ratio portfolio.
+        Estimator of the Mean-Absolute-Deviation portfolio.
         Please consider that in using a non-zero target return one should look for returns specified in the same
         frequency as those of the returns estimator.
 
@@ -835,14 +1149,10 @@ class _BaseMADPortfolio(
         ----------
         returns_data: bool
             Whether input data are historical asset returns or historical asset prices
-        risk_free_rate: float
-            The risk free rate for the tangency portfolio. Basically the return of riskless assets (cash, options).
         l2_gamma: float
             Weights regularization constant for the L2 loss of weights.
-        min_weight: float
-            Minimum weight
-        max_weight: float
-            Maximum weight
+        weight_bounds: Tuple[float,float]
+            Minimum and maximum allowed weights
         frequency: int
             Number of periods to consider. As typical input data are daily close prices, and annualized
             returns or volatilies are needed, the default value for frequency=252 business days.
@@ -851,12 +1161,10 @@ class _BaseMADPortfolio(
         """
         super().__init__(
             returns_data=returns_data,
-            l2_gamma=l2_gamma,
-            min_weight=min_weight,
-            max_weight=max_weight,
             frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
         )
-        self.risk_free_rate = risk_free_rate
         self.rets_estimator = rets_estimator
 
     def _optimizer(self, X) -> BaseConvexOptimizer:
@@ -869,11 +1177,14 @@ class _BaseMADPortfolio(
             returns=X if self.returns_data else returns_from_prices(X),
             weight_bounds=self.weight_bounds,
         )
+        if hasattr(self, "constraints"):
+            for cnstr in self.constraints:
+                eff_front_model.add_constraint(cnstr)
         if self.l2_gamma > 0:
             eff_front_model.add_objective(
                 objective_functions.L2_reg, gamma=self.l2_gamma
             )
-        return deepcopy(eff_front_model)
+        return eff_front_model
 
     def risk_reward(self, model: Optional[BaseConvexOptimizer] = None):
         if model is None:
@@ -888,12 +1199,57 @@ class _BaseMADPortfolio(
 
 
 class MinimumMAD(_BaseMADPortfolio):
+    """
+    Estimator of the portfoloi with the Minimum mean-absolute deviation
+    """
+
     def fit(self, X, y=None) -> _BaseMADPortfolio:
         self.weights_ = self._fit_method(X, "min_mad")
         return self
 
 
 class MADEfficientReturn(_TargetReturnMixin, _BaseMADPortfolio):
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency=APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        target_return: float = BASE_TARGET_RETURN,
+    ):
+        """
+        Estimator of the maximum Mean-Absolute-Deviation portfolio, given target return.
+        Please consider that in using a non-zero target return one should look for returns specified in the same
+        frequency as those of the returns estimator.
+
+        Parameters
+        ----------
+        returns_data: bool
+            Whether input data are historical asset returns or historical asset prices
+        l2_gamma: float
+            Weights regularization constant for the L2 loss of weights.
+        weight_bounds: Tuple[float,float]
+            Minimum and maximum allowed weights
+            Maximum weight
+        frequency: int
+            Number of periods to consider. As typical input data are daily close prices, and annualized
+            returns or volatilies are needed, the default value for frequency=252 business days.
+        rets_estimator: BaseReturnsEstimator
+            Expected returns estimator, default sample mean of linear returns.
+        target_return: float
+            The target value of portfolio return (x-axis in the frontier plot)
+        """
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
+            rets_estimator=rets_estimator,
+        )
+        self.target_return = target_return
+
     def fit(self, X, y=None) -> _BaseMADPortfolio:
         self.weights_ = self._fit_method(
             X, "efficient_return", target_return=self.target_return
@@ -902,6 +1258,47 @@ class MADEfficientReturn(_TargetReturnMixin, _BaseMADPortfolio):
 
 
 class MADEfficientRisk(_TargetRiskMixin, _BaseMADPortfolio):
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency=APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        target_risk: float = BASE_TARGET_RISK,
+    ):
+        """
+        Estimator of the maximum Mean-Absolute-Deviation portfolio, given target risk.
+        Please consider that in using a non-zero target return one should look for returns specified in the same
+        frequency as those of the returns estimator.
+
+        Parameters
+        ----------
+        returns_data: bool
+            Whether input data are historical asset returns or historical asset prices
+        l2_gamma: float
+            Weights regularization constant for the L2 loss of weights.
+        weight_bounds: Tuple[float,float]
+            Minimum and maximum allowed weights
+            Maximum weight
+        frequency: int
+            Number of periods to consider. As typical input data are daily close prices, and annualized
+            returns or volatilies are needed, the default value for frequency=252 business days.
+        rets_estimator: BaseReturnsEstimator
+            Expected returns estimator, default sample mean of linear returns.
+        target_risk: float
+            The target value of portfolio risk (x-axis in the frontier plot)
+        """
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
+            rets_estimator=rets_estimator,
+        )
+        self.target_risk = target_risk
+
     def fit(self, X, y=None) -> _BaseMADPortfolio:
         self.weights_ = self._fit_method(
             X, "efficient_risk", target_risk=self.target_risk

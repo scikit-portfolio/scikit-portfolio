@@ -5,8 +5,7 @@ from typing import Dict
 from typing import Sequence
 
 import pandas as pd
-from optuna.distributions import BaseDistribution
-from optuna.distributions import CategoricalDistribution
+
 from pypfopt.expected_returns import returns_from_prices
 from pypfopt.hierarchical_portfolio import HRPOpt
 
@@ -49,14 +48,6 @@ class _HierarchicalRiskPortfolioEstimator(PortfolioEstimator, metaclass=ABCMeta)
         return {
             "linkage": ["average", "ward", "single", "complete"],
             "risk_estimator": all_risk_estimators,
-        }
-
-    def optuna_parameters(self) -> Dict[str, BaseDistribution]:
-        return {
-            "linkage": CategoricalDistribution(
-                ["average", "ward", "single", "complete"]
-            ),
-            "cov_estimator": CategoricalDistribution(all_risk_models),
         }
 
 

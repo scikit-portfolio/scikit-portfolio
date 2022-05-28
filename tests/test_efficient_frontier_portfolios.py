@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
 """Tests for `skportfolio` package."""
+import pytest
 import numpy as np
 import pandas as pd  # type: ignore
 from sklearn.base import clone  # type: ignore
+from sklearn.utils.estimator_checks import check_estimator
+
 from skportfolio import PortfolioEstimator
 
 # efficient frontier portfolios
@@ -43,21 +46,20 @@ def check_model_fit(model: PortfolioEstimator, X: pd.DataFrame):
     return fitted_model
 
 
-def check_model_predict(model: PortfolioEstimator, X: pd.DataFrame):
+def check_model_predict(model: PortfolioEstimator, prices: pd.DataFrame):
     try:
-        out = model.predict(X)
+        out = model.predict(prices)
         if not isinstance(out, pd.Series):
             raise TypeError("not a pd.Series returned")
     except Exception as ex:
         assert False, f"Cannot run portfolio {model} predict to data.\nReason:\n" + str(
             ex
         )
-    return out
 
 
-def check_model_score(model: PortfolioEstimator, X: pd.DataFrame):
+def check_model_score(model: PortfolioEstimator, prices: pd.DataFrame):
     try:
-        score = model.score(X)
+        score = model.score(prices)
         if not isinstance(score, float):
             raise TypeError("not a float returned")
     except Exception as ex:
@@ -67,7 +69,6 @@ def check_model_score(model: PortfolioEstimator, X: pd.DataFrame):
 
 def check_model_weights(model: PortfolioEstimator):
     assert isinstance(model.weights_, pd.Series)
-    return model.weights_
 
 
 def check_grid_params(model: PortfolioEstimator):
@@ -88,19 +89,15 @@ def check_risk_reward(model: PortfolioEstimator, X: pd.DataFrame):
 def check_estimate_frontier(
     model: _BaseEfficientFrontierPortfolioEstimator, X: pd.DataFrame
 ):
-    risks, returns, weights = model.estimate_frontier(X, num_portfolios=10)
-    assert len(risks) == 10
-    assert len(returns) == 10
-    return risks, returns, weights
-
-
-def check_optuna_params(model: PortfolioEstimator):
-    assert isinstance(
-        model.optuna_parameters(), dict
-    ), "Not a dictionary for grid parameters"
+    risks_, returns_, weights_ = model.estimate_frontier(X, num_portfolios=10)
+    assert len(risks_) == 10
+    assert len(returns_) == 10
 
 
 def check_clone_portfolio(model: PortfolioEstimator):
+    """
+    https://scikit-learn.org/stable/developers/develop.html?highlight=check_estimator#cloning
+    """
     # Tests that clone creates a correct deep copy.
     # We create an estimator, make a copy of its original state
     # (which, in this case, is the current state of the estimator),
@@ -110,57 +107,664 @@ def check_clone_portfolio(model: PortfolioEstimator):
     # assert model.get_params() == model_cloned.get_params()
 
 
-def check_clone_portfolio2(model: PortfolioEstimator):
-    model_clone = clone(model)
-    model_clone.some_parameter = None
-    assert not hasattr(model, "some_parameter")
+# def test_efficient_frontier_portfolios(prices, returns):
+#     models = [
+#         # Markowitz MVO
+#         MinimumVolatility,
+#         MeanVarianceEfficientRisk,
+#         MeanVarianceEfficientReturn,
+#         MaxSharpe,
+#         # Semivariance frontier
+#         MinimumSemiVolatility,
+#         MeanSemiVarianceEfficientReturn,
+#         MeanSemiVarianceEfficientRisk,
+#         # CVar efficient frontier
+#         MinimumCVar,
+#         CVarEfficientReturn,
+#         CVarEfficientRisk,
+#         # CDar efficient frontier
+#         MinimumCDar,
+#         CDarEfficientReturn,
+#         CDarEfficientRisk,
+#         # # Omega frontier
+#         MaxOmegaRatio,
+#         OmegaEfficientReturn,
+#         OmegaEfficientRisk,
+#         # MAD Frontier
+#         MinimumMAD,
+#         MADEfficientReturn,
+#         MADEfficientRisk,
+#     ]
+#
+#     for m in models:
+#         for prices_or_returns, returns_data in zip([returns, prices], [True, False]):
+#             model = m(returns_data=returns_data)
+#             check_clone_portfolio(model)
+#             try:
+#                 fitted_model = check_model_fit(model, X=prices_or_returns)
+#                 check_risk_reward(fitted_model, X=prices_or_returns)
+#                 check_model_predict(fitted_model, prices=prices)
+#                 check_model_score(fitted_model, prices=prices)
+#                 check_model_weights(fitted_model)
+#                 check_estimate_frontier(fitted_model, X=prices_or_returns)
+#                 check_grid_params(model)
+#                 check_clone_portfolio(model)
+#                 try:
+#                     check_estimator(model)
+#                 except AttributeError as ex:  # because we use dataframes
+#                     pass
+#             except AssertionError as ex:
+#                 print(ex)
+#             assert isinstance(prices_or_returns, pd.DataFrame), "stop here"
 
 
-def test_efficient_frontier_portfolios(prices, returns):
-    models = [
-        # Markowitz MVO
-        MinimumVolatility(),
-        MeanVarianceEfficientRisk(),
-        MeanVarianceEfficientReturn(),
-        MaxSharpe(),
-        # Semivariance frontier
-        MinimumSemiVolatility(),
-        MeanSemiVarianceEfficientReturn(),
-        MeanSemiVarianceEfficientRisk(),
-        # CVar efficient frontier
-        MinimumCVar(),
-        CVarEfficientReturn(),
-        CVarEfficientRisk(),
-        # CDar efficient frontier
-        MinimumCDar(),
-        CDarEfficientReturn(),
-        CDarEfficientRisk(),
-        # # Omega frontier
-        MaxOmegaRatio(),
-        OmegaEfficientReturn(),
-        OmegaEfficientRisk(),
-        # MAD Frontier
-        MinimumMAD(),
-        MADEfficientReturn(),
-        MADEfficientRisk(),
-    ]
-    for m in models:
-        check_clone_portfolio(m)
+def test_minimumvolatility_returns(prices, returns):
+    model = MinimumVolatility(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
 
-    for returns_data in [True, False]:
-        if returns_data:
-            prices_or_returns = returns
-        else:
-            prices_or_returns = prices
-        for model in models:
-            model = model.set_returns_data(returns_data)
-            fitted_model = check_model_fit(model, X=prices_or_returns)
-            check_risk_reward(fitted_model, X=prices_or_returns)
-            ptf_series = check_model_predict(fitted_model, X=prices)
-            score = check_model_score(fitted_model, X=prices_or_returns)
-            weights = check_model_weights(fitted_model)
-            risks, returns, weights = check_estimate_frontier(
-                fitted_model, X=prices_or_returns
-            )
-            check_grid_params(model)
-            check_optuna_params(model)
+
+def test_minimumvolatility_prices(prices, returns):
+    model = MinimumVolatility(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_meanvarianceefficientrisk_returns(prices, returns):
+    model = MeanVarianceEfficientRisk(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_meanvarianceefficientrisk_prices(prices, returns):
+    model = MeanVarianceEfficientRisk(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_meanvarianceefficientreturn_returns(prices, returns):
+    model = MeanVarianceEfficientReturn(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_meanvarianceefficientreturn_prices(prices, returns):
+    model = MeanVarianceEfficientReturn(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_maxsharpe_returns(prices, returns):
+    model = MaxSharpe(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_maxsharpe_prices(prices, returns):
+    model = MaxSharpe(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_minimumsemivolatility_returns(prices, returns):
+    model = MinimumSemiVolatility(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_minimumsemivolatility_prices(prices, returns):
+    model = MinimumSemiVolatility(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_meansemivarianceefficientreturn_returns(prices, returns):
+    model = MeanSemiVarianceEfficientReturn(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_meansemivarianceefficientreturn_prices(prices, returns):
+    model = MeanSemiVarianceEfficientReturn(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_meansemivarianceefficientrisk_returns(prices, returns):
+    model = MeanSemiVarianceEfficientRisk(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_meansemivarianceefficientrisk_prices(prices, returns):
+    model = MeanSemiVarianceEfficientRisk(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_minimumcvar_returns(prices, returns):
+    model = MinimumCVar(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_minimumcvar_prices(prices, returns):
+    model = MinimumCVar(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_cvarefficientreturn_returns(prices, returns):
+    model = CVarEfficientReturn(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_cvarefficientreturn_prices(prices, returns):
+    model = CVarEfficientReturn(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_cvarefficientrisk_returns(prices, returns):
+    model = CVarEfficientRisk(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_cvarefficientrisk_prices(prices, returns):
+    model = CVarEfficientRisk(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_minimumcdar_returns(prices, returns):
+    model = MinimumCDar(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_minimumcdar_prices(prices, returns):
+    model = MinimumCDar(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_cdarefficientreturn_returns(prices, returns):
+    model = CDarEfficientReturn(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_cdarefficientreturn_prices(prices, returns):
+    model = CDarEfficientReturn(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_cdarefficientrisk_returns(prices, returns):
+    model = CDarEfficientRisk(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_cdarefficientrisk_prices(prices, returns):
+    model = CDarEfficientRisk(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_maxomegaratio_returns(prices, returns):
+    model = MaxOmegaRatio(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_maxomegaratio_prices(prices, returns):
+    model = MaxOmegaRatio(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_omegaefficientreturn_returns(prices, returns):
+    model = OmegaEfficientReturn(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_omegaefficientreturn_prices(prices, returns):
+    model = OmegaEfficientReturn(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_omegaefficientrisk_returns(prices, returns):
+    model = OmegaEfficientRisk(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_omegaefficientrisk_prices(prices, returns):
+    model = OmegaEfficientRisk(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_minimummad_returns(prices, returns):
+    model = MinimumMAD(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_minimummad_prices(prices, returns):
+    model = MinimumMAD(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_madefficientreturn_returns(prices, returns):
+    model = MADEfficientReturn(returns_data=True, target_return=0.1)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_madefficientreturn_prices(prices, returns):
+    model = MADEfficientReturn(returns_data=False, target_return=0.1)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_madefficientrisk_returns(prices, returns):
+    model = MADEfficientRisk(returns_data=True)
+    fitted_model = check_model_fit(model, X=returns)
+    check_risk_reward(fitted_model, X=returns)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=returns)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+def test_madefficientrisk_prices(prices, returns):
+    model = MADEfficientRisk(returns_data=False)
+    fitted_model = check_model_fit(model, X=prices)
+    check_risk_reward(fitted_model, X=prices)
+    check_model_predict(fitted_model, prices=prices)
+    check_model_score(fitted_model, prices=prices)
+    check_model_weights(fitted_model)
+    check_estimate_frontier(fitted_model, X=prices)
+    check_grid_params(model)
+    check_clone_portfolio(model)
+    try:
+        check_estimator(fitted_model)
+    except AttributeError as ex:
+        print(ex)
+
+
+if __name__ == "__main__":
+    pytest.main(args=[__file__])

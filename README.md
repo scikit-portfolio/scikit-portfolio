@@ -2,7 +2,21 @@
 
 # Scikit-Portfolio
 
+
 [![Python package](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml/badge.svg)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml)
+
+Main branch:
+
+[![Python package](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml/badge.svg?branch=main)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml)
+[![run_tox](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/run_tox.yml/badge.svg?branch=main)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/run_tox.yml)
+[![build and deploy mkdocs to github pages](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/gh-pages.yml/badge.svg?branch=main)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/gh-pages.yml)
+
+Develop branch:
+
+[![Python package](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml/badge.svg?branch=develop)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml)
+[![Python package](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml/badge.svg?branch=develop)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml)
+[![run_tox](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/run_tox.yml/badge.svg?branch=develop)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/run_tox.yml)
+
 
 ## Portfolio optimization for data scientists
 

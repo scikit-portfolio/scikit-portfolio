@@ -108,13 +108,63 @@ def sharpe_ratio(
 ) -> float:
     """
     Computes the annualized sharpe ratio of a set of returns.
-
     See the notes above about the annualization
+
+    Returns
+    -------
+    The Sharpe ratio of the portfolio returns
     See Also
+    -------
     """
     return ep.sharpe_ratio(
         r, risk_free=riskfree_rate, period=period, annualization=frequency
     )
+
+
+def info_ratio(
+    r: pd.Series,
+    benchmark: pd.Series,
+    period: str = "DAILY",
+    frequency: int = APPROX_BDAYS_PER_YEAR,
+) -> float:
+    """
+    Computes the annualized information ratio of a set of returns.
+    Although originally called the “appraisal ratio” by Treynor and Black, the information ratio is the ratio of
+    relative return to relative risk (known as “tracking error”). Whereas the Sharpe ratio looks at returns relative
+    to a riskless asset, the information   ratio is based on returns relative to a risky benchmark which is known
+    colloquially as a “bogey.” Given an asset or portfolio of assets with random returns designated by Asset and a
+    benchmark with random returns designated by Benchmark, the information ratio has the form:
+
+    ```
+    Mean(Asset − Benchmark) / Sigma (Asset − Benchmark)
+    ```
+
+    Here `Mean(Asset − Benchmark)` is the mean of Asset minus Benchmark returns, and `Sigma(Asset - Benchmark)` is the
+    standard deviation of Asset minus Benchmark returns. A higher information ratio is considered better than a
+    lower information ratio.
+
+    See the notes above about the annualization
+
+    Parameters
+    ----------
+    r: pd.Series
+        Returns of the portfolio
+    benchmark:
+        Returns of the benchmark
+    period: str
+        periodicy of the data
+    frequency:
+        Annualization constant
+    Returns
+    -------
+    The Information Ratio (IR) of the portfolio
+
+    See Also
+    -------
+    sharpe_ration, omega_ratio
+    """
+    # assert pd.testing.assert_index_equal(r.index, benchmark.index)
+    return np.mean(r - benchmark, axis=0) / np.std(r - benchmark, axis=0)
 
 
 def l1_risk_ratio(
@@ -144,7 +194,7 @@ def sharpe_ratio_se(
     """
     sr_hat = sharpe_ratio(r, riskfree_rate, period, frequency)
     T = r.shape[0]
-    std_err_sr_hat = np.sqrt((1 + 0.5 * sr_hat ** 2) / T)
+    std_err_sr_hat = np.sqrt((1 + 0.5 * sr_hat**2) / T)
     return std_err_sr_hat
 
 
@@ -250,8 +300,8 @@ def skewness(r: pd.Series) -> float:
     """
     demeaned_r = r - r.mean()
     sigma_r = r.std(ddof=0)
-    exp = (demeaned_r ** 3).mean()
-    return exp / (sigma_r ** 3)
+    exp = (demeaned_r**3).mean()
+    return exp / (sigma_r**3)
 
 
 def kurtosis(r: pd.Series) -> float:
@@ -260,8 +310,8 @@ def kurtosis(r: pd.Series) -> float:
     """
     demeaned_r = r - r.mean()
     sigma_r = r.std(ddof=0)
-    exp = (demeaned_r ** 4).mean()
-    return exp / (sigma_r ** 4)
+    exp = (demeaned_r**4).mean()
+    return exp / (sigma_r**4)
 
 
 def var_gaussian(
@@ -292,9 +342,9 @@ def var_gaussian(
         k = kurtosis(r)
         z = (
             z
-            + (z ** 2 - 1) * s / 6
-            + (z ** 3 - 3 * z) * (k - 3) / 24
-            - (2 * z ** 3 - 5 * z) * (s ** 2) / 36
+            + (z**2 - 1) * s / 6
+            + (z**3 - 3 * z) * (k - 3) / 24
+            - (2 * z**3 - 5 * z) * (s**2) / 36
         )
     return -(r.mean() + z * r.std(ddof=0))
 
@@ -538,9 +588,7 @@ def tail_ratio(
     )
 
 
-def downside_risk(
-    r: pd.Series, target_return: float = 0.0, frequency: int = APPROX_BDAYS_PER_YEAR
-) -> float:
+def downside_risk(r: pd.Series, target_return: float = 0.0) -> float:
     """
     Calculates downside risk
     Parameters
@@ -553,7 +601,7 @@ def downside_risk(
     -------
 
     """
-    return ep.downside_risk(r, required_return=target_return, annualization=frequency)
+    return ep.downside_risk(r, required_return=target_return)
 
 
 def drawdown(returns: pd.Series):
@@ -594,180 +642,7 @@ def number_effective_assets(weigths: pd.Series):
     -------
 
     """
-    return 1.0 / (weigths ** 2).sum()
-
-
-def parkinson_volatility(high_price: pd.Series, low_price: pd.Series):
-    """
-    Parkinson volatility is a volatility measure that uses the stock’s high and low price of the day.
-    The main difference between regular volatility and Parkinson volatility is that the latter uses high and low prices
-    for a day, rather than only the closing price. That is useful as close to close prices could show little
-    difference while large price movements could have happened during the day. Thus Parkinson's volatility is
-    considered to be more precise and requires less data for calculation than the close-close volatility.
-
-    One drawback of this estimator is that it doesn't take into account price movements after market close.
-    Hence it systematically undervalues volatility. That drawback is taken into account in the Garman-Klass's
-     volatility estimator.
-    """
-    if not (high_price.ndim == low_price.ndim):
-        raise ValueError("Inconsistent dimensions")
-
-    ht = high_price
-    lt = low_price
-    T = ht.shape[0]
-    return np.sqrt(1 / (4 * T * np.log(2)) * np.sum(np.log(ht / lt) ** 2))
-
-
-def garman_klass_volatility(
-    open_price: pd.Series,
-    high_price: pd.Series,
-    low_price: pd.Series,
-    close_price: pd.Series,
-) -> float:
-    """
-    Estimates the garman-klass volatility using OHLC prices
-    Garman Klass is a volatility estimator that incorporates open, low, high, and close prices of a security.
-    Garman-Klass volatility extends Parkinson's volatility by taking into account the opening and closing price.
-    As markets are most active during the opening and closing of a trading session, it makes volatility estimation
-    more accurate.
-
-    Garman and Klass also assumed that the process of price change is a process of continuous diffusion
-     (geometric Brownian motion). However, this assumption has several drawbacks. The method is not robust for
-     opening jumps in price and trend movements.
-
-    Despite its drawbacks, the Garman-Klass estimator is still more effective than the basic formula since it takes
-    into account not only the price at the beginning and end of the time interval but also intraday price extremums.
-
-    Researchers Rogers and Satchel have proposed a more efficient method for assessing historical volatility that takes
-    into account price trends. See Rogers-Satchell Volatility for more detail.
-
-    Parameters
-    ----------
-    open_price: pd.Series
-    high_price: pd.Series
-    low_price: pd.Series
-    close_price: pd.Series
-
-    Returns
-    -------
-    Garman-Klass volatility estimate
-
-    See Also
-    -------
-    https://portfolioslab.com/tools/garman-klass
-
-    References
-    ---------
-    https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2508648
-    """
-    if not (open_price.ndim == high_price.ndim == low_price.ndim == close_price.ndim):
-        raise ValueError("Inconsistent dimensions")
-
-    o = open_price
-    h = high_price
-    l = low_price
-    c = close_price
-    T = o.shape[0]
-    const = 2 * (np.log(2) - 1) / T
-    return np.sqrt(
-        1 / (2 * T) * np.sum(np.log((h / l)) ** 2) - const * np.log((c / o) ** 2)
-    )
-
-
-def rogers_satchell_volatility(
-    open_price: pd.Series,
-    high_price: pd.Series,
-    low_price: pd.Series,
-    close_price: pd.Series,
-) -> float:
-    """
-    Rogers-Satchell is an estimator for measuring the volatility of securities with an average return not equal to zero.
-    Unlike Parkinson and Garman-Klass estimators, Rogers-Satchell incorporates drift term (mean return not equal to zero).
-    As a result, it provides a better volatility estimation when the underlying is trending.
-
-    The main disadvantage of this method is that it does not take into account price movements between trading sessions.
-    It means an underestimation of volatility since price jumps periodically occur in the market precisely at the
-    moments between sessions.
-
-
-    A more comprehensive estimator that also considers the gaps between sessions was developed based on the
-    Rogers-Satchel formula in the 2000s by Yang-Zhang. See Yang Zhang Volatility for more detail.
-    Returns
-    -------
-    """
-
-    if not (open_price.ndim == high_price.ndim == low_price.ndim == close_price.ndim):
-        raise ValueError("Inconsistent dimensions")
-
-    o = open_price
-    h = high_price
-    l = low_price
-    c = close_price
-    T = o.shape[0]
-    return np.sqrt(
-        np.sum(np.log(h / c) * np.log(h / o) + np.log(l / c) * np.log(l / o)) / T
-    )
-
-
-# def yang_zhang_volatility(
-#     open_price: pd.Series,
-#     high_price: pd.Series,
-#     low_price: pd.Series,
-#     close_price: pd.Series,
-# ) -> float:
-#     """
-#     The Yang-Zhang estimator had the following properties:
-#         (a) unbiased,
-#         (b) independent of the drift,
-#         (c) consistent in dealing with the opening jump
-#         (d) smallest variance among all the estimators with similar properties (the typical
-#         biweekly Yang-Zhang variance estimation was over 7 times more efficient than the classical variance estimator)
-#     Parameters
-#     ----------
-#     open_price
-#     high_price
-#     low_price
-#     close_price
-#
-#     Returns
-#
-#     References:
-#     https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2508648
-#     -------
-#
-#     """
-#     if not (open_price.ndim == high_price.ndim == low_price.ndim == close_price.ndim):
-#         raise ValueError("Inconsistent dimensions")
-#
-#     o = open_price
-#     h = high_price
-#     l = low_price
-#     c = close_price
-#     T = o.shape[0]
-#
-#     log_ho = np.log(h / o)
-#     log_lo = np.log(l / o)
-#     log_co = np.log(c / o)
-#     log_oc = np.log(o / c.shift(1))
-#     log_oc_sigmac = log_oc ** 2
-#
-#     log_cc = np.log(c / c.shift(1))
-#     log_cc_sq = log_cc ** 2
-#
-#     rs = log_ho * (log_ho - log_co) + log_lo * (log_lo - log_co)
-#
-#     close_vol = log_cc_sq.rolling(window=window, center=False).sum() * (
-#         1.0 / (window - 1.0)
-#     )
-#     open_vol = log_oc_sq.rolling(window=window, center=False).sum() * (
-#         1.0 / (window - 1.0)
-#     )
-#     window_rs = rs.rolling(window=window, center=False).sum() * (1.0 / (window - 1.0))
-#
-#     k = 0.34 / (1.34 + (window + 1) / (window - 1))
-#     result = (open_vol + k * close_vol + (1 - k) * window_rs).apply(
-#         np.sqrt
-#     ) * math.sqrt(trading_periods)
+    return 1.0 / (weigths**2).sum()
 
 
 def backtest(
@@ -781,6 +656,7 @@ def backtest(
     Takes a dataframe with N columns (pairs) and T rows (time) containing the daily prices
     Computes return over rows, volatility over rows, sharpe ratio over rows,
     """
+    returns = prices.pct_change().dropna()
 
     def get_stats(w):
         portfolio_returns = returns_from_prices(prices.dot(w))
@@ -788,7 +664,9 @@ def backtest(
             {
                 "annual_return": annualize_rets(portfolio_returns),
                 "final_cumulative_return": final_cum_returns(portfolio_returns),
-                "volatility": portfolio_vol(portfolio_returns, w, frequency),
+                "volatility": portfolio_vol(
+                    returns=returns, weights=w, frequency=frequency
+                ),
                 "sharpe_ratio": sharpe_ratio(
                     portfolio_returns, risk_free_rate, frequency
                 ),
@@ -813,3 +691,26 @@ def backtest(
         weights = [weights]
 
     return pd.concat((get_stats(w) for w in weights if not w.isna().any()), axis=1)
+
+
+def equity_curve(df: Union[pd.Series, pd.DataFrame], initial_value: float = 1):
+    """
+    An equity curve is a visual representation of the trend and variation in the value of an
+    investment or trading account shown on a chart over a specified period of time.
+    Normalizes the values, setting all assets to relative value of 1.
+    While this function could in theory work on any dataframe, it's only
+    useful to compare the performances of equities as result of many Portfolio.predit
+    methods series
+
+    Parameters
+    ----------
+    df: pd.DataFrame
+        Dataframe of asset prices
+    initial_value:
+        Capital at the first instant
+
+    Returns
+    -------
+    The equity curve. First value is set to initial_value
+    """
+    return df.div(df.iloc[0]).mul(initial_value)

@@ -32,8 +32,7 @@ markdown_extensions:
   - attr_list
   - admonition
   - footnotes
-  - codehilite:
-      guess_lang: true
+
   - toc:
       permalink: true
   - pymdownx.arithmatex:
@@ -47,7 +46,6 @@ markdown_extensions:
       base_path: docs
       check_paths: true
   - pymdownx.tabbed
-  - pymdownx.superfences
   - pymdownx.tasklist:
       custom_checkbox: true
 
@@ -57,9 +55,7 @@ plugins:
   - autorefs
   - include
   - mkapi
-#  - gallery:
-#      examples_dirs: docs/examples
-#      gallery_dirs: docs/generated/gallery
+
 
 nav:
   - Home: index.md
@@ -86,7 +82,17 @@ nav:
     - Metrics and scorers: metrics.md
     - Cross validation: splitters.md
     - Hyperparameters optimization: hyperparameters.md
+    - Backtesting: backtesting.md
   - Developing new methods:
     - Estimators: portfolio_estimator.md
-#  - generated/gallery
+  - Docker: docker.md
   - Datasets: datasets.md
+  - API:
+    - Mean Variance frontier: efficient_frontier_api.md
+    - Mean semivariance frontier: efficient_semivariance_api.md
+    - Conditional Value At Risk (CVaR): efficient_cvar_api.md
+    - Conditional Drawdown At Risk (CDaR): efficient_cdar_api.md
+    - Omega Ratio: efficient_omega_api.md
+    - Mean Absolute Deviation (MAD): efficient_mad_api.md
+    - Risk estimators: risk_api.md
+    - Returns estimators: returns_api.md

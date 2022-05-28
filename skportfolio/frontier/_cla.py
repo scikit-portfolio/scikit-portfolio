@@ -82,9 +82,6 @@ class CLAMinimumSemiVolatility(_MeanVarianceCLA):
     def grid_parameters(self) -> Dict[str, Sequence[Any]]:
         return {}
 
-    def optuna_parameters(self) -> Dict[str, Any]:
-        return {}
-
 
 class CLAMaxSemiSharpe(CLAMinimumSemiVolatility):
     def fit(self, X, y=None) -> PortfolioEstimator:
@@ -97,7 +94,4 @@ class CLAMaxSemiSharpe(CLAMinimumSemiVolatility):
         return self
 
     def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-        return {}
-
-    def optuna_parameters(self) -> Dict[str, Any]:
         return {}

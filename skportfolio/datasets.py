@@ -4,20 +4,17 @@ import numpy as np
 import pandas as pd
 import pkg_resources
 from urllib.request import urlopen, urlretrieve
-from skportfolio._base import EquallyWeighted
-from pypfopt.expected_returns import returns_from_prices
 
 
 def get_dataset_names():
     """Report available example datasets, useful for reporting issues.
     Requires an internet connection.
     """
-    url = "https://github.com/CarloNicolini/skportfolio-data"
+    url = "https://github.com/scikit-portfolio/skportfolio-data"
     with urlopen(url) as resp:
         html = resp.read()
 
-    pat = r"/CarloNicolini/skportfolio-data/blob/main/(\w*).csv"
-    print(pat)
+    pat = r"/scikit-portfolio/skportfolio-data/blob/main/(\w*).csv"
     datasets = re.findall(pat, html.decode())
     return datasets
 
@@ -50,7 +47,7 @@ def load_dataset(name, cache=True, data_home=None, **kws):
     ----------
     name : str
         Name of the dataset (``{name}.csv`` on
-        https://github.com/CarloNicolini/skportfolio-data).
+        https://github.com/scikit-portfolio/skportfolio-data).
     cache : boolean, optional
         If True, try to load from the local cache first, and save to the cache
         if a download is required.
@@ -75,7 +72,7 @@ def load_dataset(name, cache=True, data_home=None, **kws):
         )
         raise TypeError(err)
 
-    url = f"https://raw.githubusercontent.com/CarloNicolini/skportfolio-data/main/{name}.csv"
+    url = f"https://raw.githubusercontent.com/scikit-portfolio/skportfolio-data/main/{name}.csv"
 
     if cache:
         cache_path = os.path.join(get_data_home(data_home), os.path.basename(url))
@@ -87,11 +84,12 @@ def load_dataset(name, cache=True, data_home=None, **kws):
     else:
         full_path = url
 
-    df = pd.read_csv(full_path, **kws)
+    df = pd.read_csv(full_path, **kws).infer_objects()
 
     if df.iloc[-1].isnull().all():
         df = df.iloc[:-1]
     if "date" in df.columns:
+        df["date"] = pd.to_datetime(df["date"])
         return df.set_index("date")
     else:
         return df
@@ -132,23 +130,17 @@ def load_sp500_adj_close():
     return df
 
 
-def load_nasdaq_adj_close():
+def load_nasdaq_adj_close() -> pd.DataFrame:
     """
     Loads adjusted close prices of the Nasdaq index (^IXIC), in the interval from 2016-08-22 to 2021-08-20.
     Returns
     -------
     A pandas dataframe of adjusted close prices of the Nasdaq index (^IXIC), from 2016-08-22 to 2021-08-20.
     """
-    df = pd.read_csv(
-        pkg_resources.resource_filename("skportfolio", "data/nasdaq_100.csv"),
-        index_col="date",
-        infer_datetime_format=True,
-    )
-    df.index = pd.to_datetime(df.index)
-    return df
+    return load_dataset("nasdaq_100")
 
 
-def load_matlab_random_returns():
+def load_matlab_random_returns() -> pd.DataFrame:
     """
     Loads random returns for 5 assets generated with matlab with rng(42) seed.
 
@@ -167,7 +159,7 @@ def load_matlab_random_returns():
     )
 
 
-def load_crypto_prices():
+def load_crypto_prices() -> pd.DataFrame:
     """
     Loads prics of 74 cryptocurrencies from 2020-01-01 to 2022-03-02 at 4h timeframe.
 
@@ -175,8 +167,15 @@ def load_crypto_prices():
     -------
     Returns a pandas dataframe of prics of 74 cryptocurrencies from 2020-01-01 to 2022-03-02 at 4h timeframe.
     """
-    df = pd.read_csv(
-        pkg_resources.resource_filename("skportfolio", "data/crypto_large.csv")
-    ).set_index("date")
-    df.index = pd.to_datetime(df.index)
-    return df
+    return load_dataset("crypto_large")
+
+
+def load_dow_prices() -> pd.DataFrame:
+    """
+    Load prices of 31 DowJones prices.
+    Source Matlab dow-portolio.xlsx
+    Returns
+    -------
+    Pandas dataframe
+    """
+    return load_dataset("dow")

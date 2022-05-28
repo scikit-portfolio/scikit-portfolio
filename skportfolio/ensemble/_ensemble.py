@@ -7,7 +7,7 @@ Here we collect baggind-based and bootstrap based portfolio meta-estimators.
 A "bagging" portfolio meta-estimator fits base portfolio estimator on random subsets of the original dataset, then
 aggregating the individual weights (either by voting or by averaging) to form a final prediction.
 
-An "bootstrap" based portfolio estimator instead is based on the idea to reduce the extreme sensitivity of
+A "bootstrap" based portfolio estimator instead is based on the idea to reduce the extreme sensitivity of
 optimized weights from the returns estimator, by aggregating multiple results over randomly perturbed returns through
 resampling from a multivariate normal given the sample covariance matrix and returns estimates.
 """
@@ -84,7 +84,7 @@ class MichaudResampledFrontier(PortfolioEstimator):
         n_jobs: Optional[int]
             Number of parallel jobs. If None then 1 single worker is launched. If -1 all cores are used.
         random_state: Optional[np.random.RandomState]
-            The random numbers generator for replicability purpose.
+            The random number generator for replicability purpose.
         agg_func: Callable, str
             Aggregation method of weights. Default mean over all weights.
         returns_estimator_random_state: None
@@ -140,13 +140,13 @@ class MichaudResampledFrontier(PortfolioEstimator):
         else:
             # otherwise use joblib Parallel, it takes some overhead for initialization but on large portfolios
             # it can run much faster
-            out = Parallel(n_jobs=self.n_jobs, prefer="threads")(
+            out = Parallel(n_jobs=self.n_jobs)(
                 delayed(_compute_weights_risk_reward)(X) for _ in range(self.n_iter)
             )
         # filter unfitted results
         out = [o for o in out if not np.isnan(o[2])]
         self.all_weights_ = [o[0] for o in out]
-        self.risk_rewards_ = [o[1] for o in out]
+        self.risk_rewards_ = [(o[1], o[2]) for o in out]
         # finally collects all the obtained weights and average by mean
         self.weights_ = pd.concat(self.all_weights_, axis=1).aggregate(
             self.agg_func, axis=1
@@ -157,9 +157,6 @@ class MichaudResampledFrontier(PortfolioEstimator):
         return self
 
     def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-        pass
-
-    def optuna_parameters(self) -> Dict[str, Any]:
         pass
 
 
@@ -441,7 +438,7 @@ class RobustBayesian(PortfolioEstimator):
         pick_vol = int(np.round(0.8 * self.n_portfolios)) - 1
         v = ds_hat[pick_vol] ** 2
         g_s = v / (
-            (nu1 / (nu1 + N + 1) + np.sqrt(2 * nu1 ** 2 * q_s2 / ((nu1 + N + 1) ** 3)))
+            (nu1 / (nu1 + N + 1) + np.sqrt(2 * nu1**2 * q_s2 / ((nu1 + N + 1) ** 3)))
         )
 
         targets = []
@@ -473,7 +470,4 @@ class RobustBayesian(PortfolioEstimator):
         return self
 
     def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-        pass
-
-    def optuna_parameters(self) -> Dict[str, Any]:
         pass
