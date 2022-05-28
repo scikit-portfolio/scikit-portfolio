@@ -86,5 +86,5 @@ nav:
     - Hyperparameters optimization: hyperparameters.md
   - Developing new methods:
     - Estimators: portfolio_estimator.md
-#  - generated/gallery
+  - Docker: docker.md
   - Datasets: datasets.md
