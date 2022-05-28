@@ -19,7 +19,7 @@ The efficient frontier is commonly depicted as a hyperbola, with the portfolio r
 <hr>
 
 
-## Minimum volatility
+## Minimum volatility [📖](../efficient_frontier_api/#minimum-volatility)
 Calculates the portfolio with the least volatility over the efficient frontier, namely the green dot 🟢 in the Markowitz mean-variance efficient frontier. This portfolio algorithm requires no estimates on expected returns, hence its estimation is typically considered more robust than other points along the frontier. 
 The optimal weights are determined by the following portfolio optimization problem, where portfolio volatility is minimized:
 
@@ -75,7 +75,7 @@ plt.grid(True)
 
 <hr>
 
-## Efficient return on mean variance frontier
+## Efficient return on mean variance frontier [📖](../efficient_frontier_api/#meanvarianceefficientreturn)
 Calculates the portfolio over the efficient frontier given target portfolio return $\rho_P^\star$.
 It explicitly solves the following optimization problem, where portfolio volatility is minimized given a lower bound on
 portfolio returns $\mathbf{w}^T \boldsymbol \mu$:
@@ -105,7 +105,7 @@ MeanVarianceEfficientReturn(returns_data=True).set_target_return(target_return=0
 
 <hr>
 
-## Efficient risk on mean variance frontier
+## Efficient risk on mean variance frontier [📖](../efficient_frontier_api/#meanvarianceefficientrisk)
 Calculates the portfolio over the efficient frontier given target portfolio volatility $\sigma_P^\star$.
 It explicitly solves the following optimization problem, where portfolio return is maximized given an upper limit 
 to portfolio volatility $\sigma^\star_P$.

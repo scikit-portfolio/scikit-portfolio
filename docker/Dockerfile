@@ -5,6 +5,7 @@ COPY pyproject.toml poetry.lock ./
 
 RUN pip install --upgrade pip==22.1.1 && \
     pip install "poetry==1.1.13" && \
+    pip install jupyterlab && \
     poetry install -E optionals --no-root
 
 COPY . .

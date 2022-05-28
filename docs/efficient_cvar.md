@@ -44,16 +44,16 @@ This formulation introduces a new variable for each datapoint (similar to Effici
 you may run into performance issues for long returns dataframes. At the same time, you should aim to
 provide a sample of data that is large enough to include tail events. 
 
-## Minimum CVar portfolio
+## Minimum CVar portfolio [📖](../efficient_cvar_api#minimum_cvar)
 
 <hr>
 
-## Efficient return on mean-cvar frontier
+## Efficient return on mean-cvar frontier [📖](../efficient_cvar_api#efficient-return-optimization-on-cvar-frontier)
 
 <hr>
 
 
-## Efficient risk on mean-cvar frontier
+## Efficient risk on mean-cvar frontier [📖](../efficient_cvar_api#efficient-risk-optimization-on-cdar-frontier)
 
 
 <hr>

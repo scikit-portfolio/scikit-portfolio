@@ -1,5 +1,5 @@
 
-# 2. Mean-Semivariance frontier
+# Mean-Semivariance frontier
 Here instead of the classical Markowitz efficient frontier optimization where the covariance is taken into
 account, we use the semivariance, i.e. the variance of only negative returns, as investors are more interested
  Here instead of the classical Markowitz efficient frontier optimization where the covariance is taken into
@@ -30,11 +30,11 @@ The implementation is based on Markowitz et al. (2019)[^1].
 
 Here we offer three specific portfolio estimators over the mean-semivariance frontier:
 
-## 2.1 Minimum semi-volatility 
+## Minimum semi-volatility  [📖](../efficient_semivariance_api#minimum-semi-volatility)
 
-## 2.1 Efficient return on mean-semivariance frontier
+## Efficient return on mean-semivariance frontier [📖](../efficient_semivariance_api#minimum-semi-volatility)
 
-## 2.3 Efficient risk on mean-semivariance frontier
+## Efficient risk on mean-semivariance frontier [📖](../efficient_semivariance_api#minimum-semi-volatility)
 
 <hr>
 

@@ -4,7 +4,7 @@ when the portfolio return is elliptically distributed, as it only takes into acc
 the returns distribution, neglecting other higher order moments. Especially, when the portfolio return is skewed or
 exhibits fat tails, then the Sharpe Ratio might result in counterintuitive performance evaluations and rankings.
 
-To address this issue, **Omega ratio** has been introducede as a measure of the ratio between risk and rewards that 
+To address this issue, **Omega ratio** has been introduced as a measure of the ratio between risk and rewards that 
 takes into consideration all moments of the portfolio returns distribution. 
 It captures both the downside and upside potential of the constructed portfolio, while remaining consistent with utility maximization. 
 
@@ -107,7 +107,7 @@ number of constraints grows linearly with the number of data points (indicated b
 
 <hr>
 
-## Minimum Omega Risk
+## Minimum Omega Risk [📖](../efficient_omega_api#minimum-omega-risk)
 This portfolio minimizes the denominator in the Omega ratio. It is indeed very similar to the objective function of 
 the Minimum Absolute Deviation portfolio. The minimum Omega risk optimization problem is solved through the 
 `EfficientOmegaFrontier` interface:
