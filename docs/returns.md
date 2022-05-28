@@ -14,7 +14,7 @@ This base class is at the core of all returns estimators. THe `.fit` method take
 
 <hr>
 
-## Mean historical linear-returns `MeanHistoricalLinearReturns`
+## Mean historical linear-returns `MeanHistoricalLinearReturns`  [📖](../returns_api#meanhistoricallinearreturns)
 Mean historical returns are simply computed as the historical **average** of the geometric returns over all data.
 In other words, given the returns time series $r_t$ for $t=1,\dots,\T$, the mean historical returns are obtained as
 
@@ -25,7 +25,7 @@ In other words, given the returns time series $r_t$ for $t=1,\dots,\T$, the mean
 
 <hr>
 
-## Compounded historical linear-returns `CompoundedHistoricalLinearReturns`
+## Compounded historical linear-returns `CompoundedHistoricalLinearReturns` [📖](../returns_api#compoundedhistoricallinearreturns)
 Compounded historical returns are simply computed as the geometric **average** of the linear historical returns.
 In other words, given the returns time series $r_t$ for $t=1,\dots,\T$, the compounded historical returns are obtained as:
 
@@ -36,7 +36,7 @@ In other words, given the returns time series $r_t$ for $t=1,\dots,\T$, the comp
 
 <hr>
 
-## Mean historical log-returns `MeanHistoricalLogReturns`
+## Mean historical log-returns `MeanHistoricalLogReturns` [📖](../returns_api#meanhistoricallogreturns)
 Here, rather than using linear returns, we compute the average of the log returns $\log(p_t/p_{t-1})$:
 
 \begin{equation}
@@ -46,7 +46,7 @@ Here, rather than using linear returns, we compute the average of the log return
 
 <hr>
 
-## Compounded historical log-returns `CompoundedHistoricalLogReturns`
+## Compounded historical log-returns `CompoundedHistoricalLogReturns` [📖](../returns_api#compoundedhistoricallogreturns)
 Here, rather than using linear returns, we compute the average of the log returns $\log(p_t/p_{t-1})$, and geometric average
 
 \begin{equation}
@@ -56,7 +56,7 @@ Here, rather than using linear returns, we compute the average of the log return
 
 <hr>
 
-## Median historical linear returns `MedianHistoricalLinearReturns`
+## Median historical linear returns `MedianHistoricalLinearReturns` [📖](../returns_api#medianhistoricallinearreturns)
 Like for `MeanHistoricalLinearReturns`, but using **median** rather than average.
 In other words, given the returns time series $r_t$ for $t=1,\dots,T$, the median historical returns are obtained as
 
@@ -66,7 +66,7 @@ In other words, given the returns time series $r_t$ for $t=1,\dots,T$, the media
 
 <hr>
 
-## Median historical log returns `MedianHistoricalLogReturns`
+## Median historical log returns `MedianHistoricalLogReturns` [📖](../returns_api#medianhistoricallogreturns)
 Like for `MeanHistoricalLinearReturns`, but using **median** rather than average.
 In other words, given the log-returns time series $\log p_t/p_{t-1}$ for $t=1,\dots,T$, the median historical log-returns are obtained as:
 
@@ -76,13 +76,16 @@ In other words, given the log-returns time series $\log p_t/p_{t-1}$ for $t=1,\d
 
 <hr>
 
-## Exponential Moving Average Returns `EMAHistoricalLinearReturns`
+## Exponential Moving Average Returns `EMAHistoricalLinearReturns` [📖](../returns_api#emahistoricalreturns)
 Estimates the (annualized if frequency=252) expected returns as the exponential moving average of linear historical returns.
 Compounding is set to false by default.
 
 <hr>
 
-## CAPM expected returns
+## Rolling Median Returns `RollingMedianReturns` [📖](../returns_api#rollingmedianreturns)
+Estimates the returns from the average of the rolling median over a `window` of 20 observations, by default.
+
+## CAPM expected returns `CAPMReturns` [📖](../returns_api#capmreturns)
 Compute a return estimate using the Capital Asset Pricing Model. Under the CAPM, asset returns are equal to market returns plus a $\beta$ term encoding the relative risk of the asset.
 The formula for calculating the expected return of an asset given its risk is as follows:
 
@@ -92,7 +95,7 @@ The formula for calculating the expected return of an asset given its risk is as
 
 where
 - $\mathbb{E}[R_i]$ is the expected return of asset $i$
-- $r_f$ is the risk-free rate
+- $r_f$ is the risk-free rate (default value is `0`)
 - $\beta_i$ is the beta of the investment
 - $ \left( \mathbb{E}\lbrackR_m\rbrack - r_f\right)$ is the market risk premium
 

@@ -36,7 +36,7 @@ With the generic term `risk` we mean a proxy measure of portfolio risk, like the
 For notation, please see [the notation section](portfolio_optimization_theory.md#notation)
 <hr>
 
-## Sample Covariance `SampleCovariance`
+## Sample Covariance `SampleCovariance` [📖](../risk_api#samplecovariance)
 
 Sample covariance from the asset returns.
 For more information about the covariance estimator implemented here see the [scikit learn page on covariance estimation](https://scikit-learn.org/stable/modules/covariance.html).
@@ -48,7 +48,7 @@ The `SampleCovariance` is obtained from the asset returns $r_t^{(i)}$ for $i \in
 
 <hr>
 
-## Semicovariance `SemiCovariance`
+## Semicovariance `SemiCovariance` [📖](../risk_api#semicovariance)
 The semicovariance, a.k.a. the covariance matrix estimated from only the returns exceeding a given benchmark $b$ (typically 0).
 We adopt the definition as from [pyportfolioopt](https://pyportfolioopt.readthedocs.io/en/latest/RiskModels.html).
 There are multiple possible ways of defining a semicovariance matrix, the main differences lying in the 'pairwise' nature, i.e whether we should sum over $\min(r_i,B)\min(r_j,b)$  or $\min(r_i r_j,b)$.
@@ -60,7 +60,7 @@ In this implementation, we have followed the advice of Estrada (2007) [^3], pref
 
 <hr>
 
-## CovarianceRMT `CovarianceRMT`
+## CovarianceRMT `CovarianceRMT`  [📖](../risk_api#covariancermt)
 The random matrix theory (RMT) postulates that a covariance matrix is built from a component related to bulk random gaussian noise and from a real signal, as described from the Marchenko-Pastur distribution.
 Here we follow the approach from MacMahon and Garlaschelli [^5].
 The calculation is based on the idea that a signal eigenspectrum consists in a continuos bulk and a "market-mode", to filter.
@@ -82,7 +82,7 @@ We refer the reader to the paper [^5] for more details, or looking into the `sci
 
 <hr>
 
-### Ledoit-Wolf covariance estimator `CovarianceLedoitWolf`
+### Ledoit-Wolf covariance estimator `CovarianceLedoitWolf` [📖](../risk_api#covarianceledoitwolf)
 One popular approach to dealing with estimation risk is to simply ignore parameters that are hard to estimate.
 A popular approach is thus to employ "shrinkage estimators" for key inputs.
 For example, Ledoit and Wolf (2004)[^2], propose shrinking the sample correlation matrix towards (a fancy way of saying "averaging it with") the constant correlation matrix. 
@@ -103,7 +103,7 @@ Specifically, Ledoit-Wolf is a particular form of shrinkage, where the shrinkage
 
 <hr>
 
-## Covariance GLASSO `CovarianceGLASSO`
+## Covariance GLASSO `CovarianceGLASSO` [📖](../risk_api#covarianceglasso)
 The GLASSO covariance method estimates the true covariance matrix $\boldsymbol \Sigma$ by solving the following optimization problem in the precision matrix $\boldsymbol \Theta$ with a L1 regularization term, inducing sparsity in the recovered precision matrix:
 
 \begin{equation}
@@ -115,7 +115,7 @@ More details [here](https://www.stata.com/meeting/us21/slides/US21_Dallakyan.pdf
 
 <hr>
 
-### Exponential Moving Average Covariance `CovarianceExp`
+### Exponential Moving Average Covariance `CovarianceExp` [📖](../risk_api#covarianceexp)
 This method of computing the covariance takes into account with an exponential moving average only the most recent observations, given a decay factor governed by the parameter `span`. 
 Given a temporal span parameter $K$ the tensor $\mathbf{Q} \in \mathbb{R}^{T \times N \times N}$ is obtained as:
 
@@ -132,6 +132,13 @@ Finally, an exponential moving average is performed on $\mathbf{Q}$ over the tem
 where $\alpha$ is the decay factor $0\leq \alpha \leq 1$  uniquely specified by the `span` factor as $\alpha = 2/(\textrm{span}+1)$ for $\textrm{span}\geq 1$.
 
 <hr>
+
+### Hierarchical filtered covariance: average linkage [📖](../risk_api#covariancehierarchicalfilteraverage)
+
+### Hierarchical filtered covariance: complete linkage [📖](../risk_api#covariancehierarchicalfiltercomplete)
+
+### Hierarchical filtered covariance: single linkage[📖](../risk_api#covariancehierarchicalfiltersingle)
+
 
 # References
 [^1]: Kritzman, Page & Turkington (2010) "In defense of optimization: The fallacy of 1/N". Financial Analysts Journal, 66(2), 31-39.

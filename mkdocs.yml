@@ -55,9 +55,7 @@ plugins:
   - autorefs
   - include
   - mkapi
-##  - gallery:
-##      examples_dirs: docs/examples
-##      gallery_dirs: docs/generated/gallery
+
 
 nav:
   - Home: index.md
@@ -96,3 +94,5 @@ nav:
     - Conditional Drawdown At Risk (CDaR): efficient_cdar_api.md
     - Omega Ratio: efficient_omega_api.md
     - Mean Absolute Deviation (MAD): efficient_mad_api.md
+    - Risk estimators: risk_api.md
+    - Returns estimators: returns_api.md
