@@ -120,32 +120,41 @@ class Backtester(BaseEstimator):
 
         # Compute weights on initial warmup period
         warmup_prices = X.iloc[: self.warmup_period, :]
-        # calculate the estimated prices
+        # calculate the estimated prices on the warmup period
+        # this acts as a kind of pre-initialization of weights, which otherwise should be set equal
         self.strategy.estimator.fit(warmup_prices)
-
         self.weights_.iloc[self.warmup_period, :] = self.strategy.estimator.weights_
+        # updates the equity curve: the initial equity value starts from 0 where it started at `initial_portfolio_value`
         self.equity_.iloc[: self.warmup_period] = equity_curve(
             self.strategy.estimator.predict(warmup_prices),
             initial_value=self.strategy.initial_portfolio_value,
         )
 
         # calculates the rebalancing dates. At these dates, the portfolio gets rebalanced
-        # with the new updated historical data. Transaction costs are accounted and get
-        # subtracted from the amount
-        rebalance_dates = pd.date_range(
-            start=X.index.min(),
-            end=X.index.max(),
-            freq=self.strategy.rebalance_frequency,
+        # with the new updated historical data. Transaction costs are accounted for and subtracted from portfolio value
+        from collections import deque
+
+        rebalance_dates = deque(
+            pd.date_range(
+                start=X.index.min(),
+                end=X.index.max(),
+                freq=self.strategy.rebalance_frequency,
+            ).tolist()
         )
+        self.costs_ = pd.Series(index=rebalance_dates)
 
         # First get the indices for the trailing strategy
         # using the well tested pd.Series.rolling function on a fake dataset
         # for quicker collection of results
+        # TODO this trick should be made quicker through a generator function
         idx = []
 
         def collect_indices(df):
+            """
+            An helper function only needed to globally calculated the indices bounds from the rolling window
+            """
             idx.append((df.index.min(), df.index.max()))
-            return df.mean()
+            return 0  # there is no need of performing any computation other the exploiting the calculation of indices
 
         pd.Series(index=X.index[self.warmup_period :], data=0).rolling(
             min_periods=self.strategy.lookback_periods[0],
@@ -155,39 +164,43 @@ class Backtester(BaseEstimator):
         # then from the correctly created indices, iterates over all these windows
         # manually to populate the weights
         portfolio_value = self.strategy.initial_portfolio_value
-        self.equity_ = pd.Series(index=X.index)
-        self.equity_.iloc[0 : self.warmup_period] = portfolio_value
-        self.turnover_ = pd.DataFrame(columns=X.columns, index=rebalance_dates)
-        self.positions_ = pd.DataFrame(columns=X.columns, index=X.index)
+        self.turnover_ = []
+        self.positions_ = []
+        self.paper_ = []
+        self.weights_ = []
+        self.equity_ = [portfolio_value]
+        self.costs_ = []
+        self.portfolio_value_ = [portfolio_value]
 
+        # Iterates over all windows of the rolling window
         for i, (t_start, t_end) in enumerate(idx):
-            df_win = X.loc[t_start:t_end, :]
+            # takes a slice of X with the current rolling window
+            df_win = X[t_start:t_end].dropna(
+                how="all", axis=0
+            )  # eliminates oversamplings            # fit the portfolio optimization method on df_win
+            # the portfolio estimator is the one obtained from the given strategy
             self.strategy.estimator.fit(df_win)
-            old_weights = self.weights_.dropna(how="all").iloc[-1, :]
-            self.weights_.loc[t_end, :] = self.strategy.estimator.weights_
-            y = self.strategy.estimator.predict(df_win)
-            self.equity_.loc[t_start:t_end] = equity_curve(
-                y, initial_value=portfolio_value
+            # the old strategy weights were the latest available, excluding the all NaN rows
+            self.weights_.append(self.strategy.estimator.weights_)
+            self.equity_.append(
+                equity_curve(
+                    self.strategy.estimator.predict(df_win),
+                    initial_value=self.equity_[-1]
+                )
             )
-            self.positions_.loc[t_end] = (
-                self.strategy.estimator.weights_ * portfolio_value
-            )
-
-            # then look at rebalancing events
-            # in this case the portfolio value should be updated
-            if rebalance_dates.isin([t_end]).any():
-                # portfolio value is the latest portfolio value but we need to pay for transaction costs!
-                old_portfolio_value = portfolio_value
-                self.turnover_.loc[t_end, :] = (
-                    self.strategy.estimator.weights_
-                ) - old_weights
-                self.equity_.loc[t_end:] -= calculate_transaction_costs(
-                    old_portfolio=old_portfolio_value * old_weights,
-                    new_portfolio=self.equity_.dropna().iloc[-1]
-                    * self.strategy.estimator.weights_,
+            # then look at rebalancing events. If a rebalancing event is found, then the portfolio value
+            # should be updated
+            if t_end in rebalance_dates:
+                self.costs_[t_end] = calculate_transaction_costs(
+                    old_portfolio=self.portfolio_value_[-1] * self.weights_[-1],
+                    new_portfolio=self.portfolio_value_[0] * self.weights_[0],
                     buy_costs=self.strategy.transaction_costs[0],
                     sell_costs=self.strategy.transaction_costs[1],
                 )
-                portfolio_value = self.equity_.at[t_end]
+                self.equity_[-1] -= self.costs_[t_end]
+                self.portfolio_value_.append(self.equity_[-1])
+                rebalance_dates.popleft()
+                print(f"Rebalance at {t_end}")
+                print(f"Portfolio Value {portfolio_value}")
 
         return self
