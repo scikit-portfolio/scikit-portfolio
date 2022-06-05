@@ -6,6 +6,8 @@ name: Python package
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
@@ -30,9 +32,3 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         if [ -f requirements_dev.txt ]; then pip install -r requirements_dev.txt; fi
         pip install .
-    - name: Test with pytest
-      run: |
-        make test
-    - name: Coverage
-      run: |
-        make coverage
