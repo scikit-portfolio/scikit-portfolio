@@ -1,6 +1,7 @@
 ![](docs/imgs/scikit_portfolio.png)
 
 # Scikit-Portfolio
+[![Python package](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python-package.yml/badge.svg?branch=main)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python-package.yml)
 
 ## Portfolio optimization for data scientists
 
