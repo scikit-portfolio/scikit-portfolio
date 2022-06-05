@@ -36,19 +36,20 @@ matplotlib = { version="^3.5.2", optional=true }
 tabulate = "0.8.9"
 
 [tool.poetry.dev-dependencies]
-coverage = "6.3.2"
+coverage = "6.4.1"
 pytest = "7.1.2"
+pytest_cov = "3.0.0"
 tox = "3.25.0"
 mkdocs = "1.3.0"
 mkdocs_include = "1.0.0"
 mkdocs_gallery = "0.7.3"
-mkdocstrings = "0.18.1"
-mkdocs-material = "8.2.5"
+mkdocstrings = "0.19.0"
+mkdocs-material = "8.3.2"
 mkdocs-material-extensions = "1.0.3"
 mkapi = "1.0.14"
 
 [tool.poetry.extras]
-optionals = ["cvxopt", "jupyterlab"]
+optionals = ["cvxopt", "jupyterlab", "matplotlib"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
