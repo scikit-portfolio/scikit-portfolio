@@ -2,20 +2,6 @@
 
 # Scikit-Portfolio
 
-
-[![Python package](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml/badge.svg)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml)
-
-Main branch:
-
-[![Python package](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml/badge.svg?branch=main)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml)
-[![build and deploy mkdocs to github pages](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/gh-pages.yml/badge.svg?branch=main)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/gh-pages.yml)
-[![pytest](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/pytest.yml/badge.svg?branch=develop)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/pytest.yml)
-
-Develop branch:
-[![Python package](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml/badge.svg?branch=develop)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/python_package.yml)
-[![pytest](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/pytest.yml/badge.svg?branch=develop)](https://github.com/scikit-portfolio/scikit-portfolio/actions/workflows/pytest.yml)
-
-
 ## Portfolio optimization for data scientists
 
 Simply import of a multitude of portfolio optimization methods, and run hyperparameter optimization with both 
