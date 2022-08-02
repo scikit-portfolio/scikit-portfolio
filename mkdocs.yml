@@ -1,7 +1,7 @@
 site_name:
   scikit-portfolio
 site_url: https://scikit-portfolio.github.io
-repo_url: https://github.com/CarloNicolini/scikit-portfolio
+repo_url: https://github.com/scikit-portfolio/scikit-portfolio
 
 
 theme:
