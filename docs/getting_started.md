@@ -15,7 +15,6 @@ import pandas as pd
 prices = load_tech_stock_prices()
 model = MinimumVolatility(
     returns_data=False,
-    risk_free_rate=0.02,
     frequency=252).fit(prices)
 # print model weights
 print(model.weights_)
@@ -77,7 +76,7 @@ Name: MinimumVolatility, dtype: float64
 It is easy also to visualize weights portfolio with the `.plot.bar()` method:
 
 ```python
-model.fit(prices).weights_.plot.bar()
+model.partial_fit(prices).weights_.plot.bar()
 ```
 
 ![min_vol_weights](imgs/min_vol_weights.svg)
@@ -120,13 +119,13 @@ Moreover, all portfolio estimators s can modify the `returns_data` parameter via
 You can fit a model with both prices or returns, but remember to predict **always** on prices and not on returns ⚠️.
 
 ```python
-MinimumVolatility(returns_data=False).fit(prices).predict(prices)
+MinimumVolatility(returns_data=False).partial_fit(prices).predict(prices)
 ```
 is equivalent to:
-	
+
 ```python
 returns = prices.pct_change().dropna()
-MinimumVolatility(returns_data=True).fit(returns).predict(prices)
+MinimumVolatility(returns_data=True).partial_fit(returns).predict(prices)
 ```
 
 <hr>
@@ -140,37 +139,33 @@ from skportfolio.datasets import load_tech_stock_prices
 
 prices = load_tech_stock_prices()
 ax = (
-    MinimumVolatility(returns_data=False)
-        .fit(prices)
-        .plot_frontier(
-        prices,
-        num_portfolios=20,
-        risk_return_color='#777777',
-        show_only_portfolio=True)
+	MinimumVolatility(returns_data=False)
+	.fit(prices)
+	.plot_frontier(
+		prices,
+		num_portfolios=20,
+		risk_return_color='#777777',
+		show_only_portfolio=True)
 )
 (
-    MeanVarianceEfficientReturn()
-        .set_target_return(0.6)
-        .fit(prices)
-        .plot_frontier(
-        prices,
-        num_portfolios=20,
-        risk_return_color='#348ABD',
-        show_only_portfolio=True,
-        ax=ax
-    )
+	MeanVarianceEfficientReturn()
+	.plot_frontier(
+		prices,
+		num_portfolios=20,
+		risk_return_color='#348ABD',
+		show_only_portfolio=True,
+		ax=ax
+	)
 )
 (
-    MeanVarianceEfficientReturn()
-        .set_target_return(0.5)
-        .fit(prices)
-        .plot_frontier(
-        prices,
-        num_portfolios=20,
-        risk_return_color='#E24A33',
-        show_only_portfolio=False,
-        ax=ax
-    )
+	MeanVarianceEfficientReturn()
+	.plot_frontier(
+		prices,
+		num_portfolios=20,
+		risk_return_color='#E24A33',
+		show_only_portfolio=False,
+		ax=ax
+	)
 )
 ```
 
@@ -186,8 +181,10 @@ from skportfolio import MinimumVolatility, MeanVarianceEfficientReturn
 from skportfolio.datasets import load_tech_stock_prices
 
 X = load_tech_stock_prices()
-ax = MinimumVolatility(returns_data=False).fit(X).set_n_jobs(8).plot_frontier(X, num_portfolios=20, risk_return_color='darkblue')
-ax = MeanVarianceEfficientReturn().set_target_return(0.6).fit(X).plot_frontier(X, frontier_line_color=None, risk_return_color='darkgreen')
+ax = MinimumVolatility(returns_data=False).fit(X).set_n_jobs(8).plot_frontier(X, num_portfolios=20,
+																			  risk_return_color='darkblue')
+ax = MeanVarianceEfficientReturn().set_target_return(0.6).partial_fit(X).plot_frontier(X, frontier_line_color=None,
+																					   risk_return_color='darkgreen')
 ```
 
 ## Returns and risk estimators
@@ -231,9 +228,10 @@ from skportfolio.datasets import load_tech_stock_prices
 
 prices = load_tech_stock_prices()
 model = MinimumVolatility(returns_data=True)
-print(model.set_returns_data(False).fit(prices).weights_)
+print(model.set_returns_data(False).partial_fit(prices).weights_)
 print(model)
-print(model.set_returns_estimator(MedianHistoricalLinearReturns()).set_risk_estimator(CovarianceExp()).fit(prices).weights_)
+print(model.set_returns_estimator(MedianHistoricalLinearReturns()).set_risk_estimator(CovarianceExp()).partial_fit(
+	prices).weights_)
 print(model)
 ```
 

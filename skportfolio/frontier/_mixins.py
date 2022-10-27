@@ -224,3 +224,28 @@ class _EfficientMADMixin(_BaseFrontierMixin):
             returns=returns,
             weight_bounds=weight_bounds,
         )
+
+
+class _EfficientEDaRMixin(_BaseFrontierMixin):
+    @staticmethod
+    def _get_model(
+        expected_returns=None,
+        returns=None,
+        frequency: int = APPROX_BDAYS_PER_YEAR,
+        risk_matrix: Union[pd.DataFrame, np.array] = None,
+        weight_bounds=(0, 1),
+        solver=None,
+        verbose=None,
+        solver_options=None,
+        **kwargs
+    ) -> BaseConvexOptimizer:
+        if expected_returns is None:
+            raise AttributeError("Must specify parameter 'expected_returns'")
+        if returns is None:
+            raise AttributeError("Must specify parameter 'returns'")
+
+        return EfficientEDaR(
+            expected_returns=expected_returns,
+            returns=returns,
+            weight_bounds=weight_bounds,
+        )

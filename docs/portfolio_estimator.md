@@ -80,7 +80,7 @@ For the same reason, `fit_predict`, `fit_transform`, `score` and `partial_fit` m
 The method should return the object (`self`). This pattern is useful to be able to implement quick **one liners** in an IPython session such as:
 
 ```python
-prices_test_predicted = MinimumVolatility().fit(prices_train).predict(prices_test)
+prices_test_predicted = MinimumVolatility().partial_fit(prices_train).predict(prices_test)
 ```
 
 Depending on the nature of the algorithm, fit can sometimes also accept additional keywords arguments. However, any parameter that can have a value assigned prior to having access to the data should be an `__init__` keyword argument.

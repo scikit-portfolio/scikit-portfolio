@@ -100,7 +100,8 @@ returns = prices.pct_change().dropna()
 # fit portfolio directly on prices, with target_return set in initialization
 MeanVarianceEfficientReturn(target_return=0.05).fit(prices).weights_
 # or fit portfolio on returns, changing target return and applying weights on prices
-MeanVarianceEfficientReturn(returns_data=True).set_target_return(target_return=0.05).fit(returns).predict(prices)
+MeanVarianceEfficientReturn(returns_data=True).set_target_return(target_return=0.05).partial_fit(returns).predict(
+    prices)
 ```
 
 <hr>
@@ -131,7 +132,7 @@ returns = prices.pct_change().dropna()
 # fit portfolio directly on prices, with target_return set in initialization
 MeanVarianceEfficientRisk(target_return=0.05).fit(prices).weights_
 # or fit portfolio on returns, changing target return and applying weights on prices
-MeanVarianceEfficientRisk(returns_data=True).set_target_risk(target_return=0.05).fit(returns).predict(prices)
+MeanVarianceEfficientRisk(returns_data=True).set_target_risk(target_return=0.05).partial_fit(returns).predict(prices)
 ```
 
 ## Plotting the efficient frontier
@@ -155,19 +156,18 @@ Look at the method documentation for further information.
 ```python
 from skportfolio import MinimumVolatility, MeanVarianceEfficientRisk
 from skportfolio.datasets import load_tech_stock_prices
+
 prices = load_tech_stock_prices()
 
 ax = MinimumVolatility().fit(prices).plot_frontier(prices, num_portfolios=20)
 ax = (
-	MeanVarianceEfficientRisk()
-		.set_target_risk(0.5)
-		.fit(prices)
-		.plot_frontier(
-		prices,
-		num_portfolios=20,
-		show_assets=True,
-		show_only_portfolio=True,
-		ax=ax
+    MeanVarianceEfficientRisk()
+    .plot_frontier(
+        prices,
+        num_portfolios=20,
+        show_assets=True,
+        show_only_portfolio=True,
+        ax=ax
     )
 )
 ```

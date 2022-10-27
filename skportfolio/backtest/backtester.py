@@ -1,6 +1,7 @@
 # Here we should implement a backtester that takes one or more portfolio estimator objects,
 # possibly a rebalancing policy, transaction costs
 from typing import Union, Tuple, Sequence
+from collections import deque
 import numpy as np
 import pandas as pd
 from sklearn.base import BaseEstimator, MetaEstimatorMixin
@@ -8,8 +9,10 @@ from skportfolio import PortfolioEstimator, equity_curve
 
 
 def calculate_transaction_costs(
-    old_portfolio: pd.Series,
-    new_portfolio: pd.Series,
+    old_weights: pd.Series,
+    new_weights: pd.Series,
+    old_portfolio_value: float,
+    new_portfolio_value: float,
     buy_costs: float,  # buying 1 share costs you 1% of that share
     sell_costs: float,  # selling 1 share costs you 1% of that share
 ):
@@ -19,8 +22,8 @@ def calculate_transaction_costs(
 
     Parameters
     ----------
-    old_portfolio: pd.Series
-    new_portfolio: pd.Series
+    old_weights: pd.Series
+    new_weights: pd.Series
     buy_costs: float
     sell_costs: float
 
@@ -28,18 +31,25 @@ def calculate_transaction_costs(
     -------
     Transaction costs
     """
-    capital_allocation_difference = new_portfolio - old_portfolio
+    weights_difference = new_weights - old_weights
+    capital_allocation_difference = (
+        new_portfolio_value - old_portfolio_value
+    ) * weights_difference
     capital_to_buy = (
-        (capital_allocation_difference * (capital_allocation_difference > 0))
-        .abs()
-        .sum()
-    )
+        (
+            capital_allocation_difference
+            * buy_costs
+            * (capital_allocation_difference > 0)
+        ).abs()
+    ).sum()
     capital_to_sell = (
-        (capital_allocation_difference * (capital_allocation_difference < 0))
-        .abs()
-        .sum()
-    )
-    return capital_to_buy * buy_costs + capital_to_sell * sell_costs
+        (
+            capital_allocation_difference
+            * sell_costs
+            * (capital_allocation_difference < 0)
+        ).abs()
+    ).sum()
+    return capital_to_buy + capital_to_sell
 
 
 class Strategy(BaseEstimator, MetaEstimatorMixin):
@@ -55,7 +65,7 @@ class Strategy(BaseEstimator, MetaEstimatorMixin):
             pd.offsets.BaseOffset,
             Tuple[pd.offsets.BaseOffset, pd.offsets.BaseOffset],
         ],
-        transaction_costs: Union[float, Tuple[float, float]],
+        buy_sell_fees_pct: Union[float, Tuple[float, float]],
     ) -> None:
         """
 
@@ -67,17 +77,96 @@ class Strategy(BaseEstimator, MetaEstimatorMixin):
         rebalance_frequency: str
         lookback_periods:
             Minimum and maximum lookback periods. If a scalar is specified the same value is set for both
-        transaction_costs
+            buy_sell_fees_pct
+        buy_sell_fees_pct:
+            Fees for buy and sell. Fixed schedule
         """
         self.initial_weights = initial_weights
         self.initial_portfolio_value = initial_portfolio_value
         self.estimator = estimator
         self.rebalance_frequency = rebalance_frequency
         self.lookback_periods = lookback_periods
-        self.transaction_costs = transaction_costs
-        self.portfolio_value = []
+        self.buy_sell_fees_pct = buy_sell_fees_pct
 
-    def fit(self, X, y, **kwargs):
+        # Populated by calls to fit method on **all** initial dataset.
+        self.original_index = None
+        self.rebalance_dates_ = []
+        self._last_position = []
+        # Populated by calls to partial_fit method
+        self._list_all_weights = []
+        self._list_weights_prebalance = []
+        self.transaction_costs_ = []
+        self._positions = []
+        self._total_position = []
+        self.equity_ = []
+        self._rebalance_idx = []
+        self.all_weights_ = None
+
+    def fit(self, X, y=None, **kwargs):
+        self.rebalance_dates_ = pd.date_range(
+            start=X.index.min(),
+            end=X.index.max(),
+            freq=self.rebalance_frequency,
+        ).tolist()
+        self.original_index = X.index
+
+        return self
+
+    def partial_fit(self, X, y=None, **kwargs):
+        self._list_all_weights.append(self.estimator.fit(X).weights_)
+        self._positions.append(
+            self.estimator.predict(X.tail(1)).iat[0] * self.estimator.weights_
+        )
+        self._total_position.append(self._positions[-1].dot(self.estimator.weights_))
+        if X.index.max() in self.rebalance_dates_:
+            self._rebalance_idx.append(len(self._positions))
+            self._list_weights_prebalance.append(self._list_all_weights[-1])
+            self._last_position.append(self._positions[-1])
+
+        if kwargs.get("last_fit", False):
+            self.equity_ = equity_curve(
+                df=pd.concat(self._positions, axis=1, ignore_index=True)
+                .T.set_index(self.original_index[: len(self._positions)])
+                .sum(1),
+                initial_value=self.initial_portfolio_value,
+            ).rename("equity")
+            num_rebalance_events = len(self.rebalance_dates_)
+            # -1 because first buy does not suffer transaction costs
+            for rebalance_idx_cur in range(num_rebalance_events):
+                self.transaction_costs_.append(
+                    calculate_transaction_costs(
+                        old_weights=self._list_weights_prebalance[
+                            rebalance_idx_cur - 1
+                        ],
+                        new_weights=self._list_weights_prebalance[rebalance_idx_cur],
+                        old_portfolio_value=self.equity_[
+                            self._rebalance_idx[rebalance_idx_cur] - 1
+                        ],
+                        new_portfolio_value=self.equity_[
+                            self._rebalance_idx[rebalance_idx_cur]
+                        ],
+                        buy_costs=self.buy_sell_fees_pct[0],
+                        sell_costs=self.buy_sell_fees_pct[1],
+                    )
+                )
+            # subtract the transaction costs from the equity curve
+            for i, t in enumerate(self.rebalance_dates_[:-1]):
+                iat = self.equity_.index.get_loc(t, method="nearest")
+                if iat != -1:
+                    self.equity_.iloc[iat:] -= (
+                        self.transaction_costs_[i]
+                        * self.equity_.iat[iat]
+                        / (sum(self._positions[0]))
+                    )
+            # rebuilds the all_weights array
+            self.all_weights_ = (
+                pd.concat(self._list_all_weights, axis=1)
+                .T.set_index(self.original_index[-len(self._list_all_weights) :])
+                .reindex(self.original_index)
+                .fillna(self.initial_weights)
+            )
+            print("done")
+
         return self
 
 
@@ -96,52 +185,14 @@ class Backtester(BaseEstimator):
         self.warmup_period = warmup_period
 
     def fit(self, X: pd.DataFrame, y=None, **kwargs):
-        """
-
-        Parameters
-        ----------
-        X
-        y
-        kwargs
-
-        Returns
-        -------
-
-        """
-        # idx_freq = X.index.freq
-        # idx_freqstr = X.index.freqstr
-        #
-        # if idx_freqstr is None:
-        #     raise IndexError("Please resample your data to given frequency")
-
-        # Initializes all equity price and all portfolio weights
-        self.weights_ = pd.DataFrame(index=X.index, columns=X.columns, data=[])
-        self.equity_ = pd.Series(index=X.index)
-
+        # calculates the rebalance dates
+        self.strategy.fit(X)
         # Compute weights on initial warmup period
         warmup_prices = X.iloc[: self.warmup_period, :]
         # calculate the estimated prices on the warmup period
-        # this acts as a kind of pre-initialization of weights, which otherwise should be set equal
-        self.strategy.estimator.fit(warmup_prices)
-        self.weights_.iloc[self.warmup_period, :] = self.strategy.estimator.weights_
-        # updates the equity curve: the initial equity value starts from 0 where it started at `initial_portfolio_value`
-        self.equity_.iloc[: self.warmup_period] = equity_curve(
-            self.strategy.estimator.predict(warmup_prices),
-            initial_value=self.strategy.initial_portfolio_value,
-        )
-
-        # calculates the rebalancing dates. At these dates, the portfolio gets rebalanced
-        # with the new updated historical data. Transaction costs are accounted for and subtracted from portfolio value
-        from collections import deque
-
-        rebalance_dates = deque(
-            pd.date_range(
-                start=X.index.min(),
-                end=X.index.max(),
-                freq=self.strategy.rebalance_frequency,
-            ).tolist()
-        )
-        self.costs_ = pd.Series(index=rebalance_dates)
+        # this acts as a kind of pre-initialization of weights,
+        # which otherwise should be set equal
+        self.strategy.partial_fit(warmup_prices)
 
         # First get the indices for the trailing strategy
         # using the well tested pd.Series.rolling function on a fake dataset
@@ -150,11 +201,9 @@ class Backtester(BaseEstimator):
         idx = []
 
         def collect_indices(df):
-            """
-            An helper function only needed to globally calculated the indices bounds from the rolling window
-            """
             idx.append((df.index.min(), df.index.max()))
-            return 0  # there is no need of performing any computation other the exploiting the calculation of indices
+            # there is no need of performing any computation other the exploiting the calculation of indices
+            return 0
 
         pd.Series(index=X.index[self.warmup_period :], data=0).rolling(
             min_periods=self.strategy.lookback_periods[0],
@@ -163,44 +212,14 @@ class Backtester(BaseEstimator):
 
         # then from the correctly created indices, iterates over all these windows
         # manually to populate the weights
-        portfolio_value = self.strategy.initial_portfolio_value
-        self.turnover_ = []
-        self.positions_ = []
-        self.paper_ = []
-        self.weights_ = []
-        self.equity_ = [portfolio_value]
-        self.costs_ = []
-        self.portfolio_value_ = [portfolio_value]
 
         # Iterates over all windows of the rolling window
         for i, (t_start, t_end) in enumerate(idx):
             # takes a slice of X with the current rolling window
-            df_win = X[t_start:t_end].dropna(
+            prices_slice = X[t_start:t_end].dropna(
                 how="all", axis=0
             )  # eliminates oversamplings            # fit the portfolio optimization method on df_win
-            # the portfolio estimator is the one obtained from the given strategy
-            self.strategy.estimator.fit(df_win)
-            # the old strategy weights were the latest available, excluding the all NaN rows
-            self.weights_.append(self.strategy.estimator.weights_)
-            self.equity_.append(
-                equity_curve(
-                    self.strategy.estimator.predict(df_win),
-                    initial_value=self.equity_[-1]
-                )
-            )
-            # then look at rebalancing events. If a rebalancing event is found, then the portfolio value
-            # should be updated
-            if t_end in rebalance_dates:
-                self.costs_[t_end] = calculate_transaction_costs(
-                    old_portfolio=self.portfolio_value_[-1] * self.weights_[-1],
-                    new_portfolio=self.portfolio_value_[0] * self.weights_[0],
-                    buy_costs=self.strategy.transaction_costs[0],
-                    sell_costs=self.strategy.transaction_costs[1],
-                )
-                self.equity_[-1] -= self.costs_[t_end]
-                self.portfolio_value_.append(self.equity_[-1])
-                rebalance_dates.popleft()
-                print(f"Rebalance at {t_end}")
-                print(f"Portfolio Value {portfolio_value}")
+            # partial_fit of the strategy, populates with the weights calculated
+            self.strategy.partial_fit(prices_slice, last_fit=t_end == X.index.max())
 
         return self

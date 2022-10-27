@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 from pypfopt.expected_returns import returns_from_prices
 from sklearn.base import BaseEstimator
+from sklearn.utils.validation import check_is_fitted
 
 from skportfolio.metrics import sharpe_ratio
 from skportfolio.riskreturn import BaseReturnsEstimator
@@ -211,8 +212,7 @@ class PortfolioEstimator(
         pd.Series
             The estimated portfolio value time series
         """
-        if self.weights_ is None:
-            raise ValueError("Unfitted estimator. Please run .fit to compute weights.")
+        check_is_fitted(self)
         assert_is_prices(X)
         return X.dot(self.weights_).rename(str(self))
 

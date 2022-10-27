@@ -274,18 +274,12 @@ class _BaseMeanVariancePortfolio(
             The optimizer model
         """
 
-        expected_returns = (
-            self.rets_estimator.set_returns_data(self.returns_data)
-            .set_frequency(self.frequency)
-            .fit(X)
-            .expected_returns_
-        )
-        cov_matrix = (
-            self.risk_estimator.set_returns_data(self.returns_data)
-            .set_frequency(self.frequency)
-            .fit(X)
-            .risk_matrix_
-        )
+        expected_returns = self.rets_estimator.set_returns_data(
+            self.returns_data
+        ).expected_returns_
+        cov_matrix = self.risk_estimator.set_returns_data(
+            self.returns_data
+        ).risk_matrix_
         eff_front_model = self._get_model(
             expected_returns=expected_returns,
             risk_matrix=cov_matrix,
@@ -481,12 +475,9 @@ class _BaseMeanSemiVariancePortfolio(
 
     def _optimizer(self, X) -> BaseConvexOptimizer:
         # compute expected returns using the expected returns estimator
-        expected_returns = (
-            self.rets_estimator.set_returns_data(self.returns_data)
-            .set_frequency(self.frequency)
-            .fit(X)
-            .expected_returns_
-        )
+        expected_returns = self.rets_estimator.set_returns_data(
+            self.returns_data
+        ).expected_returns_
         # create the model
         eff_front_model = self._get_model(
             expected_returns=expected_returns,
@@ -628,12 +619,9 @@ class _BaseCVarCDarEstimator(
         self.market_neutral = market_neutral
 
     def _optimizer(self, X) -> BaseConvexOptimizer:
-        expected_returns = (
-            self.rets_estimator.set_returns_data(self.returns_data)
-            .set_frequency(self.frequency)
-            .fit(X)
-            .expected_returns_
-        )
+        expected_returns = self.rets_estimator.set_returns_data(
+            self.returns_data
+        ).expected_returns_
 
         eff_front_model = self._get_model(
             expected_returns=expected_returns,
@@ -1304,3 +1292,74 @@ class MADEfficientRisk(_TargetRiskMixin, _BaseMADPortfolio):
             X, "efficient_risk", target_risk=self.target_risk
         )
         return self
+
+
+class _BaseEDaRPortfolio(
+    _EfficientOmegaRatioMixin,
+    _BaseEfficientFrontierPortfolioEstimator,
+    metaclass=ABCMeta,
+):
+    _min_risk_method_name = "min_omega_risk"
+
+    @abstractmethod
+    def __init__(
+        self,
+        returns_data: bool = False,
+        *,
+        frequency=APPROX_BDAYS_PER_YEAR,
+        weight_bounds: Tuple[float, float] = (0, 1),
+        l2_gamma: float = 0.0,
+        rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
+        minimum_acceptable_return: float = BASE_MIN_ACCEPTABLE_RETURN,
+    ):
+        """
+        Base estimator of the omega ratio portfolio.
+        Please consider that in using a non-zero minimum acceptable return one should look for returns specified in the
+        same frequency units as those of the returns estimator.
+        """
+        super().__init__(
+            returns_data=returns_data,
+            frequency=frequency,
+            weight_bounds=weight_bounds,
+            l2_gamma=l2_gamma,
+        )
+        self.rets_estimator = rets_estimator
+        self.minimum_acceptable_return = minimum_acceptable_return
+
+    def _optimizer(self, X) -> BaseConvexOptimizer:
+        eff_front_model = self._get_model(
+            expected_returns=self.rets_estimator.set_returns_data(
+                self.returns_data
+            ).fit_transform(X),
+            returns=X if self.returns_data else returns_from_prices(X),
+            frequency=self.frequency,
+            minimum_acceptable_return=self.minimum_acceptable_return,
+            weight_bounds=self.weight_bounds,
+        )
+        if hasattr(self, "constraints"):
+            for cnstr in self.constraints:
+                eff_front_model.add_constraint(cnstr)
+        if self.l2_gamma > 0:
+            eff_front_model.add_objective(
+                objective_functions.L2_reg, gamma=self.l2_gamma
+            )
+        return eff_front_model
+
+    def risk_reward(self, model: Optional[BaseConvexOptimizer] = None):
+        if model is None:
+            model = self.model
+        if model.weights is None or not hasattr(model, "weights"):
+            raise AttributeError("Must fit model successfully to define weights")
+        omega_numerator = (
+            portfolio_return(model.weights, model.expected_returns, negative=False)
+            - model.minimum_acceptable_return
+        )
+        omega_denominator = np.mean(
+            np.maximum(
+                model.minimum_acceptable_return - (model.weights @ model.returns.T),
+                0,
+            )
+        )
+        return omega_denominator, omega_numerator
+
+class MinimumEDaR()
