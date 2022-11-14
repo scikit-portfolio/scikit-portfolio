@@ -36,9 +36,9 @@ class _HierarchicalRiskPortfolioEstimator(PortfolioEstimator, metaclass=ABCMeta)
 
         hropt = HRPOpt(
             returns=returns,
-            cov_matrix=self.risk_estimator.set_returns_data(
-                self.returns_data
-            ).risk_matrix_,
+            cov_matrix=self.risk_estimator.set_returns_data(self.returns_data)
+            .fit(returns)
+            .risk_matrix_,
         )
         hropt.optimize(self.linkage)
         self.weights_ = pd.Series(hropt.clean_weights(), name=self.__class__.__name__)

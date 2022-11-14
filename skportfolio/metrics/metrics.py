@@ -525,7 +525,11 @@ def portfolio_return(
     -------
     The portfolio return
     """
-    return rets_estimator.set_returns_data(False).expected_returns_.dot(weights)
+    return (
+        rets_estimator.set_returns_data(False)
+        .fit(prices)
+        .expected_returns_.dot(weights)
+    )
 
 
 def portfolio_vol(
@@ -539,7 +543,12 @@ def portfolio_vol(
     """
     risk_estimator.frequency = frequency
     # Force the risk estimator to read from returns data rather than from price data
-    cov = risk_estimator.set_returns_data(returns_data=True).risk_matrix_
+    cov = (
+        risk_estimator.set_returns_data(returns_data=True)
+        .set_frequency(frequency=frequency)
+        .fit(returns)
+        .risk_matrix_
+    )
     return np.sqrt(weights.dot(cov).dot(weights))
 
 

@@ -78,6 +78,7 @@ nav:
   - Risk and returns:
     - Returns estimators: returns.md
     - Risk estimators: risk.md
+    - Black-Litterman: blacklitterman.md
   - Model selection:
     - Metrics and scorers: metrics.md
     - Cross validation: splitters.md
@@ -88,7 +89,7 @@ nav:
   - Docker: docker.md
   - Datasets: datasets.md
   - API:
-    - Mean Variance frontier: efficient_frontier_api.md
+    - Mean variance frontier: efficient_frontier_api.md
     - Mean semivariance frontier: efficient_semivariance_api.md
     - Conditional Value At Risk (CVaR): efficient_cvar_api.md
     - Conditional Drawdown At Risk (CDaR): efficient_cdar_api.md
@@ -96,3 +97,4 @@ nav:
     - Mean Absolute Deviation (MAD): efficient_mad_api.md
     - Risk estimators: risk_api.md
     - Returns estimators: returns_api.md
+    - Black-Litterman estimator: blacklitterman_api.md

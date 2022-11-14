@@ -12,13 +12,13 @@ from .datasets_fixtures import prices, returns, log_returns
 from skportfolio.backtest.backtester import Backtester
 
 
-def test_backtester_ew(prices):
+def test_backtester_inverse_variance(prices):
     prices.index = pd.to_datetime(prices.index)
     prices = prices.resample("D").mean()
 
     strategy = Strategy(
         initial_weights=EquallyWeighted().fit(prices).weights_,
-        initial_portfolio_value=1000,
+        initial_portfolio_value=1_000, # units of currency
         estimator=InverseVariance(),
         rebalance_frequency="M",
         lookback_periods=(126, 126),

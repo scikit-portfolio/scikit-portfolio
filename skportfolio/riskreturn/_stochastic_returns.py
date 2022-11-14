@@ -43,9 +43,11 @@ class PerturbedReturns(BaseReturnsEstimator, BaseRiskEstimator):
         ).fit_transform(X)
 
     def _set_expected_returns(self, X, y=None):
-        self._estimator_expected_returns = self.rets_estimator.set_returns_data(
-            self.returns_data
-        ).expected_returns_
+        self._estimator_expected_returns = (
+            self.rets_estimator.set_returns_data(self.returns_data)
+            .fit(X)
+            .expected_returns_
+        )
 
     def fit(self, X, y=None):
         if self.random_state is None:

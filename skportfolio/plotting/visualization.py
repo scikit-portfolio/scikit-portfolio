@@ -37,6 +37,8 @@ def _validate_plotting_kwargs(**kwargs):
 def plot_frontier(
     ptf_estimator: _BaseEfficientFrontierPortfolioEstimator,
     prices_or_returns,
+    benchmark=None,
+    estimator_name: str = None,
     num_portfolios: int = 20,
     show_assets=False,
     ax=None,
@@ -54,6 +56,10 @@ def plot_frontier(
         An instantiated portfolio object inheriting from _BaseEfficientFrontierPortfolioEstimator
         This requirement is because other miscellaneous portfolio methods don't have the `estimate_frontier`
         method used to calculate all (risk,reward) coordinates.
+    benchmark:
+        If a portfolio benchmark is used as y in the estimator.fit(X,y)(e.g. in the tracking error portfolios)
+    estimator_name: str
+        Name of the estimator, in case the basename gets too long
     prices_or_returns: pd.DataFrame
         Asset prices or returns
     num_portfolios: int
@@ -63,7 +69,7 @@ def plot_frontier(
     ax: matplotlib axis object
         If None a new axis is created, otherwise plotting is done on the provided axis
     frontier_kwargs: Dict[str,Any]
-        Dictionary of additional parameters to pass to estimate_frontier method.
+        Dictionary of additional parameters to pass to estimate_frontier method. See Other parameters section.
     Other Parameters
     ----------------
     **kwargs:
@@ -119,14 +125,14 @@ def plot_frontier(
 
     if not kwargs.get("show_only_portfolio", False):
         risks, returns, frontier_weights = ptf_estimator.estimate_frontier(
-            X=prices_or_returns, num_portfolios=num_portfolios
+            X=prices_or_returns, y=benchmark, num_portfolios=num_portfolios
         )
         ax.plot(
             risks,
             returns,
             "-",
             color=kwargs.get("frontier_line_color", "C0"),
-            label=str(ptf_estimator),
+            label=estimator_name,
         )
 
     ax.set_ylabel("Portfolio return")

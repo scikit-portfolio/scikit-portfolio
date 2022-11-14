@@ -165,7 +165,7 @@ def load_crypto_prices() -> pd.DataFrame:
 
     Returns
     -------
-    Returns a pandas dataframe of prics of 74 cryptocurrencies from 2020-01-01 to 2022-03-02 at 4h timeframe.
+    Returns a pandas dataframe of prices of 74 cryptocurrencies from 2020-01-01 to 2022-03-02 at 4h timeframe.
     """
     return load_dataset("crypto_large")
 
@@ -178,4 +178,4 @@ def load_dow_prices() -> pd.DataFrame:
     -------
     Pandas dataframe
     """
-    return load_dataset("dow")
+    return load_dataset("dowportfolio")

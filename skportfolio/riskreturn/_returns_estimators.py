@@ -7,6 +7,7 @@ from typing import Callable
 from typing import Optional
 from typing import Union
 
+import cvxpy
 import numpy as np
 import pandas as pd
 from pypfopt import expected_returns as expret
@@ -21,6 +22,7 @@ from skportfolio.riskreturn.expected_returns import mean_historical_return
 from skportfolio.riskreturn.expected_returns import median_historical_log_return
 from skportfolio.riskreturn.expected_returns import median_historical_return
 from skportfolio.riskreturn.expected_returns import rolling_median_returns
+import cvxpy as cp
 
 
 class BaseReturnsEstimator(TransformerMixin, BaseEstimator, metaclass=ABCMeta):
@@ -61,7 +63,7 @@ class BaseReturnsEstimator(TransformerMixin, BaseEstimator, metaclass=ABCMeta):
         return self
 
     def fit_transform(self, X, y=None, **fit_params):
-        self.fit(X)
+        self.fit(X, y)
         return self.expected_returns_
 
     # for use with stochastic based returns calculators
@@ -165,6 +167,39 @@ class RollingMedianReturns(BaseReturnsEstimator):
         )
 
 
+class MarketImpliedReturns(BaseReturnsEstimator):
+    def _set_expected_returns(self, X, y=None):
+        """
+        This implementation
+        https://it.mathworks.com/help/finance/black-litterman-portfolio-optimization.html
+        Parameters
+        ----------
+        X: prices or returns
+        y: must be benchmark returns
+
+        Returns
+        -------
+        """
+        if y is None:
+            raise ValueError("Must provide y as the benchmark portfolio returns")
+        if not self.returns_data:
+            X = X.pct_change().dropna()
+            y = y.pct_change().dropna()
+        sigma = X.cov()
+
+        n = X.shape[1]
+        w = cp.Variable(shape=(n,), pos=True)
+        expr = 0.5 * cp.sum_squares(X.values @ w - y.values)
+        problem = cp.Problem(
+            objective=cp.Minimize(expr=expr), constraints=[cp.sum(w) == 1]
+        )
+        problem.solve()
+        sharpe_benchmark = y.mean() / y.std()
+        delta = sharpe_benchmark / np.sqrt(w.value.T @ sigma @ w.value)
+        self.pi = delta * sigma @ w.value
+        self.expected_returns_ = self.pi
+
+
 all_returns_estimators = [
     MeanHistoricalLinearReturns(),
     MeanHistoricalLogReturns(),
@@ -175,4 +210,5 @@ all_returns_estimators = [
     EMAHistoricalReturns(),
     CAPMReturns(),
     RollingMedianReturns(),
+    MarketImpliedReturns(),
 ]

@@ -25,9 +25,9 @@ estimators**, thus enabling cross-validation and hyperparameters optimization wi
 
 This library is based upon the following open-source tools:
 
-- [PyPortfolioOpt](https://pyportfolioopt.readthedocs.io/)
+- [PyPortfolioOpt](https://pyportfolioopt.readthedocs.io/): a library for portfolio optimization and risk management.
 - [cvxpy](https://cvxpy.org): a tool for convex optimization that makes it very easy to write optimization problem, with complex objective functions and constraints.
-- [numpy](https://numpy.org): numerical analysis and linear algebra in Python
+- [numpy](https://numpy.org): numerical analysis and linear algebra in Python.
 - [pandas](https://pandas.pydata.org): manipulation of structured data tables in Python.
  
 ## Getting started
