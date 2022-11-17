@@ -1,4 +1,5 @@
 from pytest import fixture
+import pandas as pd
 import numpy as np
 from pypfopt.expected_returns import returns_from_prices
 from skportfolio import EquallyWeighted
@@ -28,3 +29,10 @@ def weights(prices):
 @fixture
 def ptf_return(returns, weights):
     yield returns.dot(weights)
+
+
+@fixture
+def dow_prices():
+    cols = ["BA", "CAT", "DIS", "GE", "IBM", "MCD", "MSFT"]
+    prices = pd.read_parquet("/Users/carlo/Desktop/dowportfolio.parquet")[cols]
+    yield
