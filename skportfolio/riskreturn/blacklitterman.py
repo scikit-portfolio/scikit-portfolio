@@ -112,7 +112,6 @@ class _BlackLittermanBaseEstimator(TransformerMixin, BaseEstimator):
         rets_estimator: Optional[BaseReturnsEstimator] = None,
         covariance_estimator: Optional[BaseRiskEstimator] = None,
         returns_data=False,
-        frequency: int = 252,
         omega: Optional[ArrayLike] = None,
         tau: Optional[float] = None,
         risk_aversion: float = 1,
@@ -128,7 +127,6 @@ class _BlackLittermanBaseEstimator(TransformerMixin, BaseEstimator):
         covariance_estimator
         views
         returns_data
-        frequency
         omega
         risk_aversion
         risk_free_rate
@@ -141,7 +139,6 @@ class _BlackLittermanBaseEstimator(TransformerMixin, BaseEstimator):
         self.covariance_estimator = covariance_estimator
         self.views = views
         self.returns_data = returns_data
-        self.frequency = frequency
         self.risk_aversion = risk_aversion
         self.tau = tau
         self.risk_free_rate = risk_free_rate
@@ -152,7 +149,7 @@ class _BlackLittermanBaseEstimator(TransformerMixin, BaseEstimator):
         self.P: Optional[ArrayLike] = None
         self.views_confidence: Optional[ArrayLike] = None
         self.sigma: Optional[ArrayLike] = None
-        self.bl_model: BlackLittermanModel = None
+        self.bl_model: Optional[BlackLittermanModel] = None
         self.expected_returns_: Optional[ArrayLike] = None
         self.risk_matrix_: Optional[ArrayLike] = None
         self.random_state = None

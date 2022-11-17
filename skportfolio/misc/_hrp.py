@@ -44,12 +44,6 @@ class _HierarchicalRiskPortfolioEstimator(PortfolioEstimator, metaclass=ABCMeta)
         self.weights_ = pd.Series(hropt.clean_weights(), name=self.__class__.__name__)
         return self
 
-    def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-        return {
-            "linkage": ["average", "ward", "single", "complete"],
-            "risk_estimator": all_risk_estimators,
-        }
-
 
 class HierarchicalRisk(_HierarchicalRiskPortfolioEstimator, ABC):
     """

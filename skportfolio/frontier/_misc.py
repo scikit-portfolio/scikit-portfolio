@@ -58,11 +58,6 @@
 #         )
 #         return self
 #
-#     def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-#         return dict(
-#             **super().grid_parameters(),
-#             **{"k": np.logspace(-3, 1, 10)},
-#         )
 #
 #
 # class LogBarrier(LogMeanRisk):

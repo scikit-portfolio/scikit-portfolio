@@ -58,11 +58,14 @@ class BaseConvexFrontier(BaseConvexOptimizer, metaclass=ABCMeta):
         else:
             raise TypeError("risk_matrix is not a dataframe or array")
 
-    def _validate_returns(self, returns):
+    @staticmethod
+    def _validate_returns(returns):
         """
         Helper method to validate daily returns (needed for some efficient frontiers)
         """
-        if not isinstance(returns, (pd.DataFrame, np.ndarray)):
+        if returns is None:
+            raise ValueError("returns must be provided")
+        elif not isinstance(returns, (pd.DataFrame, np.ndarray)):
             raise TypeError("returns should be a pd.Dataframe or np.ndarray")
 
         returns_df = pd.DataFrame(returns)
@@ -73,11 +76,11 @@ class BaseConvexFrontier(BaseConvexOptimizer, metaclass=ABCMeta):
             )
             returns_df = returns_df.dropna(axis=0, how="any")
 
-        if self.expected_returns is not None:
-            if returns_df.shape[1] != len(self.expected_returns):
-                raise ValueError(
-                    "returns columns do not match expected_returns. Please check your tickers."
-                )
+        # if self.expected_returns is not None:
+        #     if returns_df.shape[1] != len(self.expected_returns):
+        #         raise ValueError(
+        #             "returns columns do not match expected_returns. Please check your tickers."
+        #         )
 
         return returns_df
 

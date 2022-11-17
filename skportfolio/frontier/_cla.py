@@ -42,19 +42,19 @@ class _MeanVarianceCLA(PortfolioEstimator, metaclass=abc.ABCMeta):
             weight_bounds=self.weight_bounds,
         )
 
-    def fit(self, X, y=None) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_params) -> PortfolioEstimator:
         pass
 
 
 class CLAMaxSharpe(_MeanVarianceCLA):
-    def fit(self, X, y=None) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_params) -> PortfolioEstimator:
         model = self._get_model(X)
         self.weights_ = pd.Series(model.max_sharpe())
         return self
 
 
 class CLAMinimumVolatility(_MeanVarianceCLA):
-    def fit(self, X, y=None) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_params) -> PortfolioEstimator:
         model = CLA(
             expected_returns=self.rets_estimator.fit(X).expected_returns_,
             cov_matrix=self.risk_estimator.fit(X).risk_matrix_,
@@ -70,7 +70,7 @@ class CLAMinimumSemiVolatility(_MeanVarianceCLA):
     It is based on the excellent PyPortfolioOpt CLA implementation as well as the EfficientSemiVar.
     """
 
-    def fit(self, X, y=None) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_params) -> PortfolioEstimator:
         model = CLA(
             expected_returns=self.rets_estimator.fit(X).expected_returns_,
             cov_matrix=SemiCovariance().fit(X).risk_matrix_,
@@ -79,12 +79,9 @@ class CLAMinimumSemiVolatility(_MeanVarianceCLA):
         self.weights_ = pd.Series(model.min_volatility())
         return self
 
-    def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-        return {}
-
 
 class CLAMaxSemiSharpe(CLAMinimumSemiVolatility):
-    def fit(self, X, y=None) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_params) -> PortfolioEstimator:
         model = CLA(
             expected_returns=self.rets_estimator.fit(X).expected_returns_,
             cov_matrix=SemiCovariance().fit(X).risk_matrix_,
@@ -92,6 +89,3 @@ class CLAMaxSemiSharpe(CLAMinimumSemiVolatility):
         )
         self.weights_ = pd.Series(model.max_sharpe())
         return self
-
-    def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-        return {}

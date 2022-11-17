@@ -34,13 +34,6 @@ except ImportError:
 from ._stats import compute_stats
 from ._util import _as_str, _Indicator, _Data, try_
 
-__pdoc__ = {
-    "Strategy.__init__": False,
-    "Order.__init__": False,
-    "Position.__init__": False,
-    "Trade.__init__": False,
-}
-
 
 class Strategy(metaclass=ABCMeta):
     """

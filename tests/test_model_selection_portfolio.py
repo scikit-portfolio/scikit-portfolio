@@ -12,7 +12,6 @@
 #     model = MinimumVolatility()
 #     gridcv = GridSearchCV(
 #         model,
-#         param_grid=model.grid_parameters(),
 #         scoring=all_scorers,
 #         cv=5,
 #         verbose=True,

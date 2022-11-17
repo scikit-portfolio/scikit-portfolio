@@ -17,17 +17,15 @@ from skportfolio.riskreturn.expected_risk import semicovariance
 
 
 class BaseRiskEstimator(TransformerMixin, BaseEstimator):
-    def __init__(self, returns_data=False, frequency=APPROX_BDAYS_PER_YEAR):
+    def __init__(
+        self,
+        returns_data=False,
+    ):
         self.returns_data = returns_data
-        self.frequency = frequency
         self.risk_matrix_ = None
 
     def set_returns_data(self, returns_data):
         self.returns_data = returns_data
-        return self
-
-    def set_frequency(self, frequency):
-        self.frequency = frequency
         return self
 
     @abstractmethod
@@ -48,8 +46,8 @@ class SampleCovariance(BaseRiskEstimator):
     The standard sample covariance estimator, based on historical data.
     """
 
-    def _set_risk(self, X, y=None):
-        self.risk_matrix_ = sample_covariance(X, self.returns_data, self.frequency)
+    def _set_risk(self, X, y=None, **fit_params):
+        self.risk_matrix_ = sample_covariance(X, self.returns_data)
 
 
 class SemiCovariance(BaseRiskEstimator):
@@ -57,8 +55,8 @@ class SemiCovariance(BaseRiskEstimator):
     The semicovariance, a.k.a. the covariance matrix estimated from only the positive returns.
     """
 
-    def _set_risk(self, X, y=None):
-        self.risk_matrix_ = semicovariance(X, self.returns_data, self.frequency)
+    def _set_risk(self, X, y=None, **fit_params):
+        self.risk_matrix_ = semicovariance(X, self.returns_data)
 
 
 class CovarianceRMT(BaseRiskEstimator):
@@ -66,10 +64,8 @@ class CovarianceRMT(BaseRiskEstimator):
     Estimator of covariance based on Random Matrix Theory
     """
 
-    def _set_risk(self, X, y=None):
-        self.risk_matrix_ = covariance_rmt(
-            X, returns_data=self.returns_data, frequency=self.frequency
-        )
+    def _set_risk(self, X, y=None, **fit_params):
+        self.risk_matrix_ = covariance_rmt(X, returns_data=self.returns_data)
 
 
 class CovarianceGlasso(BaseRiskEstimator):
@@ -77,10 +73,8 @@ class CovarianceGlasso(BaseRiskEstimator):
     Estimator of covariance based on GLASSO algorithm
     """
 
-    def _set_risk(self, X, y=None):
-        self.risk_matrix_ = covariance_glasso(
-            X, returns_data=self.returns_data, frequency=self.frequency
-        )
+    def _set_risk(self, X, y=None, **fit_params):
+        self.risk_matrix_ = covariance_glasso(X, returns_data=self.returns_data)
 
 
 class CovarianceOAS(BaseRiskEstimator):
@@ -88,10 +82,8 @@ class CovarianceOAS(BaseRiskEstimator):
     Estimator of covariance based on the oracle shrinkage approximation
     """
 
-    def _set_risk(self, X, y=None):
-        self.risk_matrix_ = covariance_oracle_approx(
-            X, returns_data=self.returns_data, frequency=self.frequency
-        )
+    def _set_risk(self, X, y=None, **fit_params):
+        self.risk_matrix_ = covariance_oracle_approx(X, returns_data=self.returns_data)
 
 
 class CovarianceExp(BaseRiskEstimator):
@@ -102,15 +94,14 @@ class CovarianceExp(BaseRiskEstimator):
     def __init__(
         self,
         returns_data: bool = False,
-        frequency: int = APPROX_BDAYS_PER_YEAR,
         span: int = 60,
     ):
-        super().__init__(returns_data=returns_data, frequency=frequency)
+        super().__init__(returns_data=returns_data)
         self.span = span
 
-    def _set_risk(self, X, y=None):
+    def _set_risk(self, X, y=None, **fit_params):
         self.risk_matrix_ = covariance_exp(
-            X, returns_data=self.returns_data, frequency=self.frequency, span=self.span
+            X, returns_data=self.returns_data, span=self.span
         )
 
 
@@ -122,17 +113,15 @@ class CovarianceLedoitWolf(BaseRiskEstimator):
     def __init__(
         self,
         returns_data: bool = False,
-        frequency: int = APPROX_BDAYS_PER_YEAR,
         shrinkage_target: str = "constant_variance",
     ):
-        super().__init__(returns_data=returns_data, frequency=frequency)
+        super().__init__(returns_data=returns_data)
         self.shrinkage_target = shrinkage_target
 
-    def _set_risk(self, X, y=None):
+    def _set_risk(self, X, y=None, **fit_params):
         self.risk_matrix_ = covariance_ledoit_wolf(
             X,
             returns_data=self.returns_data,
-            frequency=self.frequency,
             shrinkage_target=self.shrinkage_target,
         )
 
@@ -142,10 +131,8 @@ class CovarianceHierarchicalFilterAverage(BaseRiskEstimator):
     Estimator of covariance based on hierarchical filtering approach.
     """
 
-    def _set_risk(self, X, y=None):
-        self.risk_matrix_ = covariance_hierarchical_filter_average(
-            X, self.returns_data, self.frequency
-        )
+    def _set_risk(self, X, y=None, **fit_params):
+        self.risk_matrix_ = covariance_hierarchical_filter_average(X, self.returns_data)
 
 
 class CovarianceHierarchicalFilterSingle(BaseRiskEstimator):
@@ -153,10 +140,8 @@ class CovarianceHierarchicalFilterSingle(BaseRiskEstimator):
     Estimator of covariance based on hierarchical filtering approach.
     """
 
-    def _set_risk(self, X, y=None):
-        self.risk_matrix_ = covariance_hierarchical_filter_single(
-            X, self.returns_data, self.frequency
-        )
+    def _set_risk(self, X, y=None, **fit_params):
+        self.risk_matrix_ = covariance_hierarchical_filter_single(X, self.returns_data)
 
 
 class CovarianceHierarchicalFilterComplete(BaseRiskEstimator):
@@ -164,9 +149,9 @@ class CovarianceHierarchicalFilterComplete(BaseRiskEstimator):
     Estimator of covariance based on hierarchical filtering approach.
     """
 
-    def _set_risk(self, X, y=None):
+    def _set_risk(self, X, y=None, **fit_params):
         self.risk_matrix_ = covariance_hierarchical_filter_complete(
-            X, self.returns_data, self.frequency
+            X, self.returns_data
         )
 
 

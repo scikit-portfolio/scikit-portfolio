@@ -543,12 +543,7 @@ def portfolio_vol(
     """
     risk_estimator.frequency = frequency
     # Force the risk estimator to read from returns data rather than from price data
-    cov = (
-        risk_estimator.set_returns_data(returns_data=True)
-        .set_frequency(frequency=frequency)
-        .fit(returns)
-        .risk_matrix_
-    )
+    cov = risk_estimator.set_returns_data(returns_data=True).fit(returns).risk_matrix_
     return np.sqrt(weights.dot(cov).dot(weights))
 
 
@@ -645,7 +640,7 @@ def number_effective_assets(weigths: pd.Series):
     return 1.0 / (weigths**2).sum()
 
 
-def backtest(
+def summary(
     prices: pd.DataFrame,
     weights: Union[Sequence[pd.Series], pd.Series],
     frequency: int = APPROX_BDAYS_PER_YEAR,
@@ -672,8 +667,10 @@ def backtest(
                 ),
                 "var_historic": var_historic(portfolio_returns),
                 "cvar_historic": cvar_historic(portfolio_returns),
-                "calmar_ratio": calmar_ratio(portfolio_returns, frequency),
-                "sortino_ratio": sortino_ratio(portfolio_returns, 0, frequency),
+                "calmar_ratio": calmar_ratio(portfolio_returns, frequency=frequency),
+                "sortino_ratio": sortino_ratio(
+                    portfolio_returns, riskfree_rate=risk_free_rate, frequency=frequency
+                ),
                 "omega_ratio": omega_ratio(portfolio_returns, target_ret=target_return),
                 "max_drawdown": maxdrawdown(portfolio_returns),
                 "skew": skewness(portfolio_returns),

@@ -8,6 +8,7 @@ from ._returns_estimators import MeanHistoricalLogReturns
 from ._returns_estimators import MedianHistoricalLinearReturns
 from ._returns_estimators import MedianHistoricalLogReturns
 from ._returns_estimators import RollingMedianReturns
+from ._returns_estimators import MarketImpliedReturns
 from ._returns_estimators import all_returns_estimators
 
 from ._risk_estimators import BaseRiskEstimator

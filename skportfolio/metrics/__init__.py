@@ -29,7 +29,7 @@ from .metrics import tail_ratio
 from .metrics import value_at_risk
 from .metrics import var_gaussian
 from .metrics import var_historic
-from .metrics import backtest
+from .metrics import summary
 from .metrics import equity_curve
 
 # Here is a list of sklearn compatible scorers

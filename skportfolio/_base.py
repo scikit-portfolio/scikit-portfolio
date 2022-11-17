@@ -180,7 +180,7 @@ class PortfolioEstimator(
         self.returns_data = returns_data
 
     @abstractmethod
-    def fit(self, X, y=None) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_params) -> PortfolioEstimator:
         """
         Fit the portfolio model from asset prices.
 
@@ -303,11 +303,6 @@ class PortfolioEstimator(
         self.risk_estimator = risk_est
         return self
 
-    def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-        raise NotImplementedError(
-            "Must implement abstract method for each derived subclass"
-        )
-
     def info(self, **kwargs):
         out = f"Model name: {self.__class__.__name__}\n{pd.Series(self.get_params())}\n"
         out += "\nWeights"
@@ -327,13 +322,10 @@ class EquallyWeighted(PortfolioEstimator, metaclass=ABCMeta):
     def __init__(self):
         pass
 
-    def fit(self, X, y=None) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_params) -> PortfolioEstimator:
         n = X.shape[1]
         self.weights_ = pd.Series(index=X.columns, data=1 / n, name=str(self))
         return self
-
-    def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-        return {}
 
 
 class InverseVariance(PortfolioEstimator, metaclass=ABCMeta):
@@ -344,7 +336,7 @@ class InverseVariance(PortfolioEstimator, metaclass=ABCMeta):
     def __init__(self, returns_data: bool = False):
         self.returns_data = returns_data
 
-    def fit(self, X, y=None) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_params) -> PortfolioEstimator:
         if self.returns_data:
             inverse_covariance = 1.0 / X.cov()
         else:
@@ -356,15 +348,12 @@ class InverseVariance(PortfolioEstimator, metaclass=ABCMeta):
         )
         return self
 
-    def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-        return {}
-
 
 class CapWeighted(PortfolioEstimator, metaclass=ABCMeta):
     def __init__(self, returns_data: bool = False):
         self.returns_data = returns_data
 
-    def fit(self, X, y=None) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_params) -> PortfolioEstimator:
         if y is None:
             raise ValueError(
                 "Must provide shares as a dataframe together with prices or returns"
@@ -377,9 +366,6 @@ class CapWeighted(PortfolioEstimator, metaclass=ABCMeta):
         self.weights_: pd.Series = mkcap / mkcap.sum()
         return self
 
-    def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-        return {}
-
 
 class InverseVolatility(PortfolioEstimator, metaclass=ABCMeta):
     """
@@ -389,7 +375,7 @@ class InverseVolatility(PortfolioEstimator, metaclass=ABCMeta):
     def __init__(self, returns_data: bool = False):
         self.returns_data = returns_data
 
-    def fit(self, X, y=None) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_params) -> PortfolioEstimator:
         if self.returns_data:
             inv_cov = 1.0 / np.sqrt(np.diag(X.cov()))
         else:
@@ -401,15 +387,12 @@ class InverseVolatility(PortfolioEstimator, metaclass=ABCMeta):
         )
         return self
 
-    def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-        return {}
-
 
 class SingleAsset(PortfolioEstimator, metaclass=ABCMeta):
     def __init__(self, asset: str):
         self.asset = asset
 
-    def fit(self, X, y=None) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_params) -> PortfolioEstimator:
         if self.asset not in X.columns:
             raise ValueError("Asset must be one of the those provided.")
         return single_asset_weights(tickers=X.columns, asset=self.asset)

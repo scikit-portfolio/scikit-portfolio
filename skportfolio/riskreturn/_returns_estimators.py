@@ -37,11 +37,9 @@ class BaseReturnsEstimator(TransformerMixin, BaseEstimator, metaclass=ABCMeta):
     def __init__(
         self,
         returns_data: bool = False,
-        frequency: int = APPROX_BDAYS_PER_YEAR,
         returns_function: Optional[Callable[[pd.DataFrame], pd.DataFrame]] = None,
     ):
         self.returns_data = returns_data
-        self.frequency = frequency
         self.expected_returns_ = None
         self.returns_function = returns_function
         self.random_state = None
@@ -50,15 +48,11 @@ class BaseReturnsEstimator(TransformerMixin, BaseEstimator, metaclass=ABCMeta):
         self.returns_data = returns_data
         return self
 
-    def set_frequency(self, frequency):
-        self.frequency = frequency
-        return self
-
     @abstractmethod
     def _set_expected_returns(self, X, y):
         pass
 
-    def fit(self, X, y=None):
+    def fit(self, X, y=None, **fit_params):
         self._set_expected_returns(X, y)
         return self
 
@@ -78,59 +72,51 @@ class BaseReturnsEstimator(TransformerMixin, BaseEstimator, metaclass=ABCMeta):
 
 
 class MeanHistoricalLinearReturns(BaseReturnsEstimator):
-    def _set_expected_returns(self, X, y=None):
-        self.expected_returns_ = mean_historical_return(
-            X, self.returns_data, self.frequency
-        )
+    def _set_expected_returns(self, X, y=None, **fit_params):
+        self.expected_returns_ = mean_historical_return(X, self.returns_data)
 
 
 class MeanHistoricalLogReturns(BaseReturnsEstimator):
-    def _set_expected_returns(self, X, y=None):
+    def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = mean_historical_log_return(
             X,
             self.returns_data,
-            self.frequency,
         )
 
 
 class CompoundedHistoricalLinearReturns(BaseReturnsEstimator):
-    def _set_expected_returns(self, X, y=None):
+    def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = expret.mean_historical_return(
-            X, self.returns_data, compounding=True, frequency=self.frequency
+            X, self.returns_data, compounding=True
         )
 
 
 class CompoundedHistoricalLogReturns(BaseReturnsEstimator):
-    def _set_expected_returns(self, X, y=None):
+    def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = expret.mean_historical_return(
             X,
             self.returns_data,
             compounding=True,
-            frequency=self.frequency,
             log_returns=True,
         )
 
 
 class MedianHistoricalLinearReturns(BaseReturnsEstimator):
-    def _set_expected_returns(self, X, y=None):
-        self.expected_returns_ = median_historical_return(
-            X, self.returns_data, self.frequency
-        )
+    def _set_expected_returns(self, X, y=None, **fit_params):
+        self.expected_returns_ = median_historical_return(X, self.returns_data)
 
 
 class MedianHistoricalLogReturns(BaseReturnsEstimator):
-    def _set_expected_returns(self, X, y=None):
-        self.expected_returns_ = median_historical_log_return(
-            X, self.returns_data, self.frequency
-        )
+    def _set_expected_returns(self, X, y=None, **fit_params):
+        self.expected_returns_ = median_historical_log_return(X, self.returns_data)
 
 
 class EMAHistoricalReturns(BaseReturnsEstimator):
-    def __init__(self, returns_data=False, frequency=APPROX_BDAYS_PER_YEAR, span=180):
-        super().__init__(returns_data, frequency)
+    def __init__(self, returns_data=False, span=180):
+        super().__init__(returns_data)
         self.span = span
 
-    def _set_expected_returns(self, X, y=None):
+    def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = ema_historical_return(X, self.returns_data, self.span)
 
 
@@ -138,37 +124,35 @@ class CAPMReturns(BaseReturnsEstimator):
     def __init__(
         self,
         returns_data=False,
-        frequency=APPROX_BDAYS_PER_YEAR,
         risk_free_rate=0.0,
         benchmark=None,
     ):
-        super().__init__(returns_data, frequency)
+        super().__init__(returns_data)
         self.risk_free_rate = risk_free_rate
         self.benchmark = benchmark
 
-    def _set_expected_returns(self, X, y=None):
+    def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = capm_return(
             prices_or_returns=X,
             benchmark=y,
             returns_data=self.returns_data,
-            frequency=self.frequency,
             risk_free_rate=self.risk_free_rate,
         )
 
 
 class RollingMedianReturns(BaseReturnsEstimator):
-    def __init__(self, returns_data=False, frequency=APPROX_BDAYS_PER_YEAR, window=20):
-        super().__init__(returns_data=returns_data, frequency=frequency)
+    def __init__(self, returns_data=False, window=20):
+        super().__init__(returns_data=returns_data)
         self.window = window
 
-    def _set_expected_returns(self, X, y=None):
+    def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = rolling_median_returns(
-            X, self.returns_data, self.frequency, self.window
+            X, self.returns_data, self.window
         )
 
 
 class MarketImpliedReturns(BaseReturnsEstimator):
-    def _set_expected_returns(self, X, y=None):
+    def _set_expected_returns(self, X, y=None, **fit_params):
         """
         This implementation
         https://it.mathworks.com/help/finance/black-litterman-portfolio-optimization.html

@@ -1,1 +1,2 @@
-from .backtester import Strategy
+from .strategy import Strategy
+from .backtester import Backtester

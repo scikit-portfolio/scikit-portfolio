@@ -23,7 +23,7 @@ from skportfolio.metrics import (
     kurtosis,
     cdar,
     cvar,
-    backtest,
+    summary,
 )
 
 from .datasets_fixtures import prices, returns, log_returns, weights, ptf_return
@@ -106,4 +106,4 @@ def test_backtest(prices):
     w1 = pd.Series(index=prices.columns, data=w1 / w1.sum())
     w2 = np.random.rand(prices.shape[1])
     w2 = pd.Series(index=prices.columns, data=w2 / w2.sum())
-    backtest(prices, weights=[w1, w2], frequency=252)
+    summary(prices, weights=[w1, w2], frequency=252)

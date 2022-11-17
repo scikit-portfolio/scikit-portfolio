@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "scikit-portfolio"
-version = "0.1.0"
+version = "0.2.0"
 description = "scikit-portfolio is a Python package designed to introduce data scientists and machine learning engineers to the problem of optimal portfolio allocation in finance"
 authors = ["Carlo Nicolini <nicolini.carlo@gmail.com>"]
 license = "MIT"

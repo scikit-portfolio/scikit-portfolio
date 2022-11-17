@@ -156,9 +156,6 @@ class MichaudResampledFrontier(PortfolioEstimator):
         )
         return self
 
-    def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-        pass
-
 
 class SubsetResampling(PortfolioEstimator):
     """
@@ -468,6 +465,3 @@ class RobustBayesian(PortfolioEstimator):
             pd.concat(self.all_weights_, axis=1).mean(1).rename(self.__class__.__name__)
         )
         return self
-
-    def grid_parameters(self) -> Dict[str, Sequence[Any]]:
-        pass

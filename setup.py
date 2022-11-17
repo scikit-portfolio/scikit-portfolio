@@ -44,7 +44,7 @@ setup(
     packages=find_packages(include=["skportfolio", "skportfolio.*"]),
     test_suite="tests",
     # tests_require=test_requirements,
-    url="https://github.com/carlonicolini/scikit-portfolio",
-    version="0.1.0",
+    url="https://github.com/scikit-portfolio/scikit-portfolio",
+    version="0.2.0",
     zip_safe=True,
 )

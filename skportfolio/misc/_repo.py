@@ -180,19 +180,3 @@ class REPO(PortfolioEstimator, metaclass=ABCMeta):
             random_state=self.random_state,
         )
         return self
-
-    def grid_parameters(self):
-        return dict(
-            alpha=np.logspace(-3, 1, 10),
-            bandwidth=np.logspace(1, 4, 20),
-            kernel=[
-                "gaussian",
-                "tophat",
-                "epanechnikov",
-                "exponential",
-                "linear",
-                "cosine",
-            ],
-            space_size=np.round(np.logspace(1, 4, 50)),
-            rets_estimator=all_returns_estimators,
-        )

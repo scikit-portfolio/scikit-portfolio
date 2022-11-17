@@ -389,6 +389,7 @@ When the search is over, the RandomizedSearchCV behaves as a `skportfolio.Portfo
 fitted with the best set of parameters:
 
 ```python
+import numpy as np
 from sklearn.model_selection import GridSearchCV, KFold, train_test_split
 from skportfolio import MinimumVolatility, sharpe_ratio_scorer
 from skportfolio.datasets import load_tech_stock_prices
@@ -400,7 +401,7 @@ n_cpus = 8
 n_iter = 100
 best_model = GridSearchCV(
     estimator=model,
-    param_grid=model.grid_parameters(),
+    param_grid={"l2_reg": np.logspace(-3,3,50)},
     cv=KFold(5),
     n_jobs=n_cpus,
     scoring=sharpe_ratio_scorer
