@@ -142,7 +142,7 @@ def _make_zero_weights_with_cash(tickers):
 
 
 def rebalance_function(current_weights, prices, estimator, **kwargs):
-    return estimator.fit(prices).weights_, current_weights
+    return estimator.fit(prices, **kwargs).weights_, current_weights
 
 
 def update_positions(positions, weights, current_value, t):
@@ -162,6 +162,14 @@ def last_total_prices(prices):
 
     """
     return prices.iloc[-1:].sum()
+
+
+def find_index(current_index: pd.DatetimeIndex, full_index: pd.DatetimeIndex):
+    out = np.argwhere(current_index.max() == full_index)
+    if not out:
+        return 0
+    else:
+        return out
 
 
 class Backtester(PortfolioEstimator):
@@ -238,6 +246,7 @@ class Backtester(PortfolioEstimator):
         self.positions_ = None
         self.positions_at_rebalance_ = None
         self.rebalance_dates_ = None
+        self.returns_ = None
         self.transaction_costs_ = None
         self.turnover_ = None
 
@@ -263,23 +272,17 @@ class Backtester(PortfolioEstimator):
             self._transaction_cost_fcn = self.transaction_costs
 
         # Define internals initialization
-        if self.initial_weights is None:
-            self.initial_weights = _make_zero_weights_with_cash(tickers=X.columns)
-        self.all_weights_ = [self.initial_weights]
+        self.all_weights_ = []
         # this is the normalization constant to apply to all positions
         self._normalization_constant = (
-            X.iloc[0, :].sum() / X.shape[1] * self.initial_portfolio_value
+            X.shape[1] * self.initial_portfolio_value / X.iloc[0, :].sum()
         )
+        self.equity_curve_ = pd.Series(name=self.name + "_equity")
         self.rebalance_dates_ = []  # no rebalance yet
         # all the costs have been spent in buying the initial portfolio
         self.transaction_costs_ = []
         self.positions_ = pd.DataFrame(columns=X.columns.tolist() + ["__CASH__"])
-        self.positions_ = update_positions(
-            self.positions_,
-            weights=self.all_weights_[-1],
-            current_value=self.initial_portfolio_value,
-            t=X.index[-1],
-        )
+        self.returns_ = pd.Series(name=self.name + "_returns")
         # allocation is zero everywhere
         # first rebalance is considered at the first step
         self.positions_at_rebalance_ = self.positions_
@@ -328,18 +331,25 @@ class Backtester(PortfolioEstimator):
         return self
 
     def partial_fit(self, X, y=None, **kwargs):
-        trigger_rebalance = kwargs.get("trigger_rebalance", False)
+        full_index = kwargs["full_index"]
+        self._iteration = find_index(X.index, full_index=full_index)
         if not self.warm_start and self._iteration == 0:
             self._cold_start(X)
 
-        self.all_weights_.append(self.estimator.fit(X).weights_)
-        self.equity_curve_ = pd.concat(
-            (
-                self.equity_curve_,
-                self._normalization_constant / X.dot(self.all_weights_[-1]),
-            )
+        if self.initial_weights is None:
+            self.initial_weights = self.estimator.fit(X).weights_
+            self.all_weights_.append(self.initial_weights)
+        else:
+            self.all_weights_.append(self.initial_weights)
+
+        last_index = X.index[-1]
+        current_portfolio = X.loc[last_index].dot(self.all_weights_[-1])
+        current_equity = current_portfolio * self._normalization_constant
+        self.equity_curve_.loc[last_index] = current_equity
+        # here we use tail(2) to avoid unnecessary computations
+        self.returns_.loc[last_index] = (
+            X.tail(2).pct_change().tail(1).dot(self.all_weights_[-1])
         )
-        self._iteration += 1
         return self
 
     def fit_predict(self, X, y=None, **kwargs):
