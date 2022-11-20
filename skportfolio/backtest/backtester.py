@@ -250,6 +250,7 @@ class Backtester(PortfolioEstimator):
         """
         # here cold restart is always done, as each call to fit must reset the previous state
         self._cold_start(X)
+
         # all next calls to partial_fit are done like if they come from another invoker
         self.warm_start = True
         # add the trigger rebalance column
@@ -272,7 +273,7 @@ class Backtester(PortfolioEstimator):
                 X=prices_slice,
                 y=benchmark_slice,
                 precomputed_returns=returns_slice,
-                full_index=X.index,
+                full_index=X.index[self.warmup_period :],
                 **kwargs,
             )
         # now remove the transaction costs
@@ -297,19 +298,19 @@ class Backtester(PortfolioEstimator):
 
         """
         full_index = kwargs["full_index"]
+        last_index = X.index[-1]
+        self._iteration = find_index(X.index, full_index=full_index)
 
         X_rets = None
         if "precomputed_returns" in kwargs:
             X_rets = kwargs["precomputed_returns"]
         else:
             X_rets = X.pct_change()
-        last_index = X.index[-1]
-        self._iteration = find_index(X.index, full_index=full_index)
 
         needs_rebalance = (self._iteration > 0) and (
             last_index in self.rebalance_dates_
         )
-        if not self.warm_start and self._iteration == 0:
+        if (not self.warm_start) and (self._iteration == 0):
             self._cold_start(X)
 
         if self.initial_weights is None:
@@ -323,7 +324,7 @@ class Backtester(PortfolioEstimator):
         self.returns_.loc[last_index] = X_rets.loc[last_index].dot(
             self.all_weights_.loc[last_index]
         )
-        # TODO this should be made faster through caching of intermediate results
+        # TODO this could be made much faster by caching the result of (1+X_rets).cumprod() til the previous element
         self.positions_ = (
             (1 + X_rets)
             .cumprod()

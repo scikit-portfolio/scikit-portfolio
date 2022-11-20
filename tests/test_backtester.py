@@ -28,6 +28,7 @@ def test_backtester_example_partial_fit():
         rates_frequency=252,
         risk_free_rate=0.0,
         transaction_costs=0.0,
+        warm_start=False,
     )
 
     for i in range(1, prices.shape[0]):
@@ -41,16 +42,19 @@ def test_backtester_example_partial_fit():
 def test_backtester_example_fit():
     cols = ["BA", "CAT", "DIS", "GE", "IBM", "MCD", "MSFT"]
     prices = pd.read_parquet("/Users/carlo/Desktop/dowportfolio.parquet")[cols]
+    from skportfolio import MaxSharpe
+
     backtester = Backtester(
-        estimator=EquallyWeighted(),
+        estimator=MaxSharpe(),
         name="EquallyWeighted",
+        warmup_period=0,
         initial_weights=EquallyWeighted().fit(prices).weights_,
         initial_portfolio_value=10_000,
-        rebalance_frequency=0,
-        window_size=1,
+        rebalance_frequency=10,
+        window_size=(10, 50),
         rates_frequency=252,
-        risk_free_rate=0.0,
-        transaction_costs=0.0,
+        risk_free_rate=0.02,
+        transaction_costs=0.005,
     )
+
     backtester.fit(prices)
-    # print(tabulate(backtester.equity_curve_.add(-10000).to_frame(), headers="keys"))
