@@ -1,83 +1,21 @@
 # Here we should implement a backtester that takes one or more portfolio estimator objects,
-# possibly a rebalancing policy, transaction costs
+# possibly a rebalance policy and transaction costs
 
-from typing import Union, Tuple, List, Optional, Callable
-from itertools import chain
-from collections import deque
+from functools import partial
+from typing import Union, Tuple, List, Optional
+
 import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
 from sklearn.base import BaseEstimator  # type: ignore
+from sklearn.base import MetaEstimatorMixin, BaseEstimator, RegressorMixin
 from sklearn.utils.validation import check_is_fitted  # type: ignore
+
 from skportfolio._base import PortfolioEstimator
-from skportfolio.backtest.strategy import Strategy
-from skportfolio.backtest.fees import fixed_transaction_costs, TransactionCostsFcn
 from skportfolio._constants import APPROX_DAYS_PER_YEAR
+from skportfolio.backtest.fees import TransactionCostsFcn, basic_percentage_fee
 
 
-def rolling_expanding_window_with_warmup(seq, warmup, n_min, n_max):
-    it = iter(range(len(seq)))  # makes it iterable
-    if warmup > 0:
-        win = deque((next(it, None) for _ in range(warmup)), maxlen=warmup)
-        yield win
-    # roll it forward at least warmup steps
-    win = deque((next(it, None) for _ in range(n_min)), maxlen=n_max)
-    # yield win
-    for e in it:
-        win.append(e)
-        yield win
-
-
-def sliding_dataframes(*arrays, warmup=0, n_min=0, n_max=None):
-    """
-    Like scikit-learn train_test_split but with rolling-expanding window
-    Parameters
-    ----------
-    arrays
-    warmup
-    n_min
-    n_max
-
-    Returns
-    -------
-    """
-    n_dataframes = len(arrays)
-    if n_dataframes == 0:
-        raise ValueError("At least one array required as input")
-
-    n_samples = arrays[0].shape[0]
-    for df in arrays:
-        if not isinstance(df, (pd.DataFrame, pd.Series)) and df is not None:
-            raise TypeError("This method only supports pandas dataframes and series")
-        if df is not None and df.shape[0] != n_samples:
-            raise ValueError("Specify equal length dataframes or series")
-
-    # the first dataframe is the one dictating
-    indices = rolling_expanding_window_with_warmup(
-        arrays[0], warmup=warmup, n_min=n_min, n_max=n_max
-    )
-    for index in indices:
-        yield list(
-            chain.from_iterable(
-                (a.iloc[index] if a is not None else None,) for a in arrays
-            )
-        )
-
-
-def _make_zero_weights_with_cash(tickers):
-    weights = pd.Series(data=0.0, index=tickers)
-    weights.loc["__CASH__"] = 1
-    return weights
-
-
-def find_index(current_index: pd.DatetimeIndex, full_index: pd.DatetimeIndex):
-    out = np.argwhere(current_index.max() == full_index)
-    if not out:
-        return 0
-    else:
-        return int(out)
-
-
-class Backtester(PortfolioEstimator):
+class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
     def __init__(
         self,
         estimator: PortfolioEstimator,
@@ -93,11 +31,13 @@ class Backtester(PortfolioEstimator):
         transaction_costs: Union[float, Tuple[float, float], TransactionCostsFcn] = 0.0,
         transactions_budget: float = 0.1,
         risk_free_rate: float = 0.0,
+        cash_borrow_rate: float = 0.0,
         rates_frequency: int = APPROX_DAYS_PER_YEAR,
-        warm_start: bool = False,
-        precompute_returns: bool = True,
     ):
         """
+        Principal vectorized backtester for use with any PortfolioEstimator object.
+        It runs the strategy intended by the PortfolioEstimator and periodically calculates a
+        rebalance collecting all the positions over the complete interval.
 
         Parameters
         ----------
@@ -148,12 +88,6 @@ class Backtester(PortfolioEstimator):
             The risk-free-rate. The portfolio earns this rate on the cash allocation.
         rates_frequency: int, default 252 (skportfolio._constants.APPROX_DAYS_PER_YEAR)
             The rate frequency, for annualized rates (number of business days in a year use 252)
-        warm_start: bool, default False
-            Whether to warm start the estimator as in many partial_fit estimators
-        precompute_returns: bool, default True
-            Whether to precompute the prices returns. When using `fit` method this is the
-            suggested behaviour to speed up calculation. Otherwise.
-
         """
 
         self.estimator = estimator
@@ -166,28 +100,28 @@ class Backtester(PortfolioEstimator):
         self.transaction_costs = transaction_costs
         self.transactions_budget = transactions_budget
         self.risk_free_rate = risk_free_rate
+        self.cash_borrow_rate = cash_borrow_rate
         self.rates_frequency = rates_frequency
-        self.warm_start = warm_start
-        self.precompute_returns = precompute_returns
 
         # private internals variables
-        self._iteration = 0
-        self._transaction_cost_fcn: Optional[Callable] = None
+        self._asset_names: Optional[List[str]] = None
+        self._transaction_cost_fcn: Optional[TransactionCostsFcn] = None
         self._min_window_size: Optional[int] = 0
         self._max_window_size: Optional[int] = None
 
         # attributes to be read after fit
-        self.all_weights_: Optional[pd.DataFrame] = None
-        self.equity_curve_: Optional[pd.Series] = None
         self.positions_: Optional[pd.DataFrame] = None
-        self.positions_at_rebalance_: Optional[pd.DataFrame] = None
-        self.rebalance_dates_: Optional[List] = []
+        self.equity_curve_: Optional[pd.Series] = None
         self.returns_: Optional[pd.Series] = None
+        self.rebalance_dates_: Optional[List] = []
         self.buy_sell_costs_: Optional[pd.DataFrame] = None
-        self.turnover_ = None
+        self.turnover_: Optional[pd.Series] = None
 
-    def _cold_start(self, X, **kwargs):
-        self.n_samples = X.shape[0]
+    def fit(self, X, y=None, **fit_params) -> "Backtester":
+        asset_returns = X.pct_change().dropna()
+        self._asset_names = X.columns.tolist()
+        n_samples, n_assets = X.shape
+
         # private variables conversion logic
         if isinstance(self.window_size, (list, tuple)):
             self._min_window_size = self.window_size[0]
@@ -196,20 +130,14 @@ class Backtester(PortfolioEstimator):
             # in case 0 is specified, add one for having at least one row of data, hence expanding window
             self._min_window_size, self._max_window_size = (
                 self.window_size,
-                self.n_samples,
+                n_samples,
             )
         else:
             raise ValueError("Not a supported window size specification")
 
-        if isinstance(self.transaction_costs, (float, int)):
-            self._transaction_cost_fcn = lambda delta_pos: (
-                abs(sum(delta_pos * (delta_pos > 0))) * self.transaction_costs,
-                abs(sum(delta_pos * (delta_pos < 0))) * self.transaction_costs,
-            )
-        elif isinstance(self.transaction_costs, (tuple, list)):
-            self._transaction_cost_fcn = lambda delta_pos: (
-                sum(-delta_pos * (delta_pos > 0)) * self.transaction_costs[0],
-                sum(-delta_pos * (delta_pos < 0)) * self.transaction_costs[1],
+        if isinstance(self.transaction_costs, (float, int, tuple, list)):
+            self._transaction_cost_fcn = partial(
+                basic_percentage_fee, transaction_costs=self.transaction_costs
             )
         elif callable(self.transaction_costs):
             self._transaction_cost_fcn = self.transaction_costs
@@ -217,154 +145,90 @@ class Backtester(PortfolioEstimator):
         if self.rebalance_frequency < 0:
             raise ValueError("Rebalancing frequency must be greater or equal than 1")
 
-        # Define internals initialization
-        self.all_weights_ = pd.DataFrame(columns=X.columns.tolist(), dtype=float)
-        self.equity_curve_ = pd.Series(name=self.name + "_equity", dtype=float)
-        self.rebalance_dates_ = [
-            X.index[i] for i in np.arange(len(X)) if (i % self.rebalance_frequency) == 0
-        ]
-        # no rebalance yet, but the schedule is prepared
-        # all the costs have been spent in buying the initial portfolio
-        self.buy_sell_costs_ = pd.DataFrame(
-            columns=["buy", "sell"], index=self.rebalance_dates_
-        )
-        self.positions_ = pd.DataFrame(columns=X.columns.tolist(), dtype=float)
-        self.returns_ = pd.Series(name=self.name + "_returns", dtype=float)
-        # allocation is zero everywhere
-        # first rebalance is considered at the first step
-        self.positions_at_rebalance_ = self.positions_
-        self.turnover_ = []
-
-    def fit(self, X, y=None, **kwargs):
-        """
-        Handles the initialization logic of internals
-        Parameters
-        ----------
-        X
-        y
-        kwargs
-
-        Returns
-        -------
-
-        """
-        # here cold restart is always done, as each call to fit must reset the previous state
-        self._cold_start(X)
-
-        # all next calls to partial_fit are done like if they come from another invoker
-        self.warm_start = True
-        # add the trigger rebalance column
-        if self.precompute_returns:
-            returns = X.pct_change()
-        else:
-            returns = None
-        for counter, (prices_slice, benchmark_slice, returns_slice) in enumerate(
-            sliding_dataframes(
-                X,
-                y,
-                returns,
-                warmup=self.warmup_period,
-                n_min=self._min_window_size,
-                n_max=self._max_window_size,
-            )
-        ):
-            # rebalance can only be triggered once the warmup period was surpassed
-            self.partial_fit(
-                X=prices_slice,
-                y=benchmark_slice,
-                precomputed_returns=returns_slice,
-                full_index=X.index[self.warmup_period :],
-                **kwargs,
-            )
-        # now remove the transaction costs
-        return self
-
-    def partial_fit(self, X, y=None, **kwargs):
-        """
-        The method to be repeatedly called on slices of the price data.
-        Parameters
-        ----------
-        X: pd.DataFrame
-            A slice of prices data
-        y: pd.Series
-            Any additional variable needed to the estimator `fit` method
-        kwargs:
-            Any additional argument to pass to the estimator `fit` method, together
-            with the full_index variable that describes the full temporal interval
-            the X data come from.
-
-        Returns
-        -------
-
-        """
-        full_index = kwargs["full_index"]
-        last_index = X.index[-1]
-        self._iteration = find_index(X.index, full_index=full_index)
-
-        X_rets = None
-        if "precomputed_returns" in kwargs:
-            X_rets = kwargs["precomputed_returns"]
-        else:
-            X_rets = X.pct_change()
-
-        needs_rebalance = (self._iteration > 0) and (
-            last_index in self.rebalance_dates_
-        )
-        if (not self.warm_start) and (self._iteration == 0):
-            self._cold_start(X)
-
         if self.initial_weights is None:
-            self.initial_weights = self.estimator.fit(X).weights_
-            self.all_weights_.loc[last_index, :] = self.initial_weights
-        elif self.initial_weights is not None and not needs_rebalance:
-            self.all_weights_.loc[last_index, :] = self.initial_weights
-        elif self.initial_weights is not None and needs_rebalance:
-            self.all_weights_.loc[last_index, :] = self.estimator.fit(X).weights_
+            initial_positions = pd.Series(
+                {"CASH": self.initial_portfolio_value}
+                | dict(zip(self._asset_names, (0,) * n_assets))
+            )
+        else:
+            initial_positions = self.initial_portfolio_value * pd.Series(
+                {
+                    "CASH": 1 - self.initial_weights.sum(),
+                    **self.initial_weights.to_dict(),
+                }
+            )
 
-        self.returns_.loc[last_index] = X_rets.loc[last_index].dot(
-            self.all_weights_.loc[last_index]
+        self.buy_sell_costs_ = pd.DataFrame(
+            columns=["buy", "sell"], index=self.rebalance_dates_, data=0
         )
-        # TODO this could be made much faster by caching the result of (1+X_rets).cumprod() til the previous element
-        self.positions_ = (
-            (1 + X_rets)
-            .cumprod()
-            .fillna(1)
-            .mul(self.initial_portfolio_value)
-            .rmul(self.all_weights_.iloc[-1, :])
-        )
+        self.turnover_ = pd.Series(dtype=float, index=self.rebalance_dates_, data=0)
+        self.returns_ = pd.Series(dtype=float, index=X.index, data=np.NAN)
+
+        positions: List[pd.Series] = [initial_positions]
+        # initialize
+        previous_positions = initial_positions
+        for idx in range(n_samples - 1):
+            start_positions = previous_positions
+            start_portfolio_value = start_positions.sum()
+            cash_return = self.risk_free_rate
+            margin_return = self.cash_borrow_rate
+            if 0 <= start_positions["CASH"]:
+                # Zero or positive cash
+                row_returns = 1 + pd.concat(
+                    (pd.Series({"CASH": cash_return}), asset_returns.iloc[idx, :]),
+                    axis=0,
+                )
+            else:
+                # Negative cash
+                row_returns = 1 + pd.concat(
+                    (
+                        pd.Series({"CASH": margin_return}),
+                        asset_returns.iloc[idx, :],
+                    ),
+                    axis=0,
+                )
+            # start_date = X.index[idx]
+            end_date = X.index[idx + 1]
+            end_positions = start_positions * row_returns
+            end_portfolio_value = end_positions.sum()
+            end_asset_weights = end_positions.div(end_portfolio_value)
+
+            needs_rebalance = ((idx + 1) % self.rebalance_frequency == 0) and (idx > 0)
+            if needs_rebalance:
+                # check we have enough data
+                valid_window = idx - self._min_window_size >= 0
+                if valid_window:
+                    # call the estimator of this slice of data
+                    end_asset_weights_new: pd.Series = self.estimator.fit(
+                        X.iloc[:idx, :], y, **fit_params
+                    ).weights_
+                    delta_weights: pd.Series = end_asset_weights_new - end_asset_weights
+                    self.turnover_.loc[end_date] = delta_weights.abs().sum() * 0.5
+                    buy_cost, sell_cost = self._transaction_cost_fcn(
+                        delta_weights[self._asset_names] * end_portfolio_value
+                    )
+                    self.buy_sell_costs_.loc[end_date, :] = (buy_cost, sell_cost)
+                    # pre_fees_portfolio_value = end_portfolio_value
+                    end_portfolio_value -= buy_cost + sell_cost
+
+                    # update end_position after transaction fees
+                    end_asset_weights = end_asset_weights_new
+
+            # needs to recompute the cash component
+            end_asset_weights["CASH"] = 1 - end_asset_weights.sum()
+            end_positions = end_portfolio_value * end_asset_weights
+            # this operation is faster than .loc
+            positions.append(end_positions)
+            self.returns_.loc[end_date] = (
+                end_portfolio_value / start_portfolio_value - 1
+            )
+            previous_positions = end_positions
+
+        # Finally converts the positions in a dataframe
+        self.positions_ = pd.DataFrame(positions, index=X.index[self.warmup_period :])
+        # and computes the equity curve
         self.equity_curve_ = self.positions_.sum(1)
-
-        if needs_rebalance:
-            # we must ensure that our data slice contains the index of previous rebalance
-            # if this is not true because our sliding window is too small we need to
-            # 1. either do nothing
-            # 2. inform the user with a warning, to increase the time window or to switch to
-            # expanding window
-            prev_index = self.rebalance_dates_[
-                self.rebalance_dates_.index(last_index) - 1
-            ]
-            if prev_index in self.positions_.index:
-                delta_pos = (
-                    self.positions_.loc[last_index, :]
-                    - self.positions_.loc[prev_index, :]
-                )
-                buy_cost, sell_cost = self._transaction_cost_fcn(delta_pos)
-                self.buy_sell_costs_.loc[last_index] = (
-                    buy_cost,
-                    sell_cost,
-                )
-                self.positions_.loc[last_index] -= buy_cost + sell_cost
-                self.equity_curve_.loc[last_index] -= buy_cost + sell_cost
-                self.returns_.loc[last_index] = (
-                    self.equity_curve_.tail(2).pct_change().iat[-1]
-                )
-
         return self
 
-    def fit_predict(self, X, y=None, **kwargs):
-        self.fit(X, y, **kwargs)
-        return self.equity_curve_
-
-    def predict(self, X, y=None, **kwargs):
-        check_is_fitted(self, attributes="equity_curve_")
-        return self.equity_curve_
+    def fit_predict(self, X, y, **fit_kwargs):
+        return self.fit(X, y, **fit_kwargs).positions_

@@ -14,15 +14,19 @@ TransactionCostsFcn = Callable[
 ]
 
 
-def fixed_transaction_costs(delta_pos: pd.Series, transaction_cost: FeePctCost):
-    if isinstance(transaction_cost, float):
-        return (delta_pos * transaction_cost).sum()
-    elif isinstance(transaction_cost, (tuple, list)):
-        return (delta_pos * (delta_pos > 0) * transaction_cost[0]).sum() + (
-            (delta_pos * (delta_pos < 0)) * transaction_cost[1]
-        ).sum()
+def basic_percentage_fee(delta_pos, transaction_costs) -> Tuple[float, float]:
+    if isinstance(transaction_costs, (float, int)):
+        return (
+            abs(sum(delta_pos * (delta_pos > 0))) * transaction_costs,
+            abs(sum(delta_pos * (delta_pos < 0))) * transaction_costs,
+        )
+    elif isinstance(transaction_costs, (tuple, list)):
+        return (
+            abs(sum(delta_pos * (delta_pos > 0))) * transaction_costs[0],
+            abs(sum(delta_pos * (delta_pos < 0))) * transaction_costs[1],
+        )
     else:
-        return TypeError("Not a supported fee scheme")
+        raise TypeError("Not a supported fee scheme")
 
 
 def variable_transaction_costs(
