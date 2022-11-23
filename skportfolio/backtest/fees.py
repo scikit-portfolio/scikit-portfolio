@@ -16,17 +16,11 @@ TransactionCostsFcn = Callable[
 
 def basic_percentage_fee(delta_pos, transaction_costs) -> Tuple[float, float]:
     if isinstance(transaction_costs, (float, int)):
-        return (
-            abs(sum(delta_pos * (delta_pos > 0))) * transaction_costs,
-            abs(sum(delta_pos * (delta_pos < 0))) * transaction_costs,
-        )
-    elif isinstance(transaction_costs, (tuple, list)):
-        return (
-            abs(sum(delta_pos * (delta_pos > 0))) * transaction_costs[0],
-            abs(sum(delta_pos * (delta_pos < 0))) * transaction_costs[1],
-        )
-    else:
-        raise TypeError("Not a supported fee scheme")
+        transaction_costs = [transaction_costs, transaction_costs]
+    return (
+        abs(sum(delta_pos * (delta_pos > 0))) * transaction_costs[0],
+        abs(sum(delta_pos * (delta_pos < 0))) * transaction_costs[1],
+    )
 
 
 def variable_transaction_costs(

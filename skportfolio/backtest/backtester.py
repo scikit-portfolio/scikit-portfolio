@@ -1,6 +1,7 @@
 # Here we should implement a backtester that takes one or more portfolio estimator objects,
 # possibly a rebalance policy and transaction costs
 
+from collections import deque
 from functools import partial
 from typing import Union, Tuple, List, Optional
 
@@ -13,6 +14,28 @@ from sklearn.utils.validation import check_is_fitted  # type: ignore
 from skportfolio._base import PortfolioEstimator
 from skportfolio._constants import APPROX_DAYS_PER_YEAR
 from skportfolio.backtest.fees import TransactionCostsFcn, basic_percentage_fee
+
+
+def rolling_expanding_window(seq, n_min, n_max):
+    """
+    Emits the elements over a rolling or expanding window of an iterable sequence
+    Parameters
+    ----------
+    seq
+    n_min
+    n_max
+
+    Returns
+    -------
+
+    """
+    it = iter(range(len(seq)))  # makes it iterable
+    # roll it forward at least warmup steps
+    win = deque((next(it, None) for _ in range(n_min)), maxlen=n_max)
+    # yield win
+    for e in it:
+        win.append(e)
+        yield win
 
 
 class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
@@ -118,6 +141,20 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         self.turnover_: Optional[pd.Series] = None
 
     def fit(self, X, y=None, **fit_params) -> "Backtester":
+        """
+        Fit the backtester on a rolling-expanding window base to the data, rebalancing when needed and keeping
+        into account transaction costs.
+
+        Parameters
+        ----------
+        X: prices
+        y: other benchmarks
+        fit_params
+
+        Returns
+        -------
+        self
+        """
         asset_returns = X.pct_change().dropna()
         self._asset_names = X.columns.tolist()
         n_samples, n_assets = X.shape
@@ -167,8 +204,14 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         positions: List[pd.Series] = [initial_positions]
         # initialize
         previous_positions = initial_positions
+
         for idx in range(n_samples - 1):
             start_positions = previous_positions
+            next_idx = idx + self.warmup_period + 1
+
+            # find the span over to which calculate the
+            end_window: int = idx + self._min_window_size - 1
+            start_window: int = max(0, end_window + 1 - self._max_window_size)
             start_portfolio_value = start_positions.sum()
             cash_return = self.risk_free_rate
             margin_return = self.cash_borrow_rate
@@ -188,19 +231,25 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
                     axis=0,
                 )
             # start_date = X.index[idx]
-            end_date = X.index[idx + 1]
+            # Apply current day's returns and calculate the end-of-row positions
+            end_date = X.index[next_idx]
             end_positions = start_positions * row_returns
             end_portfolio_value = end_positions.sum()
             end_asset_weights = end_positions.div(end_portfolio_value)
 
-            needs_rebalance = ((idx + 1) % self.rebalance_frequency == 0) and (idx > 0)
+            needs_rebalance = (next_idx % self.rebalance_frequency == 0) and (idx > 0)
             if needs_rebalance:
                 # check we have enough data
-                valid_window = idx - self._min_window_size >= 0
-                if valid_window:
+                is_valid_window = next_idx >= self._min_window_size
+                if is_valid_window:
                     # call the estimator of this slice of data
+                    start_window = next_idx - self._max_window_size + 1
+                    window_rows = np.arange(max(0, start_window), next_idx + 1)
+                    asset_data = X.iloc[window_rows, :]
                     end_asset_weights_new: pd.Series = self.estimator.fit(
-                        X.iloc[:idx, :], y, **fit_params
+                        X=asset_data,
+                        y=y.iloc[window_rows] if y is not None else None,
+                        **fit_params,
                     ).weights_
                     delta_weights: pd.Series = end_asset_weights_new - end_asset_weights
                     self.turnover_.loc[end_date] = delta_weights.abs().sum() * 0.5
@@ -213,7 +262,6 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
 
                     # update end_position after transaction fees
                     end_asset_weights = end_asset_weights_new
-
             # needs to recompute the cash component
             end_asset_weights["CASH"] = 1 - end_asset_weights.sum()
             end_positions = end_portfolio_value * end_asset_weights
@@ -226,8 +274,13 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
 
         # Finally converts the positions in a dataframe
         self.positions_ = pd.DataFrame(positions, index=X.index[self.warmup_period :])
+        self.returns_.dropna(inplace=True)  # returns have one row less than original
+        self.turnover_ = self.turnover_.reindex(self.returns_.index).fillna(0)
         # and computes the equity curve
         self.equity_curve_ = self.positions_.sum(1)
+        self.buy_sell_costs_ = self.buy_sell_costs_.reindex(
+            self.equity_curve_.index
+        ).fillna(0)
         return self
 
     def fit_predict(self, X, y, **fit_kwargs):
