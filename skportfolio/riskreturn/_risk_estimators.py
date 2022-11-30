@@ -74,7 +74,9 @@ class CovarianceGlasso(BaseRiskEstimator):
     """
 
     def _set_risk(self, X, y=None, **fit_params):
-        self.risk_matrix_ = covariance_glasso(X, returns_data=self.returns_data)
+        self.risk_matrix_ = covariance_glasso(
+            X, returns_data=self.returns_data, **fit_params
+        )
 
 
 class CovarianceOAS(BaseRiskEstimator):

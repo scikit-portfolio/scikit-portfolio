@@ -14,7 +14,6 @@ from scipy.cluster.hierarchy import single
 from scipy.linalg import eigh
 from sklearn.covariance import graphical_lasso
 
-from skportfolio._constants import APPROX_BDAYS_PER_YEAR
 from skportfolio.riskreturn.covariance.utils import _corr_to_cov
 from skportfolio.riskreturn.covariance.utils import _cov_to_corr
 from skportfolio.riskreturn.covariance.utils import _denoised_corr
@@ -26,7 +25,7 @@ from skportfolio.riskreturn.covariance.utils import _get_pca
 
 
 def sample_covariance(
-    prices: pd.DataFrame, returns_data=False, frequency=APPROX_BDAYS_PER_YEAR
+    prices: pd.DataFrame, returns_data=False, frequency=1
 ) -> pd.DataFrame:
     """
     Sample covariance
@@ -49,7 +48,7 @@ def sample_covariance(
 
 
 def semicovariance(
-    prices: pd.DataFrame, returns_data=False, frequency=APPROX_BDAYS_PER_YEAR
+    prices: pd.DataFrame, returns_data=False, frequency=1
 ) -> pd.DataFrame:
     """
     Returns semicovariance
@@ -75,7 +74,7 @@ def semicovariance(
 def covariance_exp(
     prices: pd.DataFrame,
     returns_data: int = False,
-    frequency: int = APPROX_BDAYS_PER_YEAR,
+    frequency: int = 1,
     span: int = 60,
 ) -> pd.DataFrame:
     """
@@ -100,7 +99,7 @@ def covariance_exp(
 def covariance_ledoit_wolf(
     prices: pd.DataFrame,
     returns_data=False,
-    frequency=APPROX_BDAYS_PER_YEAR,
+    frequency=1,
     shrinkage_target="constant_variance",
 ):
     """
@@ -122,7 +121,7 @@ def covariance_ledoit_wolf(
 
 
 def covariance_oracle_approx(
-    prices: pd.DataFrame, returns_data=False, frequency=APPROX_BDAYS_PER_YEAR
+    prices: pd.DataFrame, returns_data=False, frequency=1
 ) -> pd.DataFrame:
     """
     Assuming that the data are Gaussian distributed, Chen et al. derived a formula aimed at choosing a shrinkage
@@ -146,8 +145,9 @@ def covariance_oracle_approx(
 def covariance_glasso(
     prices: pd.DataFrame,
     returns_data=False,
-    frequency=APPROX_BDAYS_PER_YEAR,
+    frequency=1,
     alpha=0.5,
+    max_iter: int = 10_000,
 ) -> pd.DataFrame:
     """
     The GraphicalLasso estimator uses an l1 penalty to enforce sparsity on the precision matrix:
@@ -159,6 +159,7 @@ def covariance_glasso(
     returns_data
     frequency
     alpha
+    max_iter
 
     Returns
     -------
@@ -168,12 +169,12 @@ def covariance_glasso(
     sample_cov = sample_covariance(
         prices, returns_data=returns_data, frequency=frequency
     ).values
-    est_cov = graphical_lasso(sample_cov, alpha=alpha)[0]
+    est_cov = graphical_lasso(sample_cov, alpha=alpha, max_iter=max_iter, tol=1e-3)[0]
     return pd.DataFrame(index=assets, columns=assets, data=est_cov)
 
 
 def correlation_rmt(
-    prices: pd.DataFrame, returns_data=False, frequency=APPROX_BDAYS_PER_YEAR
+    prices: pd.DataFrame, returns_data=False, frequency=1
 ) -> pd.DataFrame:
     """
     FinRMT uses Random Matrix Theory (RMT) to create a filtered correlation
@@ -222,7 +223,7 @@ def correlation_rmt(
     returns_data: bool
         True if providing returns data instead of prices
     frequency: int
-        Default APPROX_BDAYS_PER_YEAR, 252
+        Default 1
     Returns
     -------
     Estimated covariance matrix
@@ -284,9 +285,7 @@ def correlation_rmt(
     return pd.DataFrame(corr_rmt_filtered, columns=prices.columns, index=prices.columns)
 
 
-def covariance_rmt(
-    prices: pd.DataFrame, returns_data=False, frequency=APPROX_BDAYS_PER_YEAR
-):
+def covariance_rmt(prices: pd.DataFrame, returns_data=False, frequency=1):
     """
     Calculates the covariance from the Random Matrix Theory filtered correlation matrix using the Marchenko-Pastur
     distribution.
@@ -427,7 +426,7 @@ def denoise_covariance(
 
 
 def covariance_crr_denoise(
-    prices: pd.DataFrame, returns_data=False, frequency=APPROX_BDAYS_PER_YEAR, **kwargs
+    prices: pd.DataFrame, returns_data=False, frequency=1, **kwargs
 ) -> pd.DataFrame:
     """
     Estimates the covariance matrix with spectral denoising approach.
@@ -450,17 +449,21 @@ def covariance_crr_denoise(
     """
     tn_relation = prices.shape[0] / prices.shape[1]
     cov = sample_covariance(prices, returns_data, frequency)
-    return denoise_covariance(
-        cov=cov,
-        tn_relation=tn_relation,
-        denoise_method=kwargs.get("denoise_method", "const_resid_eigen"),
-        detone=kwargs.get("detone", False),
-        kde_bwidth=kwargs.get("kde_bwidth", 0.01),
+    return pd.DataFrame(
+        data=denoise_covariance(
+            cov=cov,
+            tn_relation=tn_relation,
+            denoise_method=kwargs.get("denoise_method", "const_resid_eigen"),
+            detone=kwargs.get("detone", False),
+            kde_bwidth=kwargs.get("kde_bwidth", 0.01),
+        ),
+        index=prices.columns,
+        columns=prices.columns,
     )
 
 
 def covariance_denoise_spectral(
-    prices: pd.DataFrame, returns_data=False, frequency=APPROX_BDAYS_PER_YEAR, **kwargs
+    prices: pd.DataFrame, returns_data=False, frequency=1, **kwargs
 ) -> pd.DataFrame:
     """
     Estimates the covariance matrix with spectral denoising approach.
@@ -478,15 +481,19 @@ def covariance_denoise_spectral(
     """
     tn_relation = prices.shape[0] / prices.shape[1]
     cov = sample_covariance(prices, returns_data, frequency)
-    return denoise_covariance(
-        cov=cov,
-        tn_relation=tn_relation,
-        denoise_method=kwargs.get("denoise_method", "spectral"),
+    return pd.DataFrame(
+        data=denoise_covariance(
+            cov=cov,
+            tn_relation=tn_relation,
+            denoise_method=kwargs.get("denoise_method", "spectral"),
+        ),
+        index=prices.columns,
+        columns=prices.columns,
     )
 
 
 def covariance_target_shrinkage_denoised(
-    prices: pd.DataFrame, returns_data=False, frequency=APPROX_BDAYS_PER_YEAR, **kwargs
+    prices: pd.DataFrame, returns_data=False, frequency=1, **kwargs
 ) -> pd.DataFrame:
     """
     Estimates the covariance matrix with shrinkage approach.
@@ -516,7 +523,7 @@ def covariance_target_shrinkage_denoised(
 
 
 def covariance_crr_denoise_detoned(
-    prices: pd.DataFrame, returns_data=False, frequency=APPROX_BDAYS_PER_YEAR, **kwargs
+    prices: pd.DataFrame, returns_data=False, frequency=1, **kwargs
 ) -> pd.DataFrame:
     """
     Estimates the covariance matrix while trying to detone and denoise it.
@@ -638,7 +645,7 @@ def filter_corr_hierarchical(cor_matrix, method="complete") -> pd.DataFrame:
 def covariance_hierarchical_filter_complete(
     prices: pd.DataFrame,
     returns_data=False,
-    frequency: int = APPROX_BDAYS_PER_YEAR,
+    frequency: int = 1,
 ):
     """
     Wrapper around filter_corr_hierarchical.
@@ -662,7 +669,7 @@ def covariance_hierarchical_filter_complete(
 def covariance_hierarchical_filter_single(
     prices: pd.DataFrame,
     returns_data=False,
-    frequency: int = APPROX_BDAYS_PER_YEAR,
+    frequency: int = 1,
 ):
     """
     Wrapper around filter_corr_hierarchical with single linkage method
@@ -687,7 +694,7 @@ def covariance_hierarchical_filter_single(
 def covariance_hierarchical_filter_average(
     prices: pd.DataFrame,
     returns_data=False,
-    frequency: int = APPROX_BDAYS_PER_YEAR,
+    frequency: int = 1,
 ) -> np.ndarray:
     """
     Wrapper around filter_corr_hierarchical.

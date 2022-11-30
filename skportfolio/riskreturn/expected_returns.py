@@ -5,19 +5,17 @@ import numpy as np
 import pandas as pd
 from pypfopt import expected_returns as expret
 
-from skportfolio._constants import APPROX_BDAYS_PER_YEAR
-
 
 def mean_historical_return(
     prices_or_returns: pd.DataFrame,
     returns_data=False,
-    frequency=APPROX_BDAYS_PER_YEAR,
+    frequency=1,
 ) -> pd.Series:
     """
-    Returns the annualized (based on 252 working days) expected returns from
+    Returns the unit-frequency expected returns from
     average historical data.
     Compounding is set to false by default.
-    If frequency=1 then you get the daily historical returns.
+    If frequency=252 and you pass daily returns, you get the annualized returns
     Parameters
     ----------
     prices_or_returns: pd.DataFrame
@@ -45,10 +43,10 @@ def mean_historical_return(
 def mean_historical_log_return(
     prices_or_returns: pd.DataFrame,
     returns_data=False,
-    frequency=APPROX_BDAYS_PER_YEAR,
+    frequency=1,
 ) -> pd.Series:
     """
-    Returns the annualized (based on 252 working days) expected **log**-returns
+    Returns the daily expected **log**-returns
     from average historical data.
     Compounding is set to false by default.
     If frequency=1 then you get the daily historical returns.
@@ -80,10 +78,10 @@ def mean_historical_log_return(
 def median_historical_return(
     prices_or_returns: pd.DataFrame,
     returns_data=False,
-    frequency=APPROX_BDAYS_PER_YEAR,
+    frequency=1,
 ) -> pd.Series:
     """
-    Returns the annualized (based on 252 working days) expected returns from average historical data using median.
+    Returns the median expected returns from average historical data using median.
     Compounding is set to false by default.
     If frequency=1 then you get the daily historical returns.
     Parameters
@@ -109,10 +107,10 @@ def median_historical_return(
 def median_historical_log_return(
     prices_or_returns: pd.DataFrame,
     returns_data=False,
-    frequency=APPROX_BDAYS_PER_YEAR,
+    frequency=1,
 ) -> pd.Series:
     """
-    Returns the annualized (based on 252 working days) expected returns from average historical data using median.
+    Returns the median expected log returns from average historical data using median.
     Compounding is set to false by default.
     If frequency=1 then you get the daily historical returns.
     Parameters
@@ -138,12 +136,12 @@ def median_historical_log_return(
 def capm_return(
     prices_or_returns: pd.DataFrame,
     returns_data=False,
-    frequency=APPROX_BDAYS_PER_YEAR,
+    frequency=1,
     risk_free_rate=0.0,
     benchmark=None,
 ) -> pd.Series:
     """
-    Returns the annualized (based on 252 working days) expected returns from average historical data using the
+    Returns the expected returns from average historical data using the
     capital asset pricing model.
     Compounding is set to false by default.
     If frequency=1 then you get the daily historical returns.
@@ -176,11 +174,11 @@ def capm_return(
 def ema_historical_return(
     prices_or_returns: pd.DataFrame,
     returns_data=False,
-    frequency: int = APPROX_BDAYS_PER_YEAR,
-    span: int = 180,
+    frequency: int = 1,
+    span: int = 60,
 ) -> pd.Series:
     """
-    Returns the annualized (based on 252 working days) expected returns from exponential weighted moving average
+    Returns the expected returns from exponential weighted moving average
     Compounding is set to false by default.
     If frequency=1 then you get the daily historical returns.
     Parameters
@@ -193,6 +191,7 @@ def ema_historical_return(
         How to annualize the returns, if frequency=1 you get the daily average returns, if frequency=252 you assume
         returns on business days. If frequency=30.5 you assume monthly returns.
     span: int
+        Default three business months, approximately 60 business days.
     Returns
     -------
     The annualized returns.
@@ -205,7 +204,7 @@ def ema_historical_return(
 def rolling_median_returns(
     prices_or_returns: pd.DataFrame,
     returns_data=False,
-    frequency: int = APPROX_BDAYS_PER_YEAR,
+    frequency: int = 1,
     window=20,
 ):
     """
