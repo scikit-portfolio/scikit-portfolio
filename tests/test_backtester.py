@@ -94,6 +94,23 @@ def test_backtester_inverse_variance(prices):
     backtester.summary(prices)
 
 
+def test_backtester_initial_weights_none(prices):
+    backtester = Backtester(
+        estimator=EquallyWeighted(),
+        name="EquallyWeighted",
+        warmup_period=0,
+        initial_weights=None,
+        initial_portfolio_value=10_000,
+        rebalance_frequency=25,
+        window_size=0,
+        rates_frequency=252,
+        risk_free_rate=0.00,
+        transaction_costs=(0.005, 0.005),
+        score_fcn=None,  # default Sharpe ratio
+    )
+    backtester.fit(prices)
+
+
 def test_backtester_grid_search(prices):
     backtester = Backtester(
         estimator=EquallyWeighted(),
