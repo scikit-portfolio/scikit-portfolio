@@ -114,7 +114,8 @@ def plot_frontier(
     if frontier_kwargs is None:
         frontier_kwargs = {}
     _validate_plotting_kwargs(**kwargs)
-
+    if estimator_name is None:
+        estimator_name = str(ptf_estimator)
     if ax is None:
         try:
             import matplotlib.pyplot as plt
@@ -132,7 +133,6 @@ def plot_frontier(
             returns,
             "-",
             color=kwargs.get("frontier_line_color", "C0"),
-            label=estimator_name,
         )
 
     ax.set_ylabel("Portfolio return")
@@ -141,7 +141,7 @@ def plot_frontier(
         .replace("_", " ")
         .title()
     )
-    ax.set_title(kwargs.get("title", "Efficient frontier"))
+    ax.set_title(kwargs.get("title", f"Efficient frontier\n{estimator_name}"))
     ax.grid(which="both")
 
     # if true, it builds temporaneous asset price or returns dataframes with each single asset.
@@ -163,6 +163,7 @@ def plot_frontier(
             x=[asset_risk],
             y=[asset_return],
             color=kwargs.get("asset_color", "darkgrey"),
+            label=None,
         )
         ax.annotate(
             xy=(asset_risk, asset_return),
@@ -187,6 +188,7 @@ def plot_frontier(
             color=kwargs.get("risk_return_color", "C0"),
             linestyle=kwargs.get("risk_return_line_style", "--"),
             linewidth=kwargs.get("risk_return_line_width", 1),
+            label=estimator_name,
         )
         ax.plot(
             (ax.get_xlim()[0], x),
@@ -202,6 +204,7 @@ def plot_frontier(
                 color=kwargs.get("tangency_line_color", "C1"),
                 linestyle=kwargs.get("tangency_line_style", "--"),
                 linewidth=0.8,
+                label=estimator_name,
             )
         if kwargs.get("autoset_lims", True):
             ax.set_xlim([xmin, xmax])
@@ -252,7 +255,12 @@ def pie_chart(weights: pd.Series, threshold: int = 12, ax=None, **kwargs):
         )  # to shuffle the weights and avoid concentration in plot
     else:
         weights_thr = weights
-    wedges, texts = ax.pie(weights_thr, wedgeprops=dict(width=0.5), startangle=-40)
+    wedges, texts = ax.pie(
+        weights_thr,
+        wedgeprops=dict(width=0.5),
+        startangle=-40,
+        colors=kwargs.get("colors", None),
+    )
 
     bbox_props = dict(
         boxstyle="square,pad=0.3",
@@ -290,7 +298,6 @@ def risk_allocation_chart(
     ptf_estimator: _BaseEfficientFrontierPortfolioEstimator,
     prices_or_returns,
     num_portfolios: int = 20,
-    show_assets=False,
     ax=None,
     **kwargs,
 ):
@@ -302,7 +309,6 @@ def risk_allocation_chart(
     ptf_estimator
     prices_or_returns
     num_portfolios
-    show_assets
     ax
     kwargs
 
@@ -328,7 +334,7 @@ def risk_allocation_chart(
 
     pd.DataFrame(
         index=risk, data=frontier_weights, columns=prices_or_returns.columns
-    ).abs().mul(100).plot.area(ax=ax)
+    ).abs().mul(100).clip(0, np.inf).plot.area(ax=ax, cmap=kwargs.get("cmap", None))
 
     ax.set_ylabel("Allocation %")
     ax.set_xlabel(
