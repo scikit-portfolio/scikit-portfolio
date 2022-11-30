@@ -214,7 +214,8 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         if self.initial_weights is None:
             initial_positions = pd.Series(
                 {"CASH": self.initial_portfolio_value}
-                | dict(zip(self._asset_names, (0,) * n_assets))
+                | dict(zip(self._asset_names, (0.0,) * n_assets)),
+                dtype=float,
             )
         else:
             if self.initial_weights.shape[0] != X.shape[1]:
@@ -311,7 +312,7 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
                     # update end_position after transaction fees
                     end_asset_weights = end_asset_weights_new
             # needs to recompute the cash component
-            end_asset_weights["CASH"] = 1 - end_asset_weights.sum()
+            end_asset_weights["CASH"] = 1 - end_asset_weights[self._asset_names].sum()
             end_positions = end_portfolio_value * end_asset_weights
             # this operation is faster than .loc
             positions.append(end_positions)
