@@ -1,11 +1,7 @@
-from typing import Union, Sequence
-
-
+from typing import Union
 import pandas as pd
 import numpy as np
-from scipy.stats import entropy as spentropy
 import warnings
-from pypfopt.expected_returns import returns_from_prices
 from skportfolio.riskreturn import (
     BaseReturnsEstimator,
     BaseRiskEstimator,
@@ -28,7 +24,7 @@ with warnings.catch_warnings():
 
 
 def omega_ratio(
-    ret: pd.Series,
+    r: pd.Series,
     target_ret: float = 0.0,
     risk_free_rate: float = 0.0,
     frequency: int = APPROX_BDAYS_PER_YEAR,
@@ -54,7 +50,7 @@ def omega_ratio(
 
     Parameters
     ----------
-    ret: pd.Series
+    r: pd.Series
         Return of the strategy, typically obtained by the dot product of the asset returns dataframe and weights vector.
     target_ret:
         The desidered return per sample, aka the minimum acceptable return.
@@ -71,7 +67,7 @@ def omega_ratio(
     sharpe_ratio, sortino_ratio, calmar_ratio
     """
     return ep.omega_ratio(
-        ret,
+        r,
         risk_free=risk_free_rate,
         required_return=target_ret,
         annualization=frequency,
@@ -87,6 +83,16 @@ def omega_ratio(
 def annualize_rets(r: pd.Series, frequency: int = APPROX_BDAYS_PER_YEAR) -> float:
     """
     Compunded annual growth rate, also called cagr
+
+    Parameters
+    ----------
+    r: pd.Series
+    frequency: annualization frequency, as number of rows in a period.
+    For example with daily returns (rows), frequency=252 calculates the annualized CAGR
+
+    Returns
+    -------
+    CAGR
     """
     return ep.annual_return(r, "daily", annualization=frequency)
 
@@ -170,7 +176,6 @@ def info_ratio(
 def l1_risk_ratio(
     r: pd.Series,
     riskfree_rate: float = 0.0,
-    period: str = "DAILY",
     frequency: int = APPROX_BDAYS_PER_YEAR,
 ) -> float:
     """
@@ -236,11 +241,16 @@ excess_sharpe = ep.excess_sharpe
 
 def semistd(r: pd.Series) -> float:
     """
-    Returns the semideviation aka negative semideviation of r
-    r must be a Series or a DataFrame
+    Returns the semideviation aka negative semideviation of a strategy r
+    Parameters
+    ----------
+    r: Strategy returns
+
+    Returns
+    -------
+    The semi-standard deviation
     """
-    is_negative = r < 0
-    return r[is_negative].std(ddof=0)
+    return r[r < 0].std(ddof=0)
 
 
 def sortino_ratio(
@@ -319,17 +329,15 @@ def var_gaussian(
 ) -> float:
     """
     Returns the parametric gaussian VaR of a Series or DataFrame
-    args:
-        r: pd.Series
-        level: percentile level
-        modified: True if Corni
 
+    http://www.nematrian.com/ValueAtRiskCoherentForGaussian
     Parameters
     ----------
-    r
-    level
-    modified
-
+    r: pd.Series
+        Strategy returns
+    level: float
+    modified: bool, default False
+        True if Cornish-Fisher
     Returns
     -------
     The gaussian value-at-risk
@@ -351,16 +359,16 @@ def var_gaussian(
 
 def cvar(r: pd.Series, level: float = 0.05) -> float:
     """
-    Calculates the conditional value at risk, with cutoff level of 5%
+    Calculates the conditional value at risk, with cutoff level of 5%.
+
     Parameters
     ----------
     r: pd.Series
-        Returns
+        Strategy returns
     level: float
         percentile cutoff tail value
     Returns
     -------
-
     """
     return ep.stats.conditional_value_at_risk(returns=r.dropna(), cutoff=level)
 
@@ -424,30 +432,30 @@ def cvar_historic(r: Union[pd.Series, pd.DataFrame], level: int = 5) -> float:
 
 
 def cumulative_returns(
-    returns: pd.Series,
+    r: pd.Series,
     starting_value: float = 1000,
 ) -> pd.Series:
     """
     Computes (1+r).prod() * starting_value
     Parameters
     ----------
-    returns
+    r
     starting_value
 
     Returns
     -------
 
     """
-    return ep.stats.cum_returns(returns=returns, starting_value=starting_value)
+    return ep.stats.cum_returns(returns=r, starting_value=starting_value)
 
 
-def final_cum_returns(returns: pd.Series, starting_value: float = 0):
+def final_cum_returns(r: pd.Series, starting_value: float = 0):
     """
     Compute total returns from simple returns.
 
     Parameters
     ----------
-    returns : pd.DataFrame, pd.Series, or np.ndarray
+    r : pd.DataFrame, pd.Series, or np.ndarray
        Noncumulative simple returns of one or more timeseries.
     starting_value : float, optional
        The starting returns.
@@ -461,13 +469,13 @@ def final_cum_returns(returns: pd.Series, starting_value: float = 0):
         If input is 2-dimensional (a DataFrame or 2D numpy array), the result
         is a 1D array containing cumulative returns for each column of input.
     """
-    if len(returns) == 0:
+    if len(r) == 0:
         return np.nan
 
-    if isinstance(returns, pd.DataFrame):
-        result = (returns + 1).prod()
+    if isinstance(r, pd.DataFrame):
+        result = (r + 1).prod()
     else:
-        result = np.nanprod(returns + 1, axis=0)
+        result = np.nanprod(r + 1, axis=0)
 
     if starting_value == 0:
         result -= 1
@@ -476,13 +484,13 @@ def final_cum_returns(returns: pd.Series, starting_value: float = 0):
     return result
 
 
-def aggregate_returns(returns, convert_to) -> pd.Series:
+def aggregate_returns(r: pd.Series, convert_to: str) -> pd.Series:
     """
     Aggregates returns by week, month, or year.
 
     Parameters
     ----------
-    returns : pd.Series
+    r : pd.Series
        Daily returns of the strategy, noncumulative.
     convert_to : str
         Can be 'weekly', 'monthly', or 'yearly'.
@@ -505,7 +513,7 @@ def aggregate_returns(returns, convert_to) -> pd.Series:
     else:
         raise ValueError(f"convert_to must be {WEEKLY}, {MONTHLY} or {YEARLY}")
 
-    return returns.groupby(grouping).apply(cumulate_returns)
+    return r.groupby(grouping).apply(cumulate_returns)
 
 
 def portfolio_return(
@@ -515,6 +523,7 @@ def portfolio_return(
 ) -> float:
     """
     Calculates the portfolio return as $\\mathbb{E}\\lbrack \\mathbf{r}^T \\mathbf{w} \\rbrack$.
+
     Parameters
     ----------
     prices: pd.Dataframe with the prices
@@ -533,22 +542,32 @@ def portfolio_return(
 
 
 def portfolio_vol(
-    returns: Union[pd.DataFrame, pd.Series],
+    r: Union[pd.DataFrame, pd.Series],
     weights: pd.Series,
     frequency: int = APPROX_BDAYS_PER_YEAR,
     risk_estimator: BaseRiskEstimator = SampleCovariance(returns_data=True),
 ):
     """
     Computes the portfolio volatility using the risk_estimator, default set to sample covariance
+
+    Parameters
+    ----------
+    r: pd.Dataframe with the prices
+    weights: pd.Series with the weights (must sum to 1)
+    risk_estimator: a skportfolio risk estimator instance, with returns_data set to True
+
+    Returns
+    -------
+    Portfolio volatility
     """
     risk_estimator.frequency = frequency
     # Force the risk estimator to read from returns data rather than from price data
-    cov = risk_estimator.set_returns_data(returns_data=True).fit(returns).risk_matrix_
+    cov = risk_estimator.set_returns_data(returns_data=True).fit(r).risk_matrix_
     return np.sqrt(weights.dot(cov).dot(weights))
 
 
 def tail_ratio(
-    returns: pd.Series, upper_tail: float = 95.0, lower_tail: float = 5.0
+    r: pd.Series, upper_tail: float = 95.0, lower_tail: float = 5.0
 ) -> float:
     """
     Determines the ratio between the right (95%) and left tail (5%).
@@ -557,7 +576,7 @@ def tail_ratio(
 
     Parameters
     ----------
-    returns : pd.Series or np.ndarray
+    r : pd.Series or np.ndarray
         Daily returns of the strategy, noncumulative.
          - See full explanation in :func:`~empyrical.stats.cum_returns`.
     upper_tail: float
@@ -569,18 +588,16 @@ def tail_ratio(
     tail_ratio : float
     """
 
-    if len(returns) < 1:
+    if len(r) < 1:
         return np.nan
 
-    returns = np.asanyarray(returns)
+    r = np.asanyarray(r)
     # Be tolerant of nan's
-    returns = returns[~np.isnan(returns)]
-    if len(returns) < 1:
+    r = r[~np.isnan(r)]
+    if len(r) < 1:
         return np.nan
 
-    return np.abs(np.percentile(returns, upper_tail)) / np.abs(
-        np.percentile(returns, lower_tail)
-    )
+    return np.abs(np.percentile(r, upper_tail)) / np.abs(np.percentile(r, lower_tail))
 
 
 def downside_risk(r: pd.Series, target_return: float = 0.0) -> float:
@@ -588,106 +605,116 @@ def downside_risk(r: pd.Series, target_return: float = 0.0) -> float:
     Calculates downside risk
     Parameters
     ----------
-    r: returns as pd.Series
+    r: pd.Series
+        Strategy retrurns
     target_return: float
-    frequency: int APPROX_BDAYS_PER_YEAR days default
 
+    frequency: int, default APPROX_BDAYS_PER_YEAR
+         Annualization frequency
     Returns
     -------
-
+    The downside risk metric
     """
     return ep.downside_risk(r, required_return=target_return)
 
 
-def drawdown(returns: pd.Series):
+def drawdown(r: pd.Series):
     """
     Takes a time series of asset returns.
     returns a DataFrame with columns for the wealth index,
     the previous peaks and the percentage drawdown
+
+    Parameters
+    ----------
+    r: Stategy returns
+
+    Returns
+    -------
+    The drawdowns time series as a seris of the same lenght as strategy returns
     """
-    wealth_index = returns.add(1).cumprod(axis=0)
+    wealth_index = r.add(1).cumprod(axis=0)
     previous_peaks = wealth_index.cummax(axis=0)
     drawdowns = (wealth_index - previous_peaks) / previous_peaks
     return drawdowns
 
 
-def maxdrawdown(returns: pd.Series):
+def maxdrawdown(r: pd.Series):
     """
-    Returns the maxdrawdown measure of returns
+    Returns the maxdrawdown measure of returns, with negative sign.
 
     Parameters
     ----------
-    returns: simple returns, non cumulative
+    r: Stategy returns
 
     Returns
     -------
+    The maximum drawdown
     """
-    return ep.stats.max_drawdown(returns)
+    return ep.stats.max_drawdown(r)
 
 
-def number_effective_assets(weigths: pd.Series):
+def number_effective_assets(weights: pd.Series):
     """
     Returns a measure of portfolio diversification, known as number of effective assets.
     Its maximum value
     Parameters
     ----------
-    weigths
+    weights: pd.Series
+        Portfolio weights
 
     Returns
     -------
-
+    The quantity `sum_i (w_i)^-2`
     """
-    return 1.0 / (weigths**2).sum()
+    return 1.0 / (weights**2).sum()
 
 
 def summary(
-    prices: pd.DataFrame,
-    weights: Union[Sequence[pd.Series], pd.Series],
+    r: pd.Series,
     frequency: int = APPROX_BDAYS_PER_YEAR,
     risk_free_rate: float = 0.0,
     target_return: float = 0.0,
 ):
     """
     Takes a dataframe with N columns (pairs) and T rows (time) containing the daily prices
-    Computes return over rows, volatility over rows, sharpe ratio over rows,
+    Computes return over rows, volatility over rows, sharpe ratio over rows.
+    Most of the metrics are annualized with the standard approach of multiplying by 252 or sqrt(252) depending
+    on the metrics. However more complex calculations can be done, as explained in
+    [this resource](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3054517).
     """
-    returns = prices.pct_change().dropna()
-
-    def get_stats(w):
-        portfolio_returns = returns_from_prices(prices.dot(w))
-        return pd.Series(
-            {
-                "annual_return": annualize_rets(portfolio_returns),
-                "final_cumulative_return": final_cum_returns(portfolio_returns),
-                "volatility": portfolio_vol(
-                    returns=returns, weights=w, frequency=frequency
-                ),
-                "sharpe_ratio": sharpe_ratio(
-                    portfolio_returns, risk_free_rate, frequency
-                ),
-                "var_historic": var_historic(portfolio_returns),
-                "cvar_historic": cvar_historic(portfolio_returns),
-                "calmar_ratio": calmar_ratio(portfolio_returns, frequency=frequency),
-                "sortino_ratio": sortino_ratio(
-                    portfolio_returns, riskfree_rate=risk_free_rate, frequency=frequency
-                ),
-                "omega_ratio": omega_ratio(portfolio_returns, target_ret=target_return),
-                "max_drawdown": maxdrawdown(portfolio_returns),
-                "skew": skewness(portfolio_returns),
-                "var_gaussian": var_gaussian(portfolio_returns),
-                "downside_risk": downside_risk(portfolio_returns, frequency),
-                "kurtosis": kurtosis(portfolio_returns),
-                "tail_ratio": tail_ratio(portfolio_returns),
-                "wentropy": spentropy(w.values),
-                "number_effective_assets": number_effective_assets(w),
-            },
-            name=w.name,
-        )
-
-    if isinstance(weights, pd.Series):
-        weights = [weights]
-
-    return pd.concat((get_stats(w) for w in weights if not w.isna().any()), axis=1)
+    return pd.Series(
+        {
+            "annualized_return": annualize_rets(r=r, frequency=frequency),
+            "annualized_volatility": annualize_vol(r=r, frequency=frequency),
+            "final_cumulative_return": final_cum_returns(r=r),
+            "volatility": r.std(),
+            "semi_volatility": semistd(r=r),
+            "sharpe_ratio": sharpe_ratio(
+                r=r,
+                riskfree_rate=risk_free_rate,
+                frequency=frequency,
+            ),
+            "var_historic": var_historic(r=r),
+            "cvar_historic": cvar_historic(r=r),
+            "calmar_ratio": calmar_ratio(r=r, frequency=frequency),
+            "sortino_ratio": sortino_ratio(
+                r=r,
+                riskfree_rate=risk_free_rate,
+                frequency=frequency,
+            ),
+            "omega_ratio_0": omega_ratio(r=r, target_ret=0, frequency=frequency),
+            "omega_ratio_target": omega_ratio(
+                r=r, target_ret=target_return, frequency=frequency
+            ),
+            "max_drawdown": maxdrawdown(r=r),
+            "skew": skewness(r=r),
+            "var_gaussian_95": var_gaussian(r=r),
+            "downside_risk": downside_risk(r=r, target_return=target_return),
+            "kurtosis": kurtosis(r=r),
+            "tail_ratio_95_5": tail_ratio(r=r, upper_tail=95.0, lower_tail=5.0),
+        },
+        name=r.name,
+    )
 
 
 def equity_curve(df: Union[pd.Series, pd.DataFrame], initial_value: float = 1):

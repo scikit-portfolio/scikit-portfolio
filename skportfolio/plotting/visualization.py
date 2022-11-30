@@ -353,20 +353,40 @@ def risk_allocation_chart(
     return ax
 
 
-def plot_asset_value(backtester: Backtester):
+def plot_backtest_strategy(backtester: Backtester, ax=None, **kwargs):
     """
     Plot the value of each asset as an area plot, using a backtester as the object carrying the
     results of the strategy.
 
     Parameters
     ----------
-    backtester
+    backtester: Backtester
+        A fitted backtester instance, with all positions and equity curve calculated
 
     Returns
     -------
-
+    matplotlib axis
     See Also
     --------
-    https://it.mathworks.com/help/finance/backtestengine.runbacktest.html
     """
-    pass
+    if ax is None:
+        try:
+            import matplotlib.pyplot as plt
+
+            fig, ax = plt.subplots(ncols=2, figsize=kwargs.get("figsize", None))
+
+        except ImportError as importerror:
+            raise importerror
+
+    if backtester.positions_ is None:
+        raise RuntimeError("Fit backtester on data first")
+
+    backtester.positions_.clip(0, np.inf).plot.area(ax=ax[0])
+    ax[0].set_title(
+        f"Positions\nStrategy {backtester.name} - estimator: {str(backtester.estimator)}"
+    )
+    backtester.equity_curve_.plot(ax=ax[1])
+    ax[1].set_title(
+        f"Equity curve\nStrategy {backtester.name} - estimator: {str(backtester.estimator)}"
+    )
+    fig.tight_layout()

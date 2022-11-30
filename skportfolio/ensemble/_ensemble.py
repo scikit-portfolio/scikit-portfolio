@@ -57,7 +57,7 @@ class MichaudResampledFrontier(PortfolioEstimator):
         risk_estimator: BaseRiskEstimator = SampleCovariance(),
         n_iter: Optional[int] = 100,
         n_jobs: Optional[int] = None,
-        random_state: Optional[np.random.RandomState] = None,
+        random_state: Optional[Union[int, np.random.RandomState]] = None,
         agg_func: Optional[
             Union[
                 str,
@@ -112,7 +112,7 @@ class MichaudResampledFrontier(PortfolioEstimator):
         ] = returns_estimator_random_state
         self.risk_rewards_: Optional[List[Tuple[float, float]]] = None
 
-    def fit(self, X, y=None) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_kwargs) -> PortfolioEstimator:
         # modifies the returns estimator of the provided portfolio estimator
         self.ptf_estimator.rets_estimator = self.perturbed_estimator.reseed(
             self.random_state
@@ -170,7 +170,7 @@ class SubsetResampling(PortfolioEstimator):
         subset_size: float = 0.8,
         n_iter: int = 100,
         n_jobs: int = None,
-        random_state: Optional[int] = None,
+        random_state: Optional[Union[int, np.random.RandomState]] = None,
         agg_func: Optional[
             Union[
                 str,
@@ -206,7 +206,7 @@ class SubsetResampling(PortfolioEstimator):
         self.agg_func = agg_func
         self.all_weights_: List[Union[pd.Series, np.ndarray]] = []
 
-    def fit(self, X, y=None) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_kwargs) -> PortfolioEstimator:
         num_assets = X.shape[1]
         n_subsets = (
             int(np.ceil(X.shape[1] ** self.subset_size))
@@ -450,7 +450,7 @@ class RobustBayesian(PortfolioEstimator):
             pd.Series(index=rolling_prices.columns, data=w1[np.argmax(targets)])
         )
 
-    def fit(self, X: pd.DataFrame, y=None) -> PortfolioEstimator:
+    def fit(self, X: pd.DataFrame, y=None, **fit_kwargs) -> PortfolioEstimator:
         def rolling_pipe(dataframe, window, fctn):
             return pd.Series(
                 [

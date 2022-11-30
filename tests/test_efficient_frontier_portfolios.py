@@ -34,7 +34,7 @@ from skportfolio.frontier._efficientfrontier import (
 )
 
 from .datasets_fixtures import prices, returns, log_returns
-from logger import get_logger
+from skportfolio.logger import get_logger
 
 logger = get_logger()
 

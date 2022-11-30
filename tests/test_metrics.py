@@ -101,9 +101,5 @@ def test_kurtosis(ptf_return):
     kurtosis(ptf_return)
 
 
-def test_backtest(prices):
-    w1 = np.random.rand(prices.shape[1])
-    w1 = pd.Series(index=prices.columns, data=w1 / w1.sum())
-    w2 = np.random.rand(prices.shape[1])
-    w2 = pd.Series(index=prices.columns, data=w2 / w2.sum())
-    summary(prices, weights=[w1, w2], frequency=252)
+def test_summary(ptf_return):
+    summary(ptf_return)

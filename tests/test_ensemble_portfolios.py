@@ -108,45 +108,8 @@ def test_robust_bayesian_allocation(prices):
         n_portfolios=2,
         robustness_param_loc=0.1,
         robustness_param_scatter=0.1,
-        rets_estimator=MeanHistoricalLinearReturns(frequency=1),
-        risk_estimator=SampleCovariance(frequency=1),
+        rets_estimator=MeanHistoricalLinearReturns(),
+        risk_estimator=SampleCovariance(),
         n_jobs=1,
     ).fit(prices.iloc[0:50, :])
     return
-
-
-# def test_robust_bayesian_simulation(prices):
-#     from scipy.io import savemat, loadmat
-#     from skportfolio import RobustBayesian
-#
-#     J = 50  # number of simulations
-#     T = 52  # number of observations in time series
-#     N = 20  # number of assets in the market
-#     r = 0.4  # overall correlation
-#     min_s = 0.1  # min volatility
-#     max_s = 0.4  # max volatility
-#     NumPortf = 10
-#     p_m = 0.1  # aversion to estimation risk for mu
-#     p_s = 0.1  # aversion to estimation risk for sigma
-#
-#     # true market parameters
-#     C = (1 - r) * np.eye(N) + r * np.ones([N, N])
-#     step_s = (max_s - min_s) / (N - 1)
-#     s = np.linspace(min_s, max_s, N)
-#     S = np.diag(s) @ C @ np.diag(s)
-#     M = (
-#         2.5
-#         * S
-#         @ np.ones(
-#             [
-#                 N,
-#             ]
-#         )
-#         / N
-#     )
-#
-#     rets = np.random.multivariate_normal(M, S, T)
-#     # savemat("simulation_python.mat", {"rets": rets, "M": M})
-#     M = loadmat("simulation_python.mat")["M"].squeeze()
-#     rets = loadmat("simulation_python.mat")["rets"]
-#     prices = prices_from_returns(pd.DataFrame(rets))

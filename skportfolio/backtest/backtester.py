@@ -3,7 +3,7 @@
 
 from collections import deque
 from functools import partial
-from typing import Union, Tuple, List, Optional
+from typing import Union, Tuple, List, Optional, Callable
 
 import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
@@ -14,6 +14,7 @@ from sklearn.utils.validation import check_is_fitted  # type: ignore
 from skportfolio._base import PortfolioEstimator
 from skportfolio._constants import APPROX_DAYS_PER_YEAR
 from skportfolio.backtest.fees import TransactionCostsFcn, basic_percentage_fee
+from skportfolio.metrics import sharpe_ratio, summary
 
 
 def rolling_expanding_window(seq, n_min, n_max):
@@ -49,13 +50,22 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         warmup_period: int = 0,
         window_size: Union[
             int,
-            Tuple[int, int],
+            Tuple[int, Optional[int]],
         ] = 0,
         transaction_costs: Union[float, Tuple[float, float], TransactionCostsFcn] = 0.0,
         transactions_budget: float = 0.1,
         risk_free_rate: float = 0.0,
         cash_borrow_rate: float = 0.0,
         rates_frequency: int = APPROX_DAYS_PER_YEAR,
+        score_fcn: Optional[
+            Callable[
+                [
+                    pd.Series,
+                ],
+                float,
+            ]
+        ] = None,
+        show_progress: bool = False,
     ):
         """
         Principal vectorized backtester for use with any PortfolioEstimator object.
@@ -111,6 +121,11 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
             The risk-free-rate. The portfolio earns this rate on the cash allocation.
         rates_frequency: int, default 252 (skportfolio._constants.APPROX_DAYS_PER_YEAR)
             The rate frequency, for annualized rates (number of business days in a year use 252)
+        score_fcn: Callable
+            The score function to evaluate the strategy performance.
+            When None, default is set to Sharpe Ratio scorer
+        show_progress: bool, default False
+            Whether to show the actual progress
         """
 
         self.estimator = estimator
@@ -125,6 +140,8 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         self.risk_free_rate = risk_free_rate
         self.cash_borrow_rate = cash_borrow_rate
         self.rates_frequency = rates_frequency
+        self.score_fcn = score_fcn
+        self.show_progress = show_progress
 
         # private internals variables
         self._asset_names: Optional[List[str]] = None
@@ -139,6 +156,7 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         self.rebalance_dates_: Optional[List] = []
         self.buy_sell_costs_: Optional[pd.DataFrame] = None
         self.turnover_: Optional[pd.Series] = None
+        self.weights_: Optional[pd.Series] = None
 
     def fit(self, X, y=None, **fit_params) -> "Backtester":
         """
@@ -147,9 +165,18 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
 
         Parameters
         ----------
-        X: prices
-        y: other benchmarks
-        fit_params
+        X: pd.DataFrame,
+            Prices dataframe.
+        y: pd.Series, default=None
+            Other benchmarks to be passed to the portfolio estimator method.
+            Useful when backtesting within the Black-Litterman framework where the market implied returns
+            are necessary.
+
+        Other Parameters:
+        ------------------
+        rebalance_signal: List[bool], Tuple[bool]
+            A list of the same lenght as the prices, of booleans, indicating
+            a rebalance signal. When true a rebalancing event is forced
 
         Returns
         -------
@@ -158,11 +185,13 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         asset_returns = X.pct_change().dropna()
         self._asset_names = X.columns.tolist()
         n_samples, n_assets = X.shape
-
+        rebalance_signal = fit_params.get("rebalance_signal", (False,) * n_samples)
         # private variables conversion logic
         if isinstance(self.window_size, (list, tuple)):
             self._min_window_size = self.window_size[0]
-            self._max_window_size = self.window_size[1]
+            self._max_window_size = (
+                self.window_size[1] if self.window_size[1] is not None else n_samples
+            )
         elif isinstance(self.window_size, int):
             # in case 0 is specified, add one for having at least one row of data, hence expanding window
             self._min_window_size, self._max_window_size = (
@@ -188,24 +217,39 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
                 | dict(zip(self._asset_names, (0,) * n_assets))
             )
         else:
+            if self.initial_weights.shape[0] != X.shape[1]:
+                raise ValueError(
+                    "Invalid number of initial weights, provide all weights of each asset"
+                )
             initial_positions = self.initial_portfolio_value * pd.Series(
                 {
                     "CASH": 1 - self.initial_weights.sum(),
                     **self.initial_weights.to_dict(),
                 }
             )
-
-        self.buy_sell_costs_ = pd.DataFrame(
+        if self.score_fcn is None:
+            self.score_fcn: Callable = sharpe_ratio
+        self.buy_sell_costs_: pd.DataFrame = pd.DataFrame(
             columns=["buy", "sell"], index=self.rebalance_dates_, data=0
         )
-        self.turnover_ = pd.Series(dtype=float, index=self.rebalance_dates_, data=0)
-        self.returns_ = pd.Series(dtype=float, index=X.index, data=np.NAN)
+        self.turnover_: pd.Series = pd.Series(
+            dtype=float, index=self.rebalance_dates_, data=0
+        )
+        self.returns_: pd.Series = pd.Series(dtype=float, index=X.index, data=np.NAN)
 
         positions: List[pd.Series] = [initial_positions]
         # initialize
-        previous_positions = initial_positions
+        previous_positions: pd.Series = initial_positions
 
-        for idx in range(n_samples - 1):
+        if self.show_progress:
+            from tqdm.auto import tqdm
+
+            progress = tqdm(
+                range(n_samples - 1), desc=f"Backtesting {self.name}", leave=False
+            )
+        else:
+            progress = range(n_samples - 1)
+        for idx in progress:
             start_positions = previous_positions
             next_idx = idx + self.warmup_period + 1
 
@@ -237,7 +281,10 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
             end_portfolio_value = end_positions.sum()
             end_asset_weights = end_positions.div(end_portfolio_value)
 
-            needs_rebalance = (next_idx % self.rebalance_frequency == 0) and (idx > 0)
+            needs_rebalance = (
+                (next_idx % self.rebalance_frequency == 0)
+                or (rebalance_signal[next_idx])
+            ) and (idx > 0)
             if needs_rebalance:
                 # check we have enough data
                 is_valid_window = next_idx >= self._min_window_size
@@ -245,17 +292,18 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
                     # call the estimator of this slice of data
                     start_window = next_idx - self._max_window_size + 1
                     window_rows = np.arange(max(0, start_window), next_idx + 1)
-                    asset_data = X.iloc[window_rows, :]
+                    asset_data = X.iloc[window_rows, :][self._asset_names]
                     end_asset_weights_new: pd.Series = self.estimator.fit(
                         X=asset_data,
                         y=y.iloc[window_rows] if y is not None else None,
                         **fit_params,
-                    ).weights_
+                    ).weights_.copy()
                     delta_weights: pd.Series = end_asset_weights_new - end_asset_weights
                     self.turnover_.loc[end_date] = delta_weights.abs().sum() * 0.5
                     buy_cost, sell_cost = self._transaction_cost_fcn(
                         delta_weights[self._asset_names] * end_portfolio_value
                     )
+                    self.rebalance_dates_.append(end_date)
                     self.buy_sell_costs_.loc[end_date, :] = (buy_cost, sell_cost)
                     # pre_fees_portfolio_value = end_portfolio_value
                     end_portfolio_value -= buy_cost + sell_cost
@@ -281,7 +329,37 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         self.buy_sell_costs_ = self.buy_sell_costs_.reindex(
             self.equity_curve_.index
         ).fillna(0)
+        last_position = positions[-1].drop("CASH")
+        self.weights_ = last_position / last_position.sum()
         return self
 
-    def fit_predict(self, X, y, **fit_kwargs):
-        return self.fit(X, y, **fit_kwargs).positions_
+    def fit_predict(self, X, y=None, **fit_kwargs):
+        return self.fit(X, y, **fit_kwargs).equity_curve_
+
+    def score(self, X, y=None, sample_weight=None):
+        """
+        Calculates the strategy score (like Sharpe ratio)
+        Parameters
+        ----------
+        X: prices
+        y: possibly other
+        sample_weight
+
+        Returns
+        -------
+        """
+        return self.score_fcn(self.returns_)
+
+    def summary(self):
+        """
+        Calculates the strategy metrics
+
+        Returns
+        -------
+        pd.Series with all metrics
+        """
+        return summary(
+            r=self.returns_,
+            frequency=self.rates_frequency,
+            risk_free_rate=self.risk_free_rate,
+        ).rename(self.name)

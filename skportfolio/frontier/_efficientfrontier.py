@@ -1106,6 +1106,7 @@ class _BaseMADPortfolio(
             ).fit_transform(X, y=y),
             returns=X if self.returns_data else returns_from_prices(X),
             weight_bounds=self.weight_bounds,
+            l2_gamma=self.l2_gamma,
         )
         if hasattr(self, "constraints"):
             for cnstr in self.constraints:

@@ -1,53 +1,30 @@
+from pytest import fixture
 import numpy as np
 import pandas as pd  # type: ignore
-from skportfolio import EquallyWeighted, InverseVariance, InverseVolatility
+from skportfolio import EquallyWeighted
 from sklearn.base import clone  # type: ignore
-from skportfolio.datasets import load_dataset
+from skportfolio import InverseVariance, maxdrawdown, sharpe_ratio, MaxSharpe
 from skportfolio.backtest.backtester import Backtester
-from tabulate import tabulate
+from sklearn.model_selection import GridSearchCV  # type: ignore
+from skportfolio.datasets import load_dow_prices
+from sklearn.model_selection import cross_val_score
 
 
-def test_backtester_example_partial_fit():
-    """
-    See this: https://it.mathworks.com/help/finance/backtestengine.equitycurve.html
-    """
+@fixture
+def prices():
     cols = ["BA", "CAT", "DIS", "GE", "IBM", "MCD", "MSFT"]
-    prices = pd.read_parquet("/Users/carlo/Desktop/dowportfolio.parquet")[cols]
-
-    backtester = Backtester(
-        estimator=EquallyWeighted(),
-        name="EquallyWeighted",
-        initial_weights=EquallyWeighted().fit(prices).weights_,
-        initial_portfolio_value=10_000,
-        rebalance_frequency=0,
-        window_size=0,
-        rates_frequency=252,
-        risk_free_rate=0.0,
-        transaction_costs=0.0,
-        warm_start=False,
-    )
-
-    for i in range(1, prices.shape[0]):
-        backtester.partial_fit(X=prices.iloc[:i, :], y=None, full_index=prices.index)
-
-    print(tabulate(backtester.equity_curve_.add(-10000).to_frame(), headers="keys"))
-    # print(tabulate(backtester.positions_.head(10), headers="keys"))
-    # print(tabulate(backtester.returns_.head(10).to_frame(), headers="keys"))
+    return load_dow_prices()[cols]
 
 
-def test_backtester_equally_weighted():
-    cols = ["BA", "CAT", "DIS", "GE", "IBM", "MCD", "MSFT"]
-    prices = pd.read_parquet("/Users/carlo/Desktop/dowportfolio.parquet")[cols]
-    from skportfolio import MaxSharpe
-
+def test_backtester_equally_weighted(prices):
     backtester = Backtester(
         estimator=EquallyWeighted(),
         name="EquallyWeighted",
         warmup_period=0,
         initial_weights=EquallyWeighted().fit(prices).weights_,
         initial_portfolio_value=10_000,
-        rebalance_frequency=10,
-        window_size=0,
+        rebalance_frequency=20,
+        window_size=(10, None),
         rates_frequency=252,
         risk_free_rate=0.00,
         transaction_costs=0.005,
@@ -69,21 +46,16 @@ def test_backtester_equally_weighted():
     average_buy_cost = (
         backtester.buy_sell_costs_["buy"].reindex_like(prices).fillna(0).mean()
     )
-    from skportfolio import maxdrawdown
-
-    maxdrawdown = -maxdrawdown(backtester.equity_curve_.pct_change())
+    max_drawdown = -maxdrawdown(backtester.equity_curve_.pct_change())
 
 
-def test_backtester_inverse_variance():
-    cols = ["BA", "CAT", "DIS", "GE", "IBM", "MCD", "MSFT"]
-    prices = pd.read_parquet("/Users/carlo/Desktop/dowportfolio.parquet")[cols]
-    from skportfolio import InverseVariance, maxdrawdown, sharpe_ratio
-
+def test_backtester_inverse_variance(prices):
+    n_assets = prices.shape[1]
     backtester = Backtester(
         estimator=InverseVariance(),
         name="InverseVariance",
         warmup_period=0,
-        initial_weights=pd.Series([1.0 / 7.0] * len(cols), index=cols),
+        initial_weights=EquallyWeighted().fit(prices).weights_,
         initial_portfolio_value=10_000,
         rebalance_frequency=25,
         window_size=(30, 60),
@@ -104,7 +76,7 @@ def test_backtester_inverse_variance():
     average_buy_cost = backtester.buy_sell_costs_["buy"].mean()
 
     sharpe = sharpe_ratio(backtester.returns_, frequency=1)
-    maxdrawdown = -maxdrawdown(backtester.equity_curve_.pct_change())
+    max_drawdown = -maxdrawdown(backtester.equity_curve_.pct_change())
 
     assert np.allclose(
         total_return, 0.22655096214384
@@ -113,9 +85,40 @@ def test_backtester_inverse_variance():
         sharpe, 0.121656520897682, atol=1e-3
     ), "Incorrect result 'sharpe_ratio'"
     assert np.allclose(
-        maxdrawdown, 0.0945709265778057
+        max_drawdown, 0.0945709265778057
     ), "Incorrect result 'sharpe_ratio'"
     assert np.allclose(
         average_turnover, 0.00359812855388656
     ), "Incorrect result 'average_turnover"
     assert np.allclose(max_turnover, 0.2170087594002), "Incorrect result max_turnover"
+    backtester.summary(prices)
+
+
+def test_backtester_grid_search(prices):
+    backtester = Backtester(
+        estimator=EquallyWeighted(),
+        name="EquallyWeighted",
+        warmup_period=0,
+        initial_weights=EquallyWeighted().fit(prices).weights_,
+        initial_portfolio_value=10_000,
+        rebalance_frequency=25,
+        window_size=0,
+        rates_frequency=252,
+        risk_free_rate=0.00,
+        transaction_costs=(0.005, 0.005),
+        score_fcn=None,  # default Sharpe ratio
+    )
+
+    grid_search_cv = GridSearchCV(
+        estimator=backtester,
+        return_train_score=True,
+        param_grid=[
+            {"estimator": [InverseVariance()]},
+            # {"estimator": [EquallyWeighted()]},
+            # {"rebalance_frequency": [10, 20, 30, 40, 50, 60]}
+        ],
+        n_jobs=1,
+        cv=[(slice(None), slice(None))],
+        verbose=True,
+        refit=True,
+    ).fit(prices)
