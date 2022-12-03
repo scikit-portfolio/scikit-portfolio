@@ -14,4 +14,3 @@ from .model_selection import (
 
 from sklearn.model_selection import GridSearchCV
 from .model_selection import print_split, make_split_df, KFold
-from ._cv import portfolio_cross_validate

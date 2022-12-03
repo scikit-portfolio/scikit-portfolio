@@ -1,9 +1,8 @@
 """
 Model selection tools for portfolio optimization methods
 ========================================================
-
-When performing
 """
+
 import warnings
 from typing import Sequence, Any
 from itertools import combinations
