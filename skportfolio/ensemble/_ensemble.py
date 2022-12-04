@@ -11,53 +11,57 @@ A "bootstrap" based portfolio estimator instead is based on the idea to reduce t
 optimized weights from the returns estimator, by aggregating multiple results over randomly perturbed returns through
 resampling from a multivariate normal given the sample covariance matrix and returns estimates.
 """
-from typing import Any
-from typing import Callable
-from typing import Dict
-from typing import List
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
-from typing import Union
+import sys
+import warnings
+from typing import Callable, List, Optional, Union
 
 import cvxpy as cp
 import numpy as np
 import pandas as pd
-from joblib import Parallel
-from joblib import delayed
-from pypfopt.exceptions import OptimizationError
+from joblib import Parallel, delayed
+from numpy.random import Generator
 from scipy.stats.distributions import chi2
 
 from skportfolio._base import PortfolioEstimator
-from skportfolio.riskreturn import BaseReturnsEstimator
-from skportfolio.riskreturn import BaseRiskEstimator
-from skportfolio.riskreturn import MeanHistoricalLinearReturns
-from skportfolio.riskreturn import PerturbedReturns
-from skportfolio.riskreturn import SampleCovariance
+from skportfolio._simple import EquallyWeighted
+from skportfolio.riskreturn import (
+    BaseReturnsEstimator,
+    BaseRiskEstimator,
+    MeanHistoricalLinearReturns,
+    PerturbedReturns,
+    SampleCovariance,
+)
 
 
 def chi2inv(a, dof):
+    """
+    Returns the inverse chi square statistics
+    Parameters
+    ----------
+    a
+    dof: degrees of freedom
+    Returns
+    -------
+    """
     return chi2.ppf(a, dof)
 
 
 class MichaudResampledFrontier(PortfolioEstimator):
     """
     Generic class to resample efficient frontier estimators.
-    The idea, similar to bootstrapping, is based on the idea of Resampled Efficient Frontier by Michaud (1998)
-    Here we run n_iter independent fit of a specified portfolio estimator with a stochastic perturbation of the
-    expected returns based on multivariate normal sampling of returns given sample expected returns and covariance.
+    The idea, similar to bootstrapping, is based on the idea of Resampled Efficient Frontier
+    by Michaud (1998). Here we run n_iter independent fit of a specified portfolio estimator
+    with a stochastic perturbation of the expected returns based on multivariate normal
+    sampling of returns given sample expected returns and covariance.
     """
-
-    _required_parameters = ["ptf_estimator"]
 
     def __init__(
         self,
-        ptf_estimator: PortfolioEstimator,
+        ptf_estimator: PortfolioEstimator = EquallyWeighted(),
         rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
         risk_estimator: BaseRiskEstimator = SampleCovariance(),
         n_iter: Optional[int] = 100,
-        n_jobs: Optional[int] = None,
-        random_state: Optional[Union[int, np.random.RandomState]] = None,
+        random_state: Optional[Union[int, Generator]] = None,
         agg_func: Optional[
             Union[
                 str,
@@ -66,7 +70,6 @@ class MichaudResampledFrontier(PortfolioEstimator):
                 ],
             ]
         ] = "mean",
-        returns_estimator_random_state: Optional[int] = None,
     ):
         """
         Initializes the ResampledEfficientFrontier object. Explicitly required to define the ptf_estimator.
@@ -76,84 +79,55 @@ class MichaudResampledFrontier(PortfolioEstimator):
         ptf_estimator: PortfolioEstimator
             The user provided estimator for the base optimal portfolio allocation. Default value is `MinimumVolatility`.
         rets_estimator: BaseReturnsEstimator
-            The expected returns estimator. Default value is the `MeanHistoricalValue` estimator.
+            The expected returns' estimator. Default value is the `MeanHistoricalValue` estimator.
         risk_estimator: BaseRiskEstimator
             The risk matrix estimator. Default value is the sample covariance we use `SampleCovariance` estimator.
         n_iter: int
             Number of Monte Carlo resampling steps
-        n_jobs: Optional[int]
-            Number of parallel jobs. If None then 1 single worker is launched. If -1 all cores are used.
-        random_state: Optional[np.random.RandomState]
-            The random number generator for replicability purpose.
+        random_state: Optional[Union[int,Generator]]
+            The random number generator for reproducibility purpose.
+            Set it to a specific number only if you need always the same expected returns.
+            Not the case in most situations, though it may be useful for debugging.
         agg_func: Callable, str
             Aggregation method of weights. Default mean over all weights.
-        returns_estimator_random_state: None
-            The random state of the internal PerturbedReturns estimator. Set it to a specific number only if you need
-            always the same expected returns. Not the case in most situations, though it may be useful for debugging.
         """
         super().__init__()
-        self.ptf_estimator: PortfolioEstimator = ptf_estimator
-        self.rets_estimator: BaseReturnsEstimator = rets_estimator
-        self.risk_estimator: BaseRiskEstimator = risk_estimator
-        self.n_iter: int = n_iter
-        self.random_state: Optional[np.random.RandomState] = random_state
-        self.n_jobs: Optional[int] = n_jobs
-        self.perturbed_estimator: PerturbedReturns = PerturbedReturns(
-            rets_estimator=self.rets_estimator,
-            risk_estimator=self.risk_estimator,
-        )
-        self.all_weights_: Optional[List[np.ndarray]] = None
-        self.agg_func: Union[
-            str,
-            Callable[[Union[pd.DataFrame, np.ndarray]], Union[pd.Series, np.ndarray]],
-        ] = agg_func
-        self.returns_estimator_random_state: Optional[
-            np.random.RandomState
-        ] = returns_estimator_random_state
-        self.risk_rewards_: Optional[List[Tuple[float, float]]] = None
+        self.ptf_estimator = ptf_estimator
+        self.n_iter = n_iter
+        self.random_state = random_state
+        self.rets_estimator = rets_estimator
+        self.risk_estimator = risk_estimator
+        self.agg_func = agg_func
 
-    def fit(self, X, y=None, **fit_kwargs) -> PortfolioEstimator:
-        # modifies the returns estimator of the provided portfolio estimator
-        self.ptf_estimator.rets_estimator = self.perturbed_estimator.reseed(
-            self.random_state
-        )
-
-        def _compute_weights_risk_reward(_x):
-            # this trick is to send to workers newly initialized random state objects
-            if self.n_jobs == 1:
-                self.perturbed_estimator.reseed(self.returns_estimator_random_state)
-            else:
-                self.perturbed_estimator.reseed(
-                    np.random.default_rng(self.returns_estimator_random_state)
-                )
-            try:
-                ptf = self.ptf_estimator.fit(_x)
-                return ptf.weights_, *ptf.risk_reward()
-            # in case it is not possible to fit we return a triple of Nan, to be filtered afterwards
-            except (AttributeError, OptimizationError) as portfolio_error:
-                return (np.nan,) * 3
-
-        # run n_iter portfolio optimization, where each estimator has the expected returns perturbed by a random term
-        # if n_jobs=1 do not spawn any parallel process, simply do a list comprehension
-        if self.n_jobs == 1 or self.n_jobs is None:
-            out = [_compute_weights_risk_reward(X) for _ in range(self.n_iter)]
-        else:
-            # otherwise use joblib Parallel, it takes some overhead for initialization but on large portfolios
-            # it can run much faster
-            out = Parallel(n_jobs=self.n_jobs)(
-                delayed(_compute_weights_risk_reward)(X) for _ in range(self.n_iter)
+    def fit(self, X, y=None, **fit_params) -> PortfolioEstimator:
+        # modifies the returns' estimator of the provided portfolio estimator
+        # initialize the generator to avoid large memory allocation
+        perturbed_estimators = (
+            PerturbedReturns(
+                rets_estimator=self.rets_estimator,
+                risk_estimator=self.risk_estimator,
+                random_state=r if self.random_state is None else self.random_state,
             )
-        # filter unfitted results
-        out = [o for o in out if not np.isnan(o[2])]
-        self.all_weights_ = [o[0] for o in out]
-        self.risk_rewards_ = [(o[1], o[2]) for o in out]
+            for r in np.random.random_integers(
+                low=0, high=sys.maxsize, size=self.n_iter
+            )
+        )
+
+        # also here only use generators for faster and memory friendly evaluation
+        all_weights_ = (
+            self.ptf_estimator.set_returns_estimator(ptb).fit(X, y).weights_
+            for ptb in perturbed_estimators
+        )
+
         # finally collects all the obtained weights and average by mean
-        self.weights_ = pd.concat(self.all_weights_, axis=1).aggregate(
-            self.agg_func, axis=1
-        )
-        self.weights_ = (self.weights_ / self.weights_.sum()).rename(
-            f"{self.__class__.__name__}[{self.ptf_estimator.__class__.__name__}]"
-        )
+        with warnings.catch_warnings():
+            name = f"{self.__class__.__name__}[{self.ptf_estimator.__class__.__name__}]"
+            warnings.simplefilter("ignore")
+            self.weights_ = (
+                pd.concat((w for w in all_weights_ if w.notna().all()), axis=1)
+                .aggregate(self.agg_func, axis=1)
+                .rename(name)
+            )
         return self
 
 
@@ -169,8 +143,7 @@ class SubsetResampling(PortfolioEstimator):
         ptf_estimator: PortfolioEstimator,
         subset_size: float = 0.8,
         n_iter: int = 100,
-        n_jobs: int = None,
-        random_state: Optional[Union[int, np.random.RandomState]] = None,
+        random_state: Optional[Union[int, np.random.Generator]] = None,
         agg_func: Optional[
             Union[
                 str,
@@ -188,8 +161,6 @@ class SubsetResampling(PortfolioEstimator):
             Original noise-sensitive portfolio estimator object, for example MaxSharpe or MaxOmegaRatio
         n_iter:
             Number of random subset of portfolios to average over
-        n_jobs: int
-            Number of parallel jobs (uses joblib backend)
         random_state: int
             Integer representing the seed of the random state
         agg_func: str or Callable
@@ -202,59 +173,40 @@ class SubsetResampling(PortfolioEstimator):
         self.subset_size = subset_size
         self.n_iter = n_iter
         self.random_state = random_state
-        self.n_jobs = n_jobs
         self.agg_func = agg_func
-        self.all_weights_: List[Union[pd.Series, np.ndarray]] = []
+        self.all_weights_ = []
 
-    def fit(self, X, y=None, **fit_kwargs) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_params) -> PortfolioEstimator:
+        if self.random_state is None:
+            generator = np.random.default_rng()
+        else:
+            generator = np.random.default_rng(seed=self.random_state)
+
         num_assets = X.shape[1]
         n_subsets = (
-            int(np.ceil(X.shape[1] ** self.subset_size))
+            int(np.ceil(num_assets**self.subset_size))
             if isinstance(self.subset_size, float)
             else self.subset_size
         )
 
-        def _sample_fit(_x):
-            """
-            Here we select a subsample of asssets using the pd.DataFrame.sample with axis=1, to be fed to the portfolio
-            estimator
-            Parameters
-            ----------
-            _x: pd.DataFrame
-                The prices or returns data to be fed to portfolio estimator
-            Returns
-            -------
-                A pd.Series with the portfolio weights, reindexed with the entire universe of assets as from `X`.
-            """
-            try:
-                return (
-                    self.ptf_estimator.fit(
-                        X.sample(n=n_subsets, axis=1, random_state=self.random_state)
-                    )
-                    .weights_.reindex_like(X.T)
-                    .fillna(0)
-                )
-            except (AttributeError, OptimizationError) as portfolio_error:
-                return pd.Series(data=[np.nan] * num_assets, index=X.columns)
+        # also here we use generators for more pythonic
+        # and less memory hungry processing
+        all_weights = (
+            self.ptf_estimator.fit(
+                X.sample(n=n_subsets, axis=1, random_state=generator)
+            ).weights_
+            for _ in range(self.n_iter)
+        )
 
-        # run joblib parallel only if n_jobs is not 1, to avoid useless overhead or dependencies
-        if self.n_jobs != 1:
-            self.all_weights_ = Parallel(n_jobs=self.n_jobs)(
-                delayed(_sample_fit)(X) for _ in range(self.n_iter)
-            )
-        else:
-            self.all_weights_ = [_sample_fit(X) for _ in range(self.n_iter)]
-        self.all_weights_ = [w for w in self.all_weights_ if w.notna().all()]
-        self.weights_ = pd.concat(self.all_weights_, axis=1).agg(self.agg_func, axis=1)
+        name = f"{self.__class__.__name__}[{self.ptf_estimator.__class__.__name__}]"
         self.weights_ = (
-            (self.weights_ / self.weights_.sum())
-            .rename(
-                f"{self.__class__.__name__}[{self.ptf_estimator.__class__.__name__}]"
-            )
-            .sort_index()
-        ).loc[
-            X.columns
-        ]  # this last stpe is needed to have the same order of columns as from original input data
+            pd.concat(all_weights, axis=1)
+            .dropna(how="all", axis=0)
+            .aggregate(self.agg_func, axis=1)
+            .loc[X.columns]
+            .rename(name)
+        )
+
         return self
 
 
@@ -389,10 +341,10 @@ class RobustBayesian(PortfolioEstimator):
         self.risk_estimator = risk_estimator
         self.robustness_param_loc = robustness_param_loc
         self.robustness_param_scatter = robustness_param_scatter
-        self.all_weights_: List[Union[pd.Series]] = []
         self.n_jobs = n_jobs
 
     def _fit(self, rolling_prices: pd.DataFrame):
+        self.all_weights_: List[Union[pd.Series]] = []
         S_hat = self.risk_estimator.fit(
             rolling_prices
         ).risk_matrix_  # sample covariance
@@ -450,7 +402,7 @@ class RobustBayesian(PortfolioEstimator):
             pd.Series(index=rolling_prices.columns, data=w1[np.argmax(targets)])
         )
 
-    def fit(self, X: pd.DataFrame, y=None, **fit_kwargs) -> PortfolioEstimator:
+    def fit(self, X: pd.DataFrame, y=None, **fit_params) -> PortfolioEstimator:
         def rolling_pipe(dataframe, window, fctn):
             return pd.Series(
                 [
