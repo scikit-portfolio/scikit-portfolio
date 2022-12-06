@@ -1,28 +1,24 @@
 """
 Contains definitions of expected returns estimators
 """
-from abc import ABCMeta
-from abc import abstractmethod
-from typing import Callable
-from typing import Optional
-from typing import Union
+from abc import ABCMeta, abstractmethod
+from typing import Callable, Optional, Union
 
-import cvxpy
+import cvxpy as cp
 import numpy as np
 import pandas as pd
 from pypfopt import expected_returns as expret
-from sklearn.base import BaseEstimator
-from sklearn.base import TransformerMixin
+from sklearn.base import BaseEstimator, TransformerMixin
 
-from skportfolio._constants import APPROX_BDAYS_PER_YEAR
-from skportfolio.riskreturn.expected_returns import capm_return
-from skportfolio.riskreturn.expected_returns import ema_historical_return
-from skportfolio.riskreturn.expected_returns import mean_historical_log_return
-from skportfolio.riskreturn.expected_returns import mean_historical_return
-from skportfolio.riskreturn.expected_returns import median_historical_log_return
-from skportfolio.riskreturn.expected_returns import median_historical_return
-from skportfolio.riskreturn.expected_returns import rolling_median_returns
-import cvxpy as cp
+from skportfolio.riskreturn.expected_returns import (
+    capm_return,
+    ema_historical_return,
+    mean_historical_log_return,
+    mean_historical_return,
+    median_historical_log_return,
+    median_historical_return,
+    rolling_median_returns,
+)
 
 
 class BaseReturnsEstimator(TransformerMixin, BaseEstimator, metaclass=ABCMeta):
@@ -49,19 +45,54 @@ class BaseReturnsEstimator(TransformerMixin, BaseEstimator, metaclass=ABCMeta):
         return self
 
     @abstractmethod
-    def _set_expected_returns(self, X, y):
+    def _set_expected_returns(self, X, y=None, **fit_params):
         pass
 
     def fit(self, X, y=None, **fit_params):
-        self._set_expected_returns(X, y)
+        """
+        Base method for fitting a returns estimator
+        Parameters
+        ----------
+        X
+        y
+        fit_params
+
+        Returns
+        -------
+
+        """
+        self._set_expected_returns(X, y, **fit_params)
         return self
 
     def fit_transform(self, X, y=None, **fit_params):
+        """
+        Base fit_transform method for returns estimators
+        Parameters
+        ----------
+        X
+        y
+        fit_params
+
+        Returns
+        -------
+
+        """
         self.fit(X, y)
         return self.expected_returns_
 
     # for use with stochastic based returns calculators
     def reseed(self, seed: Optional[Union[int, np.random.Generator]]):
+        """
+        Change the seed on the current instance, so that new calls to random
+        numbers produce a different result
+        Parameters
+        ----------
+        seed: int or numoy Generator
+
+        Returns
+        -------
+        self
+        """
         if self.random_state is None:
             self.random_state = np.random.default_rng()
         if isinstance(seed, np.random.Generator):
@@ -112,7 +143,7 @@ class MedianHistoricalLogReturns(BaseReturnsEstimator):
 
 
 class EMAHistoricalReturns(BaseReturnsEstimator):
-    def __init__(self, returns_data=False, span=180):
+    def __init__(self, returns_data=False, span=60):
         super().__init__(returns_data)
         self.span = span
 
@@ -158,6 +189,7 @@ class MarketImpliedReturns(BaseReturnsEstimator):
         https://it.mathworks.com/help/finance/black-litterman-portfolio-optimization.html
         Parameters
         ----------
+        **fit_params
         X: prices or returns
         y: must be benchmark returns
 

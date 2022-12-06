@@ -1,13 +1,12 @@
-from typing import Union
-import pandas as pd
-import numpy as np
+"""
+All metrics related to portfolio optimization as well as statistics on portfolio returns
+"""
 import warnings
-from skportfolio.riskreturn import (
-    BaseReturnsEstimator,
-    BaseRiskEstimator,
-    SampleCovariance,
-    MeanHistoricalLinearReturns,
-)
+from typing import Union
+
+import numpy as np
+import pandas as pd
+
 from skportfolio._constants import (
     APPROX_BDAYS_PER_YEAR,
     WEEKLY,
@@ -16,7 +15,12 @@ from skportfolio._constants import (
     YEARLY,
     FREQUENCIES,
 )
-
+from skportfolio.riskreturn import (
+    BaseReturnsEstimator,
+    BaseRiskEstimator,
+    SampleCovariance,
+    MeanHistoricalLinearReturns,
+)
 
 with warnings.catch_warnings():
     warnings.simplefilter("ignore")
@@ -27,19 +31,20 @@ def omega_ratio(
     r: pd.Series,
     target_ret: float = 0.0,
     risk_free_rate: float = 0.0,
-    frequency: int = APPROX_BDAYS_PER_YEAR,
+    frequency: int = 1,
 ) -> float:
     """
     Returns the omega ratio of a strategy.
-    Omega is a ratio of winning size weighted by probabilities to losing size weighted by probabilities.
-    It considers size and odds of winning and losing trades, as well as all moments because the definition incorporates the whole distribution of returns.
+    Omega is a ratio of winning size weighted by probabilities to losing size weighted by
+    probabilities. It considers size and odds of winning and losing trades, as well as all
+    moments because the definition incorporates the whole distribution of returns.
 
     Important advantages are:
 
     - There is no parameter (estimation).
     - There is no need to estimate (higher) moments.
     - Works with all kinds of distributions.
-    - Use a function (of Loss Threshold) to measure performance rather than a single number (as in Sharpe Ratio).
+    - Use a function to measure performance rather than a single number (as in Sharpe Ratio).
     - It is as smooth as the return distribution.
     - It is monotonic decreasing
 
@@ -107,10 +112,7 @@ def annualize_vol(
 
 
 def sharpe_ratio(
-    r: pd.Series,
-    riskfree_rate: float = 0.0,
-    period: str = "DAILY",
-    frequency: int = APPROX_BDAYS_PER_YEAR,
+    r: pd.Series, risk_free_rate: float = 0.0, period="DAILY", frequency: int = 1
 ) -> float:
     """
     Computes the annualized sharpe ratio of a set of returns.
@@ -123,15 +125,13 @@ def sharpe_ratio(
     -------
     """
     return ep.sharpe_ratio(
-        r, risk_free=riskfree_rate, period=period, annualization=frequency
+        r, risk_free=risk_free_rate, period=period, annualization=frequency
     )
 
 
 def info_ratio(
     r: pd.Series,
     benchmark: pd.Series,
-    period: str = "DAILY",
-    frequency: int = APPROX_BDAYS_PER_YEAR,
 ) -> float:
     """
     Computes the annualized information ratio of a set of returns.
@@ -157,10 +157,6 @@ def info_ratio(
         Returns of the portfolio
     benchmark:
         Returns of the benchmark
-    period: str
-        periodicy of the data
-    frequency:
-        Annualization constant
     Returns
     -------
     The Information Ratio (IR) of the portfolio
@@ -175,8 +171,8 @@ def info_ratio(
 
 def l1_risk_ratio(
     r: pd.Series,
-    riskfree_rate: float = 0.0,
-    frequency: int = APPROX_BDAYS_PER_YEAR,
+    risk_free_rate: float = 0.0,
+    frequency: int = 1,
 ) -> float:
     """
     Computes the annualized sharpe ratio of a set of returns.
@@ -184,20 +180,20 @@ def l1_risk_ratio(
     See the notes above about the annualization
     See Also
     """
-    return np.mean(np.abs(r * frequency) - riskfree_rate)
+    return float(np.mean(np.abs(r * frequency) - risk_free_rate))
 
 
 def sharpe_ratio_se(
     r: pd.Series,
-    riskfree_rate: float = 0.0,
+    risk_free_rate: float = 0.0,
     period: str = "DAILY",
-    frequency: int = APPROX_BDAYS_PER_YEAR,
+    frequency: int = 1,
 ) -> float:
     """
     Computes the annualized sharpe ratio standard error from a set of returns
     Equation 9 from "The Statistic of Sharpe Ratio" by Andrew Lo
     """
-    sr_hat = sharpe_ratio(r, riskfree_rate, period, frequency)
+    sr_hat = sharpe_ratio(r, risk_free_rate, period, frequency)
     T = r.shape[0]
     std_err_sr_hat = np.sqrt((1 + 0.5 * sr_hat**2) / T)
     return std_err_sr_hat
@@ -205,9 +201,9 @@ def sharpe_ratio_se(
 
 def corrected_sharpe_ratio(
     r: pd.Series,
-    riskfree_rate: float = 0.0,
+    risk_free_rate: float = 0.0,
     period: str = "DAILY",
-    frequency: int = APPROX_BDAYS_PER_YEAR,
+    frequency: int = 1,
 ) -> float:
     """
     Computes the annualizatin correction of the sharpe ratio of a set of returns.
@@ -224,7 +220,7 @@ def corrected_sharpe_ratio(
         t = FREQUENCIES.get(t, 1)
 
     q = int(np.floor(frequency / t))
-    sr = sharpe_ratio_se(r, riskfree_rate, period, frequency=1)
+    sr = sharpe_ratio_se(r, risk_free_rate, period, frequency=1)
     var = r.var()
 
     return (
@@ -254,7 +250,7 @@ def semistd(r: pd.Series) -> float:
 
 
 def sortino_ratio(
-    r: pd.Series, riskfree_rate: float = 0.0, frequency: int = APPROX_BDAYS_PER_YEAR
+    r: pd.Series, risk_free_rate: float = 0.0, frequency: int = 1
 ) -> float:
     """
     The Sortino ratio is an improvement of the Sharpe ratio.
@@ -266,17 +262,17 @@ def sortino_ratio(
     ----------
     r: pd.Series
         portfolio returns obtained from (prices @ weights).pct_change()
-    riskfree_rate: float
+    risk_free_rate: float
     frequency
 
     Returns
     -------
 
     """
-    return ep.sortino_ratio(r, riskfree_rate, "daily", annualization=frequency)
+    return ep.sortino_ratio(r, risk_free_rate, period="daily", annualization=frequency)
 
 
-def calmar_ratio(r: pd.Series, frequency: int = APPROX_BDAYS_PER_YEAR) -> float:
+def calmar_ratio(r: pd.Series, period: str = "DAILY", frequency: int = 1) -> float:
     """
     Determines the Calmar ratio, a measure of risk-adjusted returns for investment funds based on
     the maximum drawdown. The Calmar ratio is a modified version of the Sterling ratio.
@@ -289,7 +285,7 @@ def calmar_ratio(r: pd.Series, frequency: int = APPROX_BDAYS_PER_YEAR) -> float:
     -------
 
     """
-    return ep.calmar_ratio(r, "daily", annualization=frequency)
+    return ep.calmar_ratio(r, period=period, annualization=frequency)
 
 
 def var_historic(r: Union[pd.DataFrame, pd.Series], level: int = 5) -> float:
@@ -298,10 +294,9 @@ def var_historic(r: Union[pd.DataFrame, pd.Series], level: int = 5) -> float:
     """
     if isinstance(r, pd.DataFrame):
         return r.aggregate(var_historic, level=level)
-    elif isinstance(r, pd.Series):
+    if isinstance(r, pd.Series):
         return np.percentile(r, level)
-    else:
-        raise TypeError("Expected r to be pd.Series or pd.DataFrame")
+    raise TypeError("Expected r to be pd.Series or pd.DataFrame")
 
 
 def skewness(r: pd.Series) -> float:
@@ -544,7 +539,6 @@ def portfolio_return(
 def portfolio_vol(
     r: Union[pd.DataFrame, pd.Series],
     weights: pd.Series,
-    frequency: int = APPROX_BDAYS_PER_YEAR,
     risk_estimator: BaseRiskEstimator = SampleCovariance(returns_data=True),
 ):
     """
@@ -560,7 +554,6 @@ def portfolio_vol(
     -------
     Portfolio volatility
     """
-    risk_estimator.frequency = frequency
     # Force the risk estimator to read from returns data rather than from price data
     cov = risk_estimator.set_returns_data(returns_data=True).fit(r).risk_matrix_
     return np.sqrt(weights.dot(cov).dot(weights))
@@ -608,9 +601,6 @@ def downside_risk(r: pd.Series, target_return: float = 0.0) -> float:
     r: pd.Series
         Strategy retrurns
     target_return: float
-
-    frequency: int, default APPROX_BDAYS_PER_YEAR
-         Annualization frequency
     Returns
     -------
     The downside risk metric
@@ -618,7 +608,7 @@ def downside_risk(r: pd.Series, target_return: float = 0.0) -> float:
     return ep.downside_risk(r, required_return=target_return)
 
 
-def drawdown(r: pd.Series):
+def drawdown(r: pd.Series) -> pd.Series:
     """
     Takes a time series of asset returns.
     returns a DataFrame with columns for the wealth index,
@@ -638,7 +628,7 @@ def drawdown(r: pd.Series):
     return drawdowns
 
 
-def maxdrawdown(r: pd.Series):
+def maxdrawdown(r: pd.Series) -> float:
     """
     Returns the maxdrawdown measure of returns, with negative sign.
 
@@ -653,7 +643,7 @@ def maxdrawdown(r: pd.Series):
     return ep.stats.max_drawdown(r)
 
 
-def number_effective_assets(weights: pd.Series):
+def number_effective_assets(weights: pd.Series) -> float:
     """
     Returns a measure of portfolio diversification, known as number of effective assets.
     Its maximum value
@@ -678,20 +668,20 @@ def summary(
     """
     Takes a dataframe with N columns (pairs) and T rows (time) containing the daily prices
     Computes return over rows, volatility over rows, sharpe ratio over rows.
-    Most of the metrics are annualized with the standard approach of multiplying by 252 or sqrt(252) depending
-    on the metrics. However more complex calculations can be done, as explained in
+    Most of the metrics are annualized with the standard approach of multiplying by 252 or sqrt(252)
+    depending on the metrics. However more complex calculations can be done, as explained in
     [this resource](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3054517).
     """
     return pd.Series(
         {
             "annualized_return": annualize_rets(r=r, frequency=frequency),
             "annualized_volatility": annualize_vol(r=r, frequency=frequency),
-            "final_cumulative_return": final_cum_returns(r=r),
+            "total_return": final_cum_returns(r=r),
             "volatility": r.std(),
             "semi_volatility": semistd(r=r),
             "sharpe_ratio": sharpe_ratio(
                 r=r,
-                riskfree_rate=risk_free_rate,
+                risk_free_rate=risk_free_rate,
                 frequency=frequency,
             ),
             "var_historic": var_historic(r=r),
@@ -699,7 +689,7 @@ def summary(
             "calmar_ratio": calmar_ratio(r=r, frequency=frequency),
             "sortino_ratio": sortino_ratio(
                 r=r,
-                riskfree_rate=risk_free_rate,
+                risk_free_rate=risk_free_rate,
                 frequency=frequency,
             ),
             "omega_ratio_0": omega_ratio(r=r, target_ret=0, frequency=frequency),
@@ -737,4 +727,4 @@ def equity_curve(df: Union[pd.Series, pd.DataFrame], initial_value: float = 1):
     -------
     The equity curve. First value is set to initial_value
     """
-    return df.div(df.iloc[0]).mul(initial_value)
+    return initial_value * (1 + df.pct_change().cumprod())

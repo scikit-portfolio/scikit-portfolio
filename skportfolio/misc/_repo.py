@@ -1,5 +1,8 @@
 """
-Information theory inspired portfolio optimization
+Information theory inspired portfolio optimization,
+Portfolio estimator implementing the **REPO** method:
+Returns-Entropy portfolio optimization by Fabio Mercurio et al
+(see the documentation)
 """
 from abc import ABCMeta
 from typing import Optional
@@ -18,7 +21,6 @@ from statsmodels.nonparametric.bandwidths import select_bandwidth
 from skportfolio._base import PortfolioEstimator
 from skportfolio.riskreturn import BaseReturnsEstimator
 from skportfolio.riskreturn import MeanHistoricalLinearReturns
-from skportfolio.riskreturn import all_returns_estimators
 
 
 def repo(
@@ -31,8 +33,7 @@ def repo(
     n_iter: int = 1,
     weight_bounds: Tuple[float, float] = (0.0, 1.0),
     returns_data: bool = False,
-    random_state: Optional[Union[int, np.random.RandomState]] = None,
-    n_jobs: int = 1,
+    random_state: Optional[Union[int, np.random.Generator]] = None,
 ):
     """
     This method is based on the estimation of Shannon entropy of the distribution of portfolio returns as a measure
@@ -110,9 +111,9 @@ def repo(
     constraints = {"type": "eq", "fun": lambda weights: np.sum(weights) - 1.0}
     best_sol, best_fval = None, np.inf
     if random_state is None:
-        random_state = np.random.RandomState()
+        random_state = np.random.default_rng()
     elif isinstance(random_state, int):
-        random_state = np.random.RandomState(random_state)
+        random_state = np.random.Generator(random_state)
     for u in range(n_iter):
         sol = minimize(
             objective,
@@ -126,11 +127,6 @@ def repo(
             best_sol = sol["x"]
 
     return pd.Series(dict(zip(tickers, best_sol)), name="repo")
-
-
-"""
-Portfolio estimator implementing the **REPO** method.
-"""
 
 
 class REPO(PortfolioEstimator, metaclass=ABCMeta):
@@ -152,7 +148,6 @@ class REPO(PortfolioEstimator, metaclass=ABCMeta):
         min_weight=0,
         max_weight=1,
     ):
-        super(REPO, self).__init__()
         self.returns_data = returns_data
         self.rets_estimator = rets_estimator
         self.kernel = kernel
@@ -166,7 +161,7 @@ class REPO(PortfolioEstimator, metaclass=ABCMeta):
         self.min_weight = min_weight
         self.max_weight = max_weight
 
-    def fit(self, X, y=None):
+    def fit(self, X, y=None, **fit_params):
         self.weights_ = repo(
             X,
             rets_estimator=self.rets_estimator,

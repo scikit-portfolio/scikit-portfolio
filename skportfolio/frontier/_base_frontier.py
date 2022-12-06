@@ -1,6 +1,10 @@
+"""
+Base for the portfolio estimators methods with an efficient frontier
+"""
+
 import warnings
 from abc import ABCMeta
-from collections import OrderedDict
+
 
 import cvxpy as cp
 import numpy as np
@@ -11,10 +15,14 @@ from pypfopt.exceptions import InstantiationError
 
 
 class BaseConvexFrontier(BaseConvexOptimizer, metaclass=ABCMeta):
+    """
+    The base class holding the definition of the ConvexFrontier
+    """
+
     def _make_weight_sum_constraint(self, is_market_neutral):
         """
         Helper method to make the weight sum constraint. If market neutral,
-        validate the weights proided in the constructor.
+        validate the weights provided in the constructor.
         """
         if is_market_neutral:
             # Check and fix bounds
@@ -38,25 +46,23 @@ class BaseConvexFrontier(BaseConvexOptimizer, metaclass=ABCMeta):
     def _validate_expected_returns(expected_returns):
         if expected_returns is None:
             return None
-        elif isinstance(expected_returns, pd.Series):
+        if isinstance(expected_returns, pd.Series):
             return expected_returns.values
-        elif isinstance(expected_returns, list):
+        if isinstance(expected_returns, list):
             return np.array(expected_returns)
-        elif isinstance(expected_returns, np.ndarray):
+        if isinstance(expected_returns, np.ndarray):
             return expected_returns.ravel()
-        else:
-            raise TypeError("expected_returns is not a series, list or array")
+        raise TypeError("expected_returns is not a series, list or array")
 
     @staticmethod
     def _validate_risk_matrix(risk_matrix):
         if risk_matrix is None:
             raise ValueError("cov_matrix must be provided")
-        elif isinstance(risk_matrix, pd.DataFrame):
+        if isinstance(risk_matrix, pd.DataFrame):
             return risk_matrix.values
-        elif isinstance(risk_matrix, np.ndarray):
+        if isinstance(risk_matrix, np.ndarray):
             return risk_matrix
-        else:
-            raise TypeError("risk_matrix is not a dataframe or array")
+        raise TypeError("risk_matrix is not a dataframe or array")
 
     @staticmethod
     def _validate_returns(returns):
@@ -65,7 +71,7 @@ class BaseConvexFrontier(BaseConvexOptimizer, metaclass=ABCMeta):
         """
         if returns is None:
             raise ValueError("returns must be provided")
-        elif not isinstance(returns, (pd.DataFrame, np.ndarray)):
+        if not isinstance(returns, (pd.DataFrame, np.ndarray)):
             raise TypeError("returns should be a pd.Dataframe or np.ndarray")
 
         returns_df = pd.DataFrame(returns)
@@ -91,11 +97,11 @@ class BaseConvexFrontier(BaseConvexOptimizer, metaclass=ABCMeta):
         :return: asset weights for the return-minimising portfolio
         :rtype: OrderedDict
         """
-        if self.expected_returns is None:
+        if getattr(self, "expected_returns") is None:
             raise ValueError("no expected returns provided")
 
         self._objective = objective_functions.portfolio_return(
-            self._w, self.expected_returns
+            self._w, getattr(self, "expected_returns")
         )
 
         self.add_constraint(lambda w: cp.sum(w) == 1)
@@ -103,9 +109,8 @@ class BaseConvexFrontier(BaseConvexOptimizer, metaclass=ABCMeta):
         res = self._solve_cvxpy_opt_problem()
 
         if return_value:
-            return -self._opt.value
-        else:
-            return res
+            return -1 * float(self._opt.value)
+        return res
 
     def _validate_market_neutral(self, market_neutral: bool) -> None:
         if self._market_neutral != market_neutral:

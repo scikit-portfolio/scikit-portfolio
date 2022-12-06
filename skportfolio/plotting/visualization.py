@@ -1,13 +1,13 @@
-from typing import Dict, Any, Optional
-import warnings
+#!/usr/bin/env python
 
-import matplotlib.pyplot as plt
+import warnings
+from typing import Dict, Any, Optional
+
 import numpy as np
 import pandas as pd
-from skportfolio.frontier._efficientfrontier import (
-    _BaseEfficientFrontierPortfolioEstimator,
-)
+
 from skportfolio.backtest.backtester import Backtester
+from skportfolio import PortfolioEstimator
 
 
 def _validate_plotting_kwargs(**kwargs):
@@ -27,7 +27,7 @@ def _validate_plotting_kwargs(**kwargs):
         "tangency_line_style",
         "autoset_lims",
     ]
-    for k, v in kwargs.items():
+    for k in kwargs:
         if k not in valid_kwargs:
             raise ValueError(
                 f"Non supported kwarg {k}. Supported list is\n{','.join(valid_kwargs)}"
@@ -35,12 +35,12 @@ def _validate_plotting_kwargs(**kwargs):
 
 
 def plot_frontier(
-    ptf_estimator: _BaseEfficientFrontierPortfolioEstimator,
+    ptf_estimator: PortfolioEstimator,
     prices_or_returns,
     benchmark=None,
-    estimator_name: str = None,
+    estimator_name: Optional[str] = None,
     num_portfolios: int = 20,
-    show_assets=False,
+    show_assets: bool = False,
     ax=None,
     frontier_kwargs: Optional[Dict[str, Any]] = None,
     **kwargs,
@@ -147,13 +147,13 @@ def plot_frontier(
     # if true, it builds temporaneous asset price or returns dataframes with each single asset.
     # The riskiest asset always lies at the highest risk/highest return because of the properties of the efficient
     # frontier, whereas minimum risk is always at the minimum return along the frontier.
-    if not (isinstance(show_assets, bool) or isinstance(show_assets, list)):
+    if not isinstance(show_assets, (bool, list)):
         raise TypeError("show_assets can be either a boolean or list of assets to show")
     if show_assets is True:
-        show_assets = prices_or_returns.columns.tolist()
+        assets = prices_or_returns.columns.tolist()
     elif show_assets is False:
-        show_assets = []
-    for asset in show_assets:
+        assets = []
+    for asset in assets:
         # model made of one single asset
         model_asset = ptf_estimator._optimizer(prices_or_returns[[asset]])
         # fit the asset_return = max return portfolio
@@ -295,7 +295,7 @@ def pie_chart(weights: pd.Series, threshold: int = 12, ax=None, **kwargs):
 
 
 def risk_allocation_chart(
-    ptf_estimator: _BaseEfficientFrontierPortfolioEstimator,
+    ptf_estimator: PortfolioEstimator,
     prices_or_returns,
     num_portfolios: int = 20,
     ax=None,
@@ -334,9 +334,12 @@ def risk_allocation_chart(
 
     pd.DataFrame(
         index=risk, data=frontier_weights, columns=prices_or_returns.columns
-    ).abs().mul(100).clip(0, np.inf).plot.area(ax=ax, cmap=kwargs.get("cmap", None))
+    ).abs().mul(100).clip(0, np.inf).plot.area(
+        ax=ax, cmap=kwargs.get("cmap", None), stacked=True
+    )
 
     ax.set_ylabel("Allocation %")
+    ax.legend(bbox_to_anchor=(1.05, 1.0), loc="upper left")
     ax.set_xlabel(
         ptf_estimator._min_risk_method_name.replace("min_", "")
         .replace("_", " ")
@@ -359,7 +362,14 @@ def risk_allocation_chart(
     return ax
 
 
-def plot_backtest_strategy(backtester: Backtester, ax=None, **kwargs):
+def plot_backtest_strategy(
+    backtester: Backtester,
+    plot_rebalance_events=True,
+    normalize: bool = False,
+    area: bool = True,
+    ax=None,
+    **kwargs,
+):
     """
     Plot the value of each asset as an area plot, using a backtester as the object carrying the
     results of the strategy.
@@ -368,7 +378,10 @@ def plot_backtest_strategy(backtester: Backtester, ax=None, **kwargs):
     ----------
     backtester: Backtester
         A fitted backtester instance, with all positions and equity curve calculated
-
+    plot_rebalance_events: bool
+        Whether to plot vertical lines in correspondence of rebalancing events
+    normalize: bool
+        Whether to normalize the position to 1 sum or not
     Returns
     -------
     matplotlib axis
@@ -379,20 +392,45 @@ def plot_backtest_strategy(backtester: Backtester, ax=None, **kwargs):
         try:
             import matplotlib.pyplot as plt
 
-            fig, ax = plt.subplots(ncols=2, figsize=kwargs.get("figsize", None))
+            fig, ax = plt.subplots(ncols=2, figsize=kwargs.get("figsize", (12, 5)))
 
         except ImportError as importerror:
             raise importerror
 
     if backtester.positions_ is None:
         raise RuntimeError("Fit backtester on data first")
-
-    backtester.positions_.clip(0, np.inf).plot.area(ax=ax[0])
-    ax[0].set_title(
-        f"Positions\nStrategy {backtester.name} - estimator: {str(backtester.estimator)}"
-    )
+    positions = backtester.positions_.clip(0, np.inf)
+    if normalize:
+        positions = positions.div(positions.sum(1), axis=0)
+    if area:
+        positions.plot.area(
+            ax=ax[0], stacked=True, cmap=kwargs.get("cmap", None), linewidth=0
+        )
+    else:
+        positions.plot(
+            ax=ax[0],
+            cmap=kwargs.get("cmap", None),
+        )
+    ax[0].legend(bbox_to_anchor=(1.05, 1.0), loc="upper left")
+    ax[0].set_title(f"Positions\nStrategy: {backtester.name}")
+    if plot_rebalance_events:
+        ymax = backtester.equity_curve_.max() if not normalize else 1.0
+        for d in backtester.rebalance_dates_:
+            ax[0].plot_date(x=(d, d), y=(0, ymax), fmt="k-", linewidth=0.5)
+            ax[1].plot_date(x=(d, d), y=(0, ymax), fmt="k-", linewidth=0.5)
+            ax[0].text(
+                x=d,
+                y=ymax * 0.9,
+                s=d.strftime("%Y-%m-%d"),
+                fontdict={"fontsize": 6, "rotation": "vertical"},
+            )
+            ax[1].text(
+                x=d,
+                y=ymax * 0.9,
+                s=d.strftime("%Y-%m-%d"),
+                fontdict={"fontsize": 6, "rotation": "vertical"},
+            )
     backtester.equity_curve_.plot(ax=ax[1])
-    ax[1].set_title(
-        f"Equity curve\nStrategy {backtester.name} - estimator: {str(backtester.estimator)}"
-    )
-    fig.tight_layout()
+    ax[1].set_title(f"Equity curve\nStrategy: {backtester.name}")
+    if not plot_rebalance_events:
+        ax[1].grid(which="both")

@@ -1,3 +1,8 @@
+"""
+Module with a number of portfolio metrics
+and their scorers as in scikit-learn
+"""
+
 from ._scorer import PortfolioScorer
 from ._scorer import make_scorer
 from .metrics import aggregate_returns

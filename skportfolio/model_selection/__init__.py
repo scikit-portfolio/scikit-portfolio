@@ -1,3 +1,9 @@
+"""
+This module contains all the definitions related to model selection,
+cross validation and hyperparameters optimization
+"""
+
+from sklearn.model_selection import GridSearchCV
 from .model_selection import (
     CrossValidator,
     CombinatorialPurgedKFold,
@@ -10,7 +16,7 @@ from .model_selection import (
     TimeSeriesSplit,
     WindowedTestTimeSeriesSplit,
     WalkForwardFixed,
+    print_split,
+    make_split_df,
+    KFold,
 )
-
-from sklearn.model_selection import GridSearchCV
-from .model_selection import print_split, make_split_df, KFold

@@ -1,33 +1,42 @@
-import abc
-from abc import ABCMeta
-from typing import Optional, Callable
+"""
+Implementation of the basic Black-Litterman estimator that can
+blend a-priori results with investors' views in a Bayesian manner.
+
+An AnalystView is a tuple composed of 3 distinct elements
+- Either a single symbol to provide absolute view of
+- or a pair of symbols tuples to specify relative views
+- the view value (second element)
+- the view confidence (third element, as a rate in [0,1]
+Relative views are grouped so that one can ask a group of tickers
+outperforms another group of tickers
+"""
+
+from typing import Optional, Sequence, Tuple, Union
+
 import numpy as np
 import pandas as pd
+from pypfopt.black_litterman import (
+    BlackLittermanModel,
+)
+from sklearn.base import TransformerMixin, BaseEstimator
+
 from skportfolio.riskreturn._returns_estimators import (
     BaseReturnsEstimator,
     MarketImpliedReturns,
 )
-from skportfolio._constants import APPROX_BDAYS_PER_YEAR
 from skportfolio.riskreturn._risk_estimators import BaseRiskEstimator, SampleCovariance
-from pypfopt.black_litterman import (
-    BlackLittermanModel,
-    market_implied_prior_returns,
-)
-from sklearn.base import TransformerMixin, BaseEstimator
-from typing import Sequence, Tuple, Union
-
-# An AnalystView is a tuple composed of 3 distinct elements
-# - Either a single symbol to provide absolute view of
-# - or a pair of symbols tuples to specify relative views
-# - the view value (second element)
-# - the view confidence (third element, as a rate in [0,1]
-# Relative views are grouped so that one can ask a group of tickers
-# outperforms another group of tickers
-from typing import Sequence
 
 AnalystView = Tuple[
     Union[Tuple[str], Tuple[Sequence[str], Sequence[str]], float, float]
 ]
+
+
+def flatten(iterable):
+    for item in iterable:
+        if isinstance(item, (list, tuple, set)):
+            yield from flatten(item)
+        else:
+            yield item
 
 
 def parse_views_to_q_p_omega(
@@ -35,7 +44,7 @@ def parse_views_to_q_p_omega(
     tickers: Sequence[str],
 ):
     """
-    Parse the human readable absolute or relative views using the Idzorek method
+    Parse the human-readable absolute or relative views using the Idzorek method
     to the Q, P and Omega matrices
     Parameters
     ----------
@@ -48,11 +57,19 @@ def parse_views_to_q_p_omega(
     """
     n_views = len(views)
     if n_views == 0:
-        return None, None
+        return None, None, None
 
     views_confidence = []
     q_matrix = []
     p_matrix = pd.DataFrame(columns=tickers)
+
+    # validate views: they must contain the same tickers we have
+    for view in views:
+        for s in flatten(view[0]):
+            if s not in tickers:
+                raise ValueError(
+                    f"Ticker {s} not present in the data. Check your views"
+                )
 
     # builds the Q matrix
     for view in views:
@@ -63,8 +80,7 @@ def parse_views_to_q_p_omega(
         q_matrix.append(view[-2])
         if view[-1] > 1.0 or view[-1] < 0.0:
             raise ValueError("View confidence must be in [0,1] domain")
-        else:
-            views_confidence.append(view[-1])
+        views_confidence.append(view[-1])
 
     views_confidence = np.array(views_confidence).reshape(-1, 1)
     q_matrix = np.array(q_matrix).reshape(-1, 1)
@@ -102,34 +118,42 @@ def parse_views_to_q_p_omega(
     return q_matrix, p_matrix, views_confidence
 
 
-from pandas._typing import ArrayLike
-
-
 class _BlackLittermanBaseEstimator(TransformerMixin, BaseEstimator):
+    """
+    The base class for the Black-Litterman estimator that defines
+    the parent for both the returns and risk estimator
+    """
+
     def __init__(
         self,
         views: Optional[Sequence[AnalystView]] = None,
         rets_estimator: Optional[BaseReturnsEstimator] = None,
         covariance_estimator: Optional[BaseRiskEstimator] = None,
         returns_data=False,
-        omega: Optional[ArrayLike] = None,
+        omega: Optional[pd.DataFrame] = None,
         tau: Optional[float] = None,
         risk_aversion: float = 1,
         risk_free_rate: Optional[float] = 0.02,
     ):
         """
         https://www.portfoliovisualizer.com/black-litterman-model
-        Here we use the Idzorek method for computing the Omega matrix
+        Here we use the Idzorek method for computing the Omega matrix based on the investor view confidence
 
         Parameters
         ----------
-        rets_estimator
-        covariance_estimator
-        views
-        returns_data
-        omega
-        risk_aversion
-        risk_free_rate
+        rets_estimator: BaseReturnsEstimator
+            Returns estimator
+        covariance_estimator: BaseRiskEstimator
+            Covariance matrix estimator
+        views: Sequence[AnalystViews]
+            Analyst views, either absolute or relative
+        returns_data: bool
+            Whether the passed data are prices or returns
+        omega: pd.DataFrame, np.ndarray
+            Squared matrix with asset views uncertainties
+        risk_aversion: float
+            Investor risk aversion parameter
+        risk_free_rate: float
 
         Returns
         -------
@@ -143,16 +167,6 @@ class _BlackLittermanBaseEstimator(TransformerMixin, BaseEstimator):
         self.tau = tau
         self.risk_free_rate = risk_free_rate
         self.omega = omega
-
-        self.pi: Optional[ArrayLike] = None
-        self.Q: Optional[ArrayLike] = None
-        self.P: Optional[ArrayLike] = None
-        self.views_confidence: Optional[ArrayLike] = None
-        self.sigma: Optional[ArrayLike] = None
-        self.bl_model: Optional[BlackLittermanModel] = None
-        self.expected_returns_: Optional[ArrayLike] = None
-        self.risk_matrix_: Optional[ArrayLike] = None
-        self.random_state = None
 
     def _set_pi(self, X, y):
         """
@@ -180,7 +194,7 @@ class _BlackLittermanBaseEstimator(TransformerMixin, BaseEstimator):
         if self.rets_estimator is None:
             # MarketImpliedReturns estimator
             self.rets_estimator = MarketImpliedReturns()
-        self.pi = self.rets_estimator.fit_transform(X=X, y=y)
+        self.pi_ = self.rets_estimator.fit_transform(X=X, y=y)
 
     def _set_p_q(self, X):
         """
@@ -196,7 +210,7 @@ class _BlackLittermanBaseEstimator(TransformerMixin, BaseEstimator):
         -------
 
         """
-        self.Q, self.P, self.views_confidence = parse_views_to_q_p_omega(
+        self.Q_, self.P_, self.views_confidence_ = parse_views_to_q_p_omega(
             views=self.views, tickers=X.columns
         )
 
@@ -234,7 +248,7 @@ class _BlackLittermanBaseEstimator(TransformerMixin, BaseEstimator):
         """
         if self.covariance_estimator is None:
             self.covariance_estimator = SampleCovariance()
-        self.sigma = self.covariance_estimator.fit_transform(X, y)
+        self.sigma_ = self.covariance_estimator.fit_transform(X, y)
 
     def fit(self, X, y=None):
         """
@@ -254,17 +268,21 @@ class _BlackLittermanBaseEstimator(TransformerMixin, BaseEstimator):
         self._set_sigma(X=X, y=y)
         self._set_p_q(X=X)
 
-        self.bl_model = BlackLittermanModel(
-            cov_matrix=self.sigma,
-            pi=self.pi,
-            Q=self.Q,
-            P=self.P,
-            # https://people.duke.edu/~charvey/Teaching/BA453_2006/Idzorek_onBL.pdf
+        # Look this for the Idzorek method
+        # https://people.duke.edu/~charvey/Teaching/BA453_2006/Idzorek_onBL.pdf
+        # here we have computed a way to pass the fundamental matrices to the pypfopt optimization method
+        self.bl_model_ = BlackLittermanModel(
+            cov_matrix=self.sigma_,
+            pi=self.pi_,
+            Q=self.Q_,
+            P=self.P_,
             omega="idzorek" if self.omega is None else self.omega,
-            view_confidences=self.views_confidence if self.omega is None else None,
+            view_confidences=self.views_confidence_ if self.omega is None else None,
             risk_aversion=self.risk_aversion,
             risk_free_rate=self.risk_free_rate,
         )
+        self.expected_returns_ = self.bl_model_.bl_returns()
+        self.risk_matrix_ = self.bl_model_.bl_cov() + self.sigma_
         return self
 
     def get_p_matrix(self) -> np.ndarray:
@@ -276,7 +294,7 @@ class _BlackLittermanBaseEstimator(TransformerMixin, BaseEstimator):
         -------
         The picking matrix
         """
-        return self.P
+        return self.P_
 
     def get_q_matrix(self) -> np.ndarray:
         """
@@ -284,7 +302,7 @@ class _BlackLittermanBaseEstimator(TransformerMixin, BaseEstimator):
         Returns
         -------
         """
-        return self.Q
+        return self.Q_
 
 
 class BlackLittermanReturnsEstimator(
@@ -296,10 +314,11 @@ class BlackLittermanReturnsEstimator(
     """
 
     def fit_transform(self, X, y=None, **fit_params):
-        return self.fit(X=X, y=y).expected_returns_
+        self.expected_returns_ = self.fit(X=X, y=y).bl_model_.bl_returns()
+        return self.expected_returns_
 
-    def _set_expected_returns(self, X, y):
-        self.expected_returns_ = self.bl_model.bl_returns()
+    def _set_expected_returns(self, X, y=None, **fit_params):
+        self.expected_returns_ = self.fit_transform(X, y, **fit_params)
 
 
 class BlackLittermanRiskEstimator(_BlackLittermanBaseEstimator, BaseRiskEstimator):
@@ -309,7 +328,8 @@ class BlackLittermanRiskEstimator(_BlackLittermanBaseEstimator, BaseRiskEstimato
     """
 
     def fit_transform(self, X, y=None, **fit_params):
-        return self.fit(X=X, y=y).risk_matrix_
+        self.risk_matrix_ = self.fit(X=X, y=y).bl_model_.bl_cov() + self.sigma_
+        return self.risk_matrix_
 
     def _set_risk(self, X, y=None, **fit_params):
-        self.risk_matrix_ = self.bl_model.bl_cov() + self.sigma
+        self.risk_matrix_ = self.fit_transform(X, y, **fit_params)

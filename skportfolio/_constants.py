@@ -1,8 +1,5 @@
 """
-Convenience copy of the empyrical constants, with more constants added 
-"""
-
-"""
+Convenience copy of the empyrical constants, with more constants added.
 In many applications, it is necessary to convert Sharpe ratio estimates from one frequency to
 another. For example, a Sharpe ratio estimated from monthly data cannot be directly compared with one
 estimated from annual data; hence, one statistic must be converted to the same frequency as the other
@@ -50,13 +47,5 @@ FREQUENCIES = {
 
 BASE_TARGET_RISK = 0.02
 BASE_TARGET_RETURN = 0.02
-BASE_RISK_FREE_RATE = 0.02
+BASE_RISK_FREE_RATE = 0.0
 BASE_MIN_ACCEPTABLE_RETURN = 0.02
-
-MIN_MIN_WEIGHT_BOUND = 0
-MIN_MAX_WEIGHT_BOUND = 0.2
-
-MAX_MIN_WEIGHT_BOUND = 0.8
-MAX_MAX_WEIGHT_BOUND = 1
-
-N_WEIGHTS_BOUNDS = 3

@@ -1,6 +1,5 @@
 """
 Model selection tools for portfolio optimization methods
-========================================================
 """
 
 import warnings
@@ -42,13 +41,13 @@ def split_train_val_forward_chaining(
         ycv (2D array)  : Array of numOutputs arrays used for cross-validation
     """
 
-    X = y = Xcv = ycv = dict()
+    X = y = Xcv = ycv = {}
     j = 2
     # Tracks index of CV set at each train/val split
     # Iterate through all train/val splits
     while True:
         end_ix = 0
-        X_it = y_it = Xcv_it = ycv_it = list()
+        X_it = y_it = Xcv_it = ycv_it = []
         i = 0
         # Index of individual training set at each train/val split
         # Iterate until index of individual training set is smaller than index of cv set
@@ -107,7 +106,7 @@ def split_train_val_group_k_fold(
 
     """
 
-    X = y = Xcv = ycv = dict()
+    X = y = Xcv = ycv = {}
 
     # Iterate through 5 train/val splits
     for j in np.arange(5):
@@ -115,7 +114,7 @@ def split_train_val_group_k_fold(
         end_ix = 0
         startCv_ix = 0
         endCv_ix = 0
-        X_it, y_it, Xcv_it, ycv_it = list(), list(), list(), list()
+        X_it, y_it, Xcv_it, ycv_it = [], [], [], []
         i = 0
         # Index of individual training set at each train/val split
         n = 0
@@ -187,7 +186,7 @@ def split_train_val_test_forward_chaining(
         ytest (2D array)  : Array of numOutputs arrays used for testing
     """
 
-    X = y = Xcv = ycv = Xtest = ytest = dict()
+    X = y = Xcv = ycv = Xtest = ytest = {}
     j = 2
     # Tracks index of CV set at each train/val/test split
 
@@ -199,7 +198,7 @@ def split_train_val_test_forward_chaining(
         endCv_ix = 0
         startTest_ix = 0
         endTest_ix = 0
-        X_it = y_it = Xcv_it = ycv_it = Xtest_it = ytest_it = list()
+        X_it = y_it = Xcv_it = ycv_it = Xtest_it = ytest_it = []
         i = 0
         # Index of individual training set at each train/val/test split
 
@@ -276,7 +275,7 @@ def split_train_val_test_k_fold(
 
     """
 
-    X = y = Xcv = ycv = Xtest = ytest = dict()
+    X = y = Xcv = ycv = Xtest = ytest = {}
     j = 2
     # Tracks index of CV set at each train/val/test split
     theEnd = 0
@@ -290,7 +289,7 @@ def split_train_val_test_k_fold(
         endCv_ix = 0
         startTest_ix = 0
         endTest_ix = 0
-        X_it = y_it = Xcv_it = ycv_it = Xtest_it = ytest_it = list()
+        X_it = y_it = Xcv_it = ycv_it = Xtest_it = ytest_it = []
         i = 0
         # Index of individual training set at each train/val/test split
         n = 0
@@ -385,7 +384,7 @@ def split_train_val_test_group_k_fold(
 
     """
 
-    X = y = Xcv = ycv = Xtest = ytest = dict()
+    X = y = Xcv = ycv = Xtest = ytest = {}
 
     # Iterate through 5 train/val/test splits
     for j in np.arange(5):
@@ -395,7 +394,7 @@ def split_train_val_test_group_k_fold(
         endCv_ix = 0
         startTest_ix = 0
         endTest_ix = 0
-        X_it = y_it = Xcv_it = ycv_it = Xtest_it = ytest_it = list()
+        X_it = y_it = Xcv_it = ycv_it = Xtest_it = ytest_it = []
         i = 0
         # Index of individual training set at each train/val/test split
         n = 0
@@ -482,7 +481,7 @@ def split_train_val_k_fold(
 
     """
 
-    X, y, Xcv, ycv = dict(), dict(), dict(), dict()
+    X, y, Xcv, ycv = {}, {}, {}, {}
     j = 2
     # Tracks index of CV set at each train/val split
     theEnd = 0  # Flag to terminate function
@@ -493,7 +492,7 @@ def split_train_val_k_fold(
         end_ix = 0
         startCv_ix = 0
         endCv_ix = 0
-        X_it = y_it = Xcv_it = ycv_it = list()
+        X_it = y_it = Xcv_it = ycv_it = []
         i = 0
         # Index of individual training set at each train/val split
         n = 0
@@ -551,11 +550,18 @@ def split_train_val_k_fold(
         n_test_splits, splits_indices: dict
     ) -> list:
         """
-        Using start and end indices of test splits from KFolds and number of test_splits (self.n_test_splits),
-        generates combinatorial test ranges splits
+        Using start and end indices of test splits from KFolds and number of
+        test_splits (self.n_test_splits), generates combinatorial test
+        ranges splits
 
-        :param splits_indices: (dict) Test fold integer index: [start test index, end test index]
-        :return: (list) Combinatorial test splits ([start index, end index])
+        Parameters
+        ----------
+        splits_indices: (dict)
+            Test fold integer index  [start test index, end test index]
+
+        Returns
+        -------
+        List of combinatorial test splits ([start index, end index])
         """
 
         # Possible test splits for each fold

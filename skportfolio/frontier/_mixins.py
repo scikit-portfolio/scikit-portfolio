@@ -1,26 +1,36 @@
+"""
+All the mixins used in the PortfolioEstimators to distinguish
+estimators constrained on target returns or target risk
+"""
+
 from abc import ABC, abstractmethod
-from typing import Union
+from typing import Union, Optional, Tuple
+
 import numpy as np
 import pandas as pd
-
+from pypfopt.base_optimizer import BaseConvexOptimizer
 from pypfopt.efficient_frontier import (
     EfficientFrontier,
     EfficientCVaR,
     EfficientSemivariance,
     EfficientCDaR,
 )
-from skportfolio.frontier._omega import EfficientOmegaRatio
-from skportfolio.frontier._mad import EfficientMeanAbsoluteDeviation
+
 from skportfolio._constants import (
     BASE_TARGET_RISK,
     BASE_TARGET_RETURN,
     APPROX_BDAYS_PER_YEAR,
 )
-from pypfopt.base_optimizer import BaseConvexOptimizer
+from skportfolio.frontier._mad import EfficientMeanAbsoluteDeviation
+from skportfolio.frontier._omega import EfficientOmegaRatio
 
 
 class _TargetReturnMixin:
-    # Mixin to provide base efficient frontier objects with the set_target_return and target_return attributes
+    """
+    Mixin to provide base efficient frontier objects with the
+    set_target_return and target_return attributes.
+    """
+
     target_return: float = BASE_TARGET_RETURN
 
     def set_target_return(self, target_return: float):
@@ -29,7 +39,11 @@ class _TargetReturnMixin:
 
 
 class _TargetRiskMixin:
-    # Mixin to provide base efficient frontier objects with the set_target_risk and target_risk attributes
+    """
+    Mixin to provide base efficient frontier objects with the
+    set_target_risk and target_risk attributes.
+    """
+
     target_risk: float = BASE_TARGET_RISK
 
     def set_target_risk(self, target_risk: float):
@@ -44,8 +58,8 @@ class _BaseFrontierMixin(ABC):
         expected_returns=None,
         returns=None,
         frequency: int = APPROX_BDAYS_PER_YEAR,
-        risk_matrix: Union[pd.DataFrame, np.array] = None,
-        weight_bounds=(0, 1),
+        risk_matrix: Optional[Union[pd.DataFrame, np.array]] = None,
+        weight_bounds: Tuple[float, float] = (0, 1),
         solver=None,
         verbose=None,
         solver_options=None,
@@ -207,7 +221,7 @@ class _EfficientMADMixin(_BaseFrontierMixin):
         expected_returns=None,
         returns=None,
         frequency: int = APPROX_BDAYS_PER_YEAR,
-        risk_matrix: Union[pd.DataFrame, np.array] = None,
+        risk_matrix: Optional[Union[pd.DataFrame, np.array]] = None,
         weight_bounds=(0, 1),
         solver=None,
         verbose=None,
@@ -226,26 +240,27 @@ class _EfficientMADMixin(_BaseFrontierMixin):
         )
 
 
-class _EfficientEDaRMixin(_BaseFrontierMixin):
-    @staticmethod
-    def _get_model(
-        expected_returns=None,
-        returns=None,
-        frequency: int = APPROX_BDAYS_PER_YEAR,
-        risk_matrix: Union[pd.DataFrame, np.array] = None,
-        weight_bounds=(0, 1),
-        solver=None,
-        verbose=None,
-        solver_options=None,
-        **kwargs
-    ) -> BaseConvexOptimizer:
-        if expected_returns is None:
-            raise AttributeError("Must specify parameter 'expected_returns'")
-        if returns is None:
-            raise AttributeError("Must specify parameter 'returns'")
-
-        return EfficientEDaR(
-            expected_returns=expected_returns,
-            returns=returns,
-            weight_bounds=weight_bounds,
-        )
+#
+# class _EfficientEDaRMixin(_BaseFrontierMixin):
+#     @staticmethod
+#     def _get_model(
+#         expected_returns=None,
+#         returns=None,
+#         frequency: int = APPROX_BDAYS_PER_YEAR,
+#         risk_matrix: Union[pd.DataFrame, np.array] = None,
+#         weight_bounds=(0, 1),
+#         solver=None,
+#         verbose=None,
+#         solver_options=None,
+#         **kwargs
+#     ) -> BaseConvexOptimizer:
+#         if expected_returns is None:
+#             raise AttributeError("Must specify parameter 'expected_returns'")
+#         if returns is None:
+#             raise AttributeError("Must specify parameter 'returns'")
+#
+#         return EfficientEDaR(
+#             expected_returns=expected_returns,
+#             returns=returns,
+#             weight_bounds=weight_bounds,
+#         )

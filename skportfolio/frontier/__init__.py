@@ -1,3 +1,7 @@
+"""
+Collection of efficient frontier portfolio estimators
+
+"""
 from ._efficientfrontier import (
     # Markowitz MVO
     MinimumVolatility,
@@ -25,5 +29,4 @@ from ._efficientfrontier import (
     MinimumMAD,
     MADEfficientReturn,
     MADEfficientRisk,
-    # Entropic Drawdown at Risk
 )

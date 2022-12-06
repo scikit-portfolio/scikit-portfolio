@@ -8,48 +8,53 @@ It aims to provide simple and efficient solutions to portfolio optimization prob
 that are accessible to everybody and reusable in various contexts.
 """
 
+from skportfolio import misc
+from skportfolio.misc._hrp import HierarchicalRisk
+from skportfolio.misc._repo import REPO
+
+# Efficient frontier portfolios
+from skportfolio import frontier
+from skportfolio.frontier import *
+
+# Returns and risk estimators
+from skportfolio import riskreturn
+from skportfolio.riskreturn import *
+
+# Metrics
+from skportfolio import metrics
+from skportfolio.metrics import *
+
+# Model selection
+from skportfolio import model_selection
+from skportfolio.model_selection import *
+
+# Plotting utilities
+from skportfolio import plotting
+from skportfolio.plotting import *
+
+# backtesting utilities
+from skportfolio.backtest import backtester
+from skportfolio.backtest import *
+
+# constraints utilities
+from skportfolio import constraints
+from skportfolio.constraints import *
+
+# utilities and other portfolio estimators
 # portfolio estimators
-from ._base import (
-    PortfolioEstimator,
+from ._base import PortfolioEstimator
+from ._simple import (
     EquallyWeighted,
     InverseVariance,
     InverseVolatility,
     SingleAsset,
     CapWeighted,
-)
-
-# Utilities needed to post-process weights
-from ._base import (
-    redistribute_non_allocable,
-    discrete_allocation,
-    clean_weights,
     single_asset_weights,
 )
 
-import skportfolio.misc as misc
-from skportfolio.misc._hrp import HierarchicalRisk
-from skportfolio.misc._repo import REPO
-
-# Efficient frontier portfolios
-import skportfolio.frontier as frontier
-from skportfolio.frontier import *
-
-# Returns and risk estimators
-import skportfolio.riskreturn as riskreturn
-from skportfolio.riskreturn import *
-
-# Metrics
-import skportfolio.metrics as metrics
-from skportfolio.metrics import *
-
-# Model selection
-import skportfolio.model_selection as model_selection
-from skportfolio.model_selection import *
-
-# Plotting utilities
-import skportfolio.plotting as plotting
-from skportfolio.plotting import *
-
-# backtesting utilities
-import skportfolio.backtest as backtest
-from skportfolio.backtest import *
+# Utilities needed to post-process weights
+from .weights import (
+    redistribute_non_allocatable,
+    discrete_allocation,
+    clean_weights,
+)

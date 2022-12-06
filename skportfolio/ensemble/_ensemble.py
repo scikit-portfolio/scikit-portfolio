@@ -4,13 +4,16 @@ Ensemble portfolio estimators
 
 Here we collect baggind-based and bootstrap based portfolio meta-estimators.
 
-A "bagging" portfolio meta-estimator fits base portfolio estimator on random subsets of the original dataset, then
-aggregating the individual weights (either by voting or by averaging) to form a final prediction.
+A "bagging" portfolio meta-estimator fits base portfolio estimator on random subsets of the
+original dataset, then aggregating the individual weights (either by voting or by averaging) to
+form a final prediction.
 
-A "bootstrap" based portfolio estimator instead is based on the idea to reduce the extreme sensitivity of
-optimized weights from the returns estimator, by aggregating multiple results over randomly perturbed returns through
-resampling from a multivariate normal given the sample covariance matrix and returns estimates.
+A "bootstrap" based portfolio estimator instead is based on the idea to reduce the extreme
+sensitivity of optimized weights from the returns estimator, by aggregating multiple results
+over randomly perturbed returns through resampling from a multivariate normal given the sample
+covariance matrix and returns estimates.
 """
+from itertools import takewhile
 import sys
 import warnings
 from typing import Callable, List, Optional, Union
@@ -57,7 +60,7 @@ class MichaudResampledFrontier(PortfolioEstimator):
 
     def __init__(
         self,
-        ptf_estimator: PortfolioEstimator = EquallyWeighted(),
+        estimator: PortfolioEstimator = EquallyWeighted(),
         rets_estimator: BaseReturnsEstimator = MeanHistoricalLinearReturns(),
         risk_estimator: BaseRiskEstimator = SampleCovariance(),
         n_iter: Optional[int] = 100,
@@ -76,7 +79,7 @@ class MichaudResampledFrontier(PortfolioEstimator):
 
         Parameters
         ----------
-        ptf_estimator: PortfolioEstimator
+        estimator: PortfolioEstimator
             The user provided estimator for the base optimal portfolio allocation. Default value is `MinimumVolatility`.
         rets_estimator: BaseReturnsEstimator
             The expected returns' estimator. Default value is the `MeanHistoricalValue` estimator.
@@ -92,7 +95,7 @@ class MichaudResampledFrontier(PortfolioEstimator):
             Aggregation method of weights. Default mean over all weights.
         """
         super().__init__()
-        self.ptf_estimator = ptf_estimator
+        self.estimator = estimator
         self.n_iter = n_iter
         self.random_state = random_state
         self.rets_estimator = rets_estimator
@@ -115,14 +118,14 @@ class MichaudResampledFrontier(PortfolioEstimator):
 
         # also here only use generators for faster and memory friendly evaluation
         all_weights_ = (
-            self.ptf_estimator.set_returns_estimator(ptb).fit(X, y).weights_
+            self.estimator.set_returns_estimator(ptb).fit(X, y).weights_
             for ptb in perturbed_estimators
         )
 
         # finally collects all the obtained weights and average by mean
         with warnings.catch_warnings():
-            name = f"{self.__class__.__name__}[{self.ptf_estimator.__class__.__name__}]"
             warnings.simplefilter("ignore")
+            name = f"{self.__class__.__name__}[{self.estimator.__class__.__name__}]"
             self.weights_ = (
                 pd.concat((w for w in all_weights_ if w.notna().all()), axis=1)
                 .aggregate(self.agg_func, axis=1)
@@ -140,7 +143,7 @@ class SubsetResampling(PortfolioEstimator):
 
     def __init__(
         self,
-        ptf_estimator: PortfolioEstimator,
+        estimator: PortfolioEstimator = EquallyWeighted(),
         subset_size: float = 0.8,
         n_iter: int = 100,
         random_state: Optional[Union[int, np.random.Generator]] = None,
@@ -157,7 +160,7 @@ class SubsetResampling(PortfolioEstimator):
         Initializes the SubsetResampling object. We explicitly require to define the ptf_estimator
         Parameters
         ----------
-        ptf_estimator: PortfolioEstimator
+        estimator: PortfolioEstimator
             Original noise-sensitive portfolio estimator object, for example MaxSharpe or MaxOmegaRatio
         n_iter:
             Number of random subset of portfolios to average over
@@ -169,7 +172,7 @@ class SubsetResampling(PortfolioEstimator):
         """
 
         super().__init__()
-        self.ptf_estimator = ptf_estimator
+        self.estimator = estimator
         self.subset_size = subset_size
         self.n_iter = n_iter
         self.random_state = random_state
@@ -192,20 +195,21 @@ class SubsetResampling(PortfolioEstimator):
         # also here we use generators for more pythonic
         # and less memory hungry processing
         all_weights = (
-            self.ptf_estimator.fit(
+            self.estimator.fit(
                 X.sample(n=n_subsets, axis=1, random_state=generator)
             ).weights_
             for _ in range(self.n_iter)
         )
 
-        name = f"{self.__class__.__name__}[{self.ptf_estimator.__class__.__name__}]"
+        name = f"{self.__class__.__name__}[{self.estimator.__class__.__name__}]"
         self.weights_ = (
-            pd.concat(all_weights, axis=1)
-            .dropna(how="all", axis=0)
+            pd.concat(takewhile(lambda x: x.notna().all(), all_weights), axis=1)
             .aggregate(self.agg_func, axis=1)
-            .loc[X.columns]
+            .reindex(X.columns, fill_value=0.0)
             .rename(name)
         )
+        # enforce renormalization
+        self.weights_ /= self.weights_.sum()
 
         return self
 
@@ -289,6 +293,13 @@ def bayesian_robust_frontier_sample_estimate(
 
 
 class RobustBayesian(PortfolioEstimator):
+    """
+    Implementation of the Bayesian Robust Allocation algorithm by Attilio Meucci.
+    The implementation is based on the Matlab code provided by Meucci, with a number of computational tricks.
+    It rolls over the prices dataframe based on the window parameter. It finally averages all the weights
+    of the robust bayesian portfolios into a .weights_ attribute.
+    """
+
     def __init__(
         self,
         window: int = 120,
@@ -297,36 +308,31 @@ class RobustBayesian(PortfolioEstimator):
         n_portfolios: int = 10,
         robustness_param_loc: float = 0.1,
         robustness_param_scatter: float = 0.1,
-        n_jobs: int = -1,
+        n_jobs: int = 1,
     ):
         """
-        Implementation of the Bayesian Robust Allocation algorithm by Attilio Meucci.
-
-        The implementation is based on the Matlab code provided by Meucci, with a number of computational tricks.
-        It rolls over the prices dataframe based on the window parameter. It finally averages all the weights
-        of the robust bayesian portfolios into a .weights_ attribute.
-        All the portfolio weights are stored in the .all_weights_ attribute that can be accessed.
+        Initializes the RobustBayesian method by Attilio Meucci.
 
         Parameters
         ----------
         window: int
             The number of rows to roll over
-        rets_estimator: BaseReturnsEstimator
-            The expected returns estimator, default value MeanHistoricalLinearReturns
-        risk_estimator: BaseRiskEstimator
-            The risk estimator, default value SampleCovariance
-        n_portfolios: int
+        rets_estimator: BaseReturnsEstimator, default MeanHistoricalLinearReturns
+            The expected returns estimator.
+        risk_estimator: BaseRiskEstimator, default SampleCovariance
+            The risk estimator.
+        n_portfolios: int, default 10
             Number of portfolios to average over
-        robustness_param_loc: float
+        robustness_param_loc: float, default 0.1
             The level of confidence in the estimation risk for posterior averages.
             The higher the values, the better for less experienced investors, whereas lower values are more suitable for
             very self-confident investors with clear views in mind.
 
-        robustness_param_scatter: float
+        robustness_param_scatter: float, default 0.1
             Denotes the confidence of investor to estimation risk in posterior covariance.
             The higher the values, the better for less experienced investors, whereas lower values are more suitable for
             very self-confident investors with clear views in mind.
-        n_jobs: int
+        n_jobs: int, default 1
             Set to -1 for maximum parallelism with multicore processors
 
         See Also

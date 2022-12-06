@@ -6,6 +6,7 @@ PyPortfolioOpt==1.5.3
 empyrical==0.5.5
 scikit-learn==1.1.1
 statsmodels==0.13.2
-matplotlib==3.5.2
+matplotlib~=3.6.2
 tabulate==0.8.9
 rich==12.6.0
+tqdm

@@ -1,7 +1,11 @@
 """
 A module for portfolio optimization based on Entropic Drawdown at Risk
+as detailed in this notebook
+
+https://colab.research.google.com/github/cvxpy/cvxpy/blob/master/examples/notebooks/WWW/Entropic%20Portfolio.ipynb
+
+Still an experimental object
 """
-import copy
 from typing import Dict
 from typing import Optional
 from typing import Tuple
@@ -10,12 +14,14 @@ import cvxpy as cp
 import numpy as np
 import pandas as pd
 from pypfopt.exceptions import OptimizationError
-from pypfopt import objective_functions
+from skportfolio.frontier._base_frontier import BaseConvexFrontier
 
-from ._base_frontier import BaseConvexFrontier
 
-# https://github.com/cvxpy/cvxpy/commit/f93d6b24d2e51033f24e0fff4553e0cbd968d55c
 class EfficientEDar(BaseConvexFrontier):
+    """
+    Base class for efficient entropic drawdown at risk
+    """
+
     def __init__(
         self,
         expected_returns: pd.Series,
@@ -54,7 +60,7 @@ class EfficientEDar(BaseConvexFrontier):
         w_min, w_max = self.weight_bounds
         self._constraints = [
             cp.sum(ui) <= z,
-            cp.constraints.ExpCone(-X - t, np.ones((n, 1)) @ z, ui),
+            cp.constraints.ExpCone(-X - t, np.ones((n_samples, 1)) @ z, ui),
             cp.sum(w) == 1,
             w >= w_min,
             w <= w_max,
@@ -66,8 +72,8 @@ class EfficientEDar(BaseConvexFrontier):
         )
         try:
             self._opt.solve()
-        except (TypeError, cp.DCPError) as e:
-            raise OptimizationError from e
+        except (TypeError, cp.DCPError) as current_exception:
+            raise OptimizationError from current_exception
 
         if self._opt.status not in {"optimal", "optimal_inaccurate"}:
             raise OptimizationError("Solver status: {}".format(self._opt.status))

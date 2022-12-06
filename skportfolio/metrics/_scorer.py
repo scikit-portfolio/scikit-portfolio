@@ -1,3 +1,6 @@
+"""
+Scorer objects as in scikit-learn to apply in case of hyperparameters selections
+"""
 from functools import partial
 
 
@@ -60,6 +63,10 @@ class _BasePortfolioScorer:
 
 
 class PortfolioScorer(_BasePortfolioScorer):
+    """
+    The base class to define a scorer object for portfolio estimators
+    """
+
     def _score(self, method_caller, estimator, X):
         """Evaluate predicted target values for X
 

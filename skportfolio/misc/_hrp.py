@@ -1,22 +1,27 @@
+"""
+Hierarchical risk portfolio optimization as in the book
+Advances in financial machine learning by
+Marcos Lopez De Prado.
+"""
+
 from abc import ABC
 from abc import ABCMeta
-from typing import Any
-from typing import Dict
-from typing import Sequence
 
 import pandas as pd
-
 from pypfopt.expected_returns import returns_from_prices
 from pypfopt.hierarchical_portfolio import HRPOpt
 
 from skportfolio._base import BaseRiskEstimator
 from skportfolio._base import PortfolioEstimator
 from skportfolio.riskreturn import SampleCovariance
-from skportfolio.riskreturn import all_risk_estimators
-from skportfolio.riskreturn import all_risk_models
 
 
 class _HierarchicalRiskPortfolioEstimator(PortfolioEstimator, metaclass=ABCMeta):
+    """
+    Hierarchical risk portfolio estimator base class.
+    It wraps the original pypfopt of the method HROPT
+    """
+
     def __init__(
         self,
         returns_data: bool = False,
@@ -28,7 +33,7 @@ class _HierarchicalRiskPortfolioEstimator(PortfolioEstimator, metaclass=ABCMeta)
         self.linkage: str = linkage
         self.risk_estimator = risk_estimator
 
-    def fit(self, X, y=None) -> PortfolioEstimator:
+    def fit(self, X, y=None, **fit_params) -> PortfolioEstimator:
         if self.returns_data:
             returns = X
         else:

@@ -1,3 +1,7 @@
+"""
+Module holding many definition of risk and returns estimators
+"""
+
 from ._returns_estimators import BaseReturnsEstimator
 from ._returns_estimators import CAPMReturns
 from ._returns_estimators import CompoundedHistoricalLinearReturns

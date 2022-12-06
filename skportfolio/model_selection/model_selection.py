@@ -3,100 +3,44 @@ Algorithm to separate a given training set into input X and outputs y
 """
 
 import warnings
-from abc import ABC
-from abc import ABCMeta
-from abc import abstractmethod
+from abc import ABC, ABCMeta, abstractmethod
 from itertools import combinations
 from logging import getLogger
-from typing import Any
-from typing import List
-from typing import Optional
-from typing import Sequence
-from typing import Tuple
+from typing import Any, List, Optional, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import KFold
-from sklearn.model_selection._split import TimeSeriesSplit
+from sklearn.model_selection import TimeSeriesSplit
 from sklearn.utils import indexable
 from sklearn.utils.validation import _num_samples
 from tabulate import tabulate
 
-from skportfolio.model_selection._model_selection import _get_number_of_backtest_paths
-from skportfolio.model_selection._model_selection import ml_get_train_times
-from skportfolio.model_selection._model_selection import split_blocking_time_series
 from skportfolio.model_selection._model_selection import (
     split_train_val_forward_chaining,
+    split_blocking_time_series,
+    ml_get_train_times,
+    _get_number_of_backtest_paths,
+    split_train_val_k_fold,
 )
-from skportfolio.model_selection._model_selection import split_train_val_k_fold
 
 logger = getLogger(__name__)
 
 
-"""
-# Problems with cross validation for time series data
-
-Random train-test splits can lead to data leakage, and if traditional k-fold and leave-one-out CV are the default
-procedures being followed, data leakage will happen.
-Leakage is the major reason why traditional CV is not appropriate for time series. Using these cross-validators
-when you shouldn't will inflate performance metrics since they allow the training model to cheat because observations
-"from the future" (posterior samples) leak into the training set.
-
-Since time series data is time ordered, we want to keep intact the fact that we must use past observations to predict
-future observations. The randomization in the standard cross-validation algorithm does not preserve the time ordering,
-and we end up making predictions for some samples using a model trained on posterior samples. While this is not
-immediately a huge problem for some applications, it becomes a critical one if the time series data is often strongly
-correlated along the time axis. The randomization of traditional CV will make it likely that for each sample in the
-validation set, numerous strongly correlated samples exist in the train set. This defeats the very purpose of having
-a validation set: the model essentially “knows” about the validation set already, leading to inflated performance
-metrics on the validation set in case of overfitting.
-
-One solution is to use Walk-forward cross-validation (closest package implementation being Time Series Split
-in sklearn), which restricts the full sample set differently for each split, but this suffers from the problem that,
-near the split point, we may have training samples whose evaluation time is posterior to the prediction time of
-validation samples.
-
-Such overlapping samples are unlikely to be independent, leading to information leaking from the  train set into the
-validation set. To deal with this, purging can be used.
-
-## Purging
-Purging involves dropping from the train set any sample whose evaluation time is posterior to the earliest prediction
-time in the validation set. This ensures that predictions on the validation set are free of look-ahead bias.
-But since walk-forward CV has other grievances, like its lack of focus on the most recent data during training fold
-construction, the following is becoming more widely adopted for time series data:
-
-## Combinatorial cross-validation
-Consider we abandon the requirement that all the samples in the train set precede the samples in the validation set.
-This is not as problematic as it may sound. The crucial point is to ensure that the samples in the validation set are
-reasonably independent from the samples in the training set. If this condition is verified, the validation set
-performance will still be a good proxy for the performance on new data.
-
-Combinatorial K-fold cross-validation is similar to K-fold cross-validation, except that we take the validation set to
-consists in j<K blocks of samples. We then have K choose j possible different splits. This allows us to create
-easily a large number of splits, just by taking j=2 or 3, addressing two other problems not mentioned that purging
-did not address.
-
-It is however clear that we cannot use combinatorial K-fold cross-validation as it stands. We have to make sure that
-the samples in the train set and in the validation set are independent. We already saw that purging helps reduce
-their dependence. However, when there are train samples occurring after validation samples, this is not sufficient.
-
-## Embargoing
-We obviously also need to prevent the overlap of train and validation samples at the right end(s) of the validation set.
-But simply dropping any train sample whose prediction time occurs before the latest evaluation time in the preceding
-block of validation samples may not be sufficient. There may be correlations between the samples over longer
-periods of time. In order to deal with such long range correlation, we can define an embargo period after each right
-end of the validation set. If a train sample prediction time falls into the embargo period, we simply drop the sample
-from the train set. The required embargo period has to be estimated from the problem and dataset at hand.
-A nice feature of combinatorial cross-validation is also that as each block of samples appears the same number of
-times in the validation set, we can group them (arbitrarily) into validation predictions over the full dataset (keeping
-in mind that these predictions have been made by models trained on different train sets). This is very useful to
-extract performance statistics over the whole dataset.
-"""
-
-
 def make_split_df(fold_generator, titles, columns=None):
-    X = pd.DataFrame()  # empty then we fill it Linello, [2/2/22 2:59 PM]
+    """
+    Creates a visualizatin of our train-test split
+    Parameters
+    ----------
+    fold_generator
+    titles
+    columns
 
+    Returns
+    -------
+
+    """
+    X = pd.DataFrame()
     mapping = {"train": "🟢", "test": "🔴", "cv_train": "🟩", "cv_test": "🟥"}
     for ith_fold, fold_values in enumerate(fold_generator):
         for tit, vals in zip(titles, fold_values):
@@ -117,18 +61,35 @@ def make_split_df(fold_generator, titles, columns=None):
 
 
 def print_split(fold_generator, titles, columns=None):
+    """
+
+    Parameters
+    ----------
+    fold_generator
+    titles
+    columns
+
+    Returns
+    -------
+
+    """
     X, mapping = make_split_df(fold_generator, titles, columns=columns)
     print(tabulate([(v, k) for k, v in mapping.items()]))
     print(tabulate(X, headers=X.columns))
 
 
 class CrossValidator(ABC):
+    """
+    The base class for all cross validation splitters.
+    Taken from sklearn with some small modifications
+    """
+
     @abstractmethod
     def __init__(self, n_splits, *, shuffle, random_state):
         if not isinstance(n_splits, int):
             raise ValueError(
-                "The number of folds must of integer type. "
-                "%s of type %s was passed." % (n_splits, type(n_splits))
+                f"The number of folds must of integer type."
+                f"{n_splits} of type {type(n_splits)} was passed."
             )
         n_splits = int(n_splits)
 
@@ -470,9 +431,7 @@ class CombinatorialPurgedKFold(KFold, CrossValidator):
         pct_embargo: float = 0.0,
         samples_info_sets=None,
     ):
-        super(CombinatorialPurgedKFold, self).__init__(
-            n_splits, shuffle=False, random_state=None
-        )
+        super().__init__(n_splits, shuffle=False, random_state=None)
         self.samples_info_sets = samples_info_sets
         self.pct_embargo = pct_embargo
         self.n_test_splits = n_test_splits

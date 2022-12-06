@@ -1,5 +1,8 @@
-# Here we should implement a backtester that takes one or more portfolio estimator objects,
-# possibly a rebalance policy and transaction costs
+"""
+Implementation of a vectorial backtester taking a single portfolio estimator
+and other parameters as the rebalancing frequency and transaction costs, to produce
+an equity curve as result
+"""
 
 from collections import deque
 from functools import partial
@@ -8,11 +11,12 @@ from typing import Union, Tuple, List, Optional, Callable
 import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
 from sklearn.base import BaseEstimator  # type: ignore
-from sklearn.base import MetaEstimatorMixin, BaseEstimator, RegressorMixin
-from sklearn.utils.validation import check_is_fitted  # type: ignore
+from sklearn.base import MetaEstimatorMixin, RegressorMixin
+from tqdm.auto import tqdm
 
 from skportfolio._base import PortfolioEstimator
 from skportfolio._constants import APPROX_DAYS_PER_YEAR
+from skportfolio._simple import EquallyWeighted
 from skportfolio.backtest.fees import TransactionCostsFcn, basic_percentage_fee
 from skportfolio.metrics import sharpe_ratio, summary
 
@@ -30,19 +34,57 @@ def rolling_expanding_window(seq, n_min, n_max):
     -------
 
     """
-    it = iter(range(len(seq)))  # makes it iterable
+    current_iterator = iter(range(len(seq)))  # makes it iterable
     # roll it forward at least warmup steps
-    win = deque((next(it, None) for _ in range(n_min)), maxlen=n_max)
+    win = deque((next(current_iterator, None) for _ in range(n_min)), maxlen=n_max)
     # yield win
-    for e in it:
-        win.append(e)
+    for element in current_iterator:
+        win.append(element)
         yield win
 
 
+def make_position(
+    cash_weight: float,
+    asset_weights: Union[np.ndarray, List[float]],
+    asset_names: List[str],
+    cash_name: str,
+    portfolio_value: float,
+) -> pd.Series:
+    """
+    Utility function to define a position as a pd.Series
+    Parameters
+    ----------
+    cash_weight: float
+    asset_weights: float
+    asset_names: List[str]
+    cash_name: str
+    portfolio_value: float
+
+    Returns
+    -------
+    """
+    all_names = (cash_name, *asset_names)
+    all_weights = (cash_weight, *asset_weights)
+    return pd.Series(dict(zip(all_names, all_weights)), dtype=float).mul(
+        portfolio_value
+    )
+
+
 class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
+    """
+    The main backtester estimator class.
+    This object is particular. While it supports many different
+    calls to its fit method, every time the results are reset.
+    From a sklearn perspective this looks more like a Regressor
+    rather than a model selection estimator like LogisticRegressionCV.
+    This class can to be used in conjunction to hyperparameters search
+    estimators like RandomizedSearchCV or GridSearchCV provided that
+    the `cv` argument is set to [slice(None), slice(None)]
+    """
+
     def __init__(
         self,
-        estimator: PortfolioEstimator,
+        estimator: Optional[PortfolioEstimator] = None,
         name: Optional[str] = None,
         rebalance_frequency: int = 1,
         initial_weights: Optional[pd.Series] = None,
@@ -51,7 +93,7 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         window_size: Union[
             int,
             Tuple[int, Optional[int]],
-        ] = 0,
+        ] = None,
         transaction_costs: Union[float, Tuple[float, float], TransactionCostsFcn] = 0.0,
         transactions_budget: float = 0.1,
         risk_free_rate: float = 0.0,
@@ -74,43 +116,52 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
 
         Parameters
         ----------
-        estimator: PortfolioEstimator
-            Portfolio estimator to run backtest on.
+        estimator: PortfolioEstimator, default None
+            Portfolio estimator to run backtest on. If set to None an
+            EquallyWeighted strategy is adopted.
         name: str, default=None
-            Name of the backtesting strategy
-        rebalance_frequency: int, default=None
+            Name of the backtesting strategy. If set to None the name of the
+            estimator is used.
+        rebalance_frequency: int, default=1
             Number of rows to call the rebalance function.
         initial_weights: pd.Series, default=None
-            Initial portfolio weights.
+            Initial portfolio weights. If set to None, initial portfolio position
+            is all allocated in cash.
         initial_portfolio_value: float or int, default=10,000 units of currency.
             Initial portfolio value in currency units.
         warmup_period: int
             Number of rows to consider to calculate initial portfolio weights from.
-        window_size: Union[int, Tuple[int,int]]
-            The minimum and maximum window size. Default 0 means expanding window.
-            Each time the backtesting engine calls a strategy rebalance function, a window of asset price data
-            (and possibly signal data) is passed to the rebalance function.
-            The rebalance function can then make trading and allocation decisions based on a rolling window of
-            market data. The window_size property sets the size of these rolling windows.
-            Set the window in terms of time steps. The window determines the number of rows of data from
-            the asset price timetable that are passed to the rebalance function.
-            The window_size property can be set in two ways. For a fixed-sized rolling window of data
-            (for example, "50 days of price history"), the window_size property is set to a single scalar value
-            (N = 50). The software then calls the rebalance function with a price timetable containing exactly N rows
-            of rolling price data.
-            Alternatively, you can define the window_size property by using a 1-by-2 vector [min max]
+        window_size: Optional[Union[int, Tuple[int,int]]]
+            The minimum and maximum window size. Default None means expanding window.
+            Each time the backtesting engine calls a strategy rebalance function,
+            a window of asset price data (and possibly signal data) is passed to the
+            rebalance function. The rebalance function can then make trading and
+            allocation decisions based on a rolling window of market data. The window_size
+            property sets the size of these rolling windows.
+            Set the window in terms of time steps. The window determines the number of
+            rows of data from the asset price timetable that are passed to the
+            rebalance function.
+            The window_size property can be set in two ways. For a fixed-sized
+            rolling window of data (for example, "50 days of price history"), the
+            window_size property is set to a single scalar value
+            (N = 50). The software then calls the rebalance function with a price
+            timetable containing exactly N rows of rolling price data.
+            Alternatively, you can define the window_size property by using a
+            1-by-2 vector [min max]
             that specifies the minimum and maximum size for an expanding window of data.
             In this way, you can set flexible window sizes. For example:
 
             [10 None] — At least 10 rows of data
             [0 50] — No more than 50 rows of data
-            [0 None] — All available data (that is, no minimum, no maximum); this is the default value
-            [20 20] — Exactly 20 rows of data; this is equivalent to setting window_size to the scalar value 20
+            [0 None] — All available data (that is, no minimum, no maximum): default
+            [20 20] — Exactly 20 rows of data; equivalent to setting window_size to 20
 
-            The software does not call the rebalance function if the data is insufficient to create a valid rolling
-            window, regardless of the value of the RebalanceFrequency property.
-            If the strategy does not require any price or signal data history, then you can indicate that the
-            rebalance function requires no data by setting the window_size property to 0.
+            The software does not call the rebalance function if the data is insufficient to
+            create a valid rolling window, regardless of the value of the RebalanceFrequency
+            property.
+            If the strategy does not require any price or signal data history, then you can
+            indicate that the rebalance function requires no data by setting the window_size
+             property to 0.
         transaction_costs: float, Tuple[float,float], Callable[delta_pos, *args], default 0
             Either a fixed rate, a pair of buy-sell rates, or a more complex function with signature
             variable_transaction_costs(delta_pos, *args).
@@ -149,6 +200,9 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         self._min_window_size: Optional[int] = 0
         self._max_window_size: Optional[int] = None
 
+        self._reinit()
+
+    def _reinit(self):
         # attributes to be read after fit
         self.positions_: Optional[pd.DataFrame] = None
         self.equity_curve_: Optional[pd.Series] = None
@@ -160,8 +214,8 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
 
     def fit(self, X, y=None, **fit_params) -> "Backtester":
         """
-        Fit the backtester on a rolling-expanding window base to the data, rebalancing when needed and keeping
-        into account transaction costs.
+        Fit the backtester on a rolling-expanding window base to the data, rebalancing when
+        needed and keeping into account transaction costs.
 
         Parameters
         ----------
@@ -169,8 +223,8 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
             Prices dataframe.
         y: pd.Series, default=None
             Other benchmarks to be passed to the portfolio estimator method.
-            Useful when backtesting within the Black-Litterman framework where the market implied returns
-            are necessary.
+            Useful when backtesting within the Black-Litterman framework where the market
+            implied returns are necessary.
 
         Other Parameters:
         ------------------
@@ -182,8 +236,16 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         -------
         self
         """
+        self._reinit()
+        if self.estimator is None:
+            self.estimator = EquallyWeighted()
         asset_returns = X.pct_change().dropna()
         self._asset_names = X.columns.tolist()
+        if "CASH" in self._asset_names:
+            raise ValueError(
+                "CASH is reserved for liquidity hence cannot be an asset name. Please "
+                "rename your dataframe column."
+            )
         n_samples, n_assets = X.shape
         rebalance_signal = fit_params.get("rebalance_signal", (False,) * n_samples)
         # private variables conversion logic
@@ -193,9 +255,15 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
                 self.window_size[1] if self.window_size[1] is not None else n_samples
             )
         elif isinstance(self.window_size, int):
-            # in case 0 is specified, add one for having at least one row of data, hence expanding window
+            # in case 0 is specified, add one for having at least one row of data,
+            # hence expanding window
             self._min_window_size, self._max_window_size = (
                 self.window_size,
+                n_samples,
+            )
+        elif self.window_size is None:
+            self._min_window_size, self._max_window_size = (
+                0,
                 n_samples,
             )
         else:
@@ -212,21 +280,24 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
             raise ValueError("Rebalancing frequency must be greater or equal than 1")
 
         if self.initial_weights is None:
-            initial_positions = pd.Series(
-                {"CASH": self.initial_portfolio_value}
-                | dict(zip(self._asset_names, (0.0,) * n_assets)),
-                dtype=float,
+            initial_positions = make_position(
+                1.0,
+                [0.0] * n_assets,
+                self._asset_names,
+                "CASH",
+                self.initial_portfolio_value,
             )
         else:
             if self.initial_weights.shape[0] != X.shape[1]:
                 raise ValueError(
                     "Invalid number of initial weights, provide all weights of each asset"
                 )
-            initial_positions = self.initial_portfolio_value * pd.Series(
-                {
-                    "CASH": 1 - self.initial_weights.sum(),
-                    **self.initial_weights.to_dict(),
-                }
+            initial_positions = make_position(
+                1.0 - self.initial_weights.sum(),
+                self.initial_weights.values,
+                self._asset_names,
+                "CASH",
+                self.initial_portfolio_value,
             )
         if self.score_fcn is None:
             self.score_fcn: Callable = sharpe_ratio
@@ -239,24 +310,21 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         self.returns_: pd.Series = pd.Series(dtype=float, index=X.index, data=np.NAN)
 
         positions: List[pd.Series] = [initial_positions]
-        # initialize
+        # initialize positions
         previous_positions: pd.Series = initial_positions
 
         if self.show_progress:
-            from tqdm.auto import tqdm
-
+            name = self.name if self.name is not None else str(self.estimator)
             progress = tqdm(
-                range(n_samples - 1), desc=f"Backtesting {self.name}", leave=False
+                range(n_samples - 1),
+                desc=f"Backtesting {name}",
+                leave=False,
             )
         else:
             progress = range(n_samples - 1)
         for idx in progress:
             start_positions = previous_positions
             next_idx = idx + self.warmup_period + 1
-
-            # find the span over to which calculate the
-            end_window: int = idx + self._min_window_size - 1
-            start_window: int = max(0, end_window + 1 - self._max_window_size)
             start_portfolio_value = start_positions.sum()
             cash_return = self.risk_free_rate
             margin_return = self.cash_borrow_rate
@@ -275,7 +343,6 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
                     ),
                     axis=0,
                 )
-            # start_date = X.index[idx]
             # Apply current day's returns and calculate the end-of-row positions
             end_date = X.index[next_idx]
             end_positions = start_positions * row_returns
@@ -324,14 +391,17 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         # Finally converts the positions in a dataframe
         self.positions_ = pd.DataFrame(positions, index=X.index[self.warmup_period :])
         self.returns_.dropna(inplace=True)  # returns have one row less than original
-        self.turnover_ = self.turnover_.reindex(self.returns_.index).fillna(0)
+
+        self.turnover_ = self.turnover_.reindex(
+            self.returns_.index.drop_duplicates()
+        ).fillna(value=0.0)
         # and computes the equity curve
-        self.equity_curve_ = self.positions_.sum(1)
+        self.equity_curve_ = self.positions_.sum(axis=1)
         self.buy_sell_costs_ = self.buy_sell_costs_.reindex(
             self.equity_curve_.index
-        ).fillna(0)
+        ).fillna(value=0.0)
         last_position = positions[-1].drop("CASH")
-        self.weights_ = last_position / last_position.sum()
+        self.weights_ = last_position.div(last_position.sum())
         return self
 
     def fit_predict(self, X, y=None, **fit_kwargs):
