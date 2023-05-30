@@ -5,4 +5,4 @@ SubsetResampling (bagging-like estimators)
 RobustBayesian (hybrid-robust)
 """
 
-from ._ensemble import MichaudResampledFrontier, SubsetResampling, RobustBayesian
+from ._ensemble import MichaudResampledFrontier, SubsetResampling

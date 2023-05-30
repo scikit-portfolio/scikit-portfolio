@@ -1,3 +1,7 @@
+"""
+Implementation of basic portfolio estimators, such as single asset full allocation, 
+equally weighted allocation and other methods not based on convex optimization.
+"""
 from abc import ABCMeta
 from typing import Sequence
 import numpy as np
@@ -70,6 +74,7 @@ class CapWeighted(PortfolioEstimator, metaclass=ABCMeta):
     Requires additional data y in the fit method in the form of a Pandas dataframe
     with market capitalization.
     """
+
     def __init__(self, returns_data: bool = False):
         self.returns_data = returns_data
 

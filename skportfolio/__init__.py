@@ -1,9 +1,8 @@
 """
 Portfolio optimization for Python
-==================================
 
-scikit-portfolio is a Python module integrating classical portfolio optimization methods in the tightly-knit world of
-scientific Python packages (numpy, scipy, matplotlib).
+scikit-portfolio is a Python module integrating classical portfolio optimization methods  in the
+tightly-knit world of scientific Python packages (numpy, scipy, matplotlib).
 It aims to provide simple and efficient solutions to portfolio optimization problems
 that are accessible to everybody and reusable in various contexts.
 """

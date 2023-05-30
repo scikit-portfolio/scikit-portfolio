@@ -1,3 +1,7 @@
+"""
+Module for portfolio results visualization
+"""
+
 from .visualization import (
     plot_frontier,
     pie_chart,

@@ -135,10 +135,11 @@ def info_ratio(
 ) -> float:
     """
     Computes the annualized information ratio of a set of returns.
-    Although originally called the “appraisal ratio” by Treynor and Black, the information ratio is the ratio of
-    relative return to relative risk (known as “tracking error”). Whereas the Sharpe ratio looks at returns relative
-    to a riskless asset, the information   ratio is based on returns relative to a risky benchmark which is known
-    colloquially as a “bogey.” Given an asset or portfolio of assets with random returns designated by Asset and a
+    Although originally called the “appraisal ratio” by Treynor and Black, the information
+    ratio is the ratio of relative return to relative risk (known as “tracking error”).
+    Whereas  the Sharpe ratio looks at returns relative to a riskless asset, the information
+    ratio is based on returns relative to a risky benchmark which is known colloquially as a
+    “bogey.” Given an asset or portfolio of assets with random returns designated by Asset and a
     benchmark with random returns designated by Benchmark, the information ratio has the form:
 
     ```
@@ -645,8 +646,8 @@ def maxdrawdown(r: pd.Series) -> float:
 
 def number_effective_assets(weights: pd.Series) -> float:
     """
-    Returns a measure of portfolio diversification, known as number of effective assets.
-    Its maximum value
+    Returns a measure of portfolio diversification, known as number of effective assets, computed
+    as the sum of the inverse squared weights.
     Parameters
     ----------
     weights: pd.Series

@@ -103,11 +103,20 @@ class BaseReturnsEstimator(TransformerMixin, BaseEstimator, metaclass=ABCMeta):
 
 
 class MeanHistoricalLinearReturns(BaseReturnsEstimator):
+    """
+    Mean historical returns are simply computed as the historical **average** of the geometric
+    returns over all prices.
+    """
+
     def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = mean_historical_return(X, self.returns_data)
 
 
 class MeanHistoricalLogReturns(BaseReturnsEstimator):
+    """
+    Rather than using linear returns, we compute the average of the log returns
+    """
+
     def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = mean_historical_log_return(
             X,
@@ -116,6 +125,11 @@ class MeanHistoricalLogReturns(BaseReturnsEstimator):
 
 
 class CompoundedHistoricalLinearReturns(BaseReturnsEstimator):
+    """
+    Compounded historical returns are simply computed as the geometric
+    average of the linear historical returns. In other words, given the returns time series
+    """
+
     def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = expret.mean_historical_return(
             X, self.returns_data, compounding=True
@@ -123,6 +137,10 @@ class CompoundedHistoricalLinearReturns(BaseReturnsEstimator):
 
 
 class CompoundedHistoricalLogReturns(BaseReturnsEstimator):
+    """
+    Rather than using linear returns, we compute the geometric average of the log returns.
+    """
+
     def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = expret.mean_historical_return(
             X,
@@ -133,16 +151,30 @@ class CompoundedHistoricalLogReturns(BaseReturnsEstimator):
 
 
 class MedianHistoricalLinearReturns(BaseReturnsEstimator):
+    """
+    Like for `MeanHistoricalLinearReturns`, but using median rather than average.
+    """
+
     def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = median_historical_return(X, self.returns_data)
 
 
 class MedianHistoricalLogReturns(BaseReturnsEstimator):
+    """
+    Like for `MeanHistoricalLogReturns`, but using **median** rather than average.
+    """
+
     def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = median_historical_log_return(X, self.returns_data)
 
 
 class EMAHistoricalReturns(BaseReturnsEstimator):
+    """
+    Estimates the (annualized if frequency=252) expected returns as the exponential moving
+    average of linear historical returns. Compounding is set to false by default.
+    Span set default to 60 rows.
+    """
+
     def __init__(self, returns_data=False, span=60):
         super().__init__(returns_data)
         self.span = span
@@ -152,6 +184,12 @@ class EMAHistoricalReturns(BaseReturnsEstimator):
 
 
 class CAPMReturns(BaseReturnsEstimator):
+    """
+    Compute a return estimate using the Capital Asset Pricing Model.
+    Under the CAPM, asset returns are equal to market returns plus a $\beta$ term encoding the
+    relative risk of the asset.
+    """
+
     def __init__(
         self,
         returns_data=False,
@@ -172,6 +210,11 @@ class CAPMReturns(BaseReturnsEstimator):
 
 
 class RollingMedianReturns(BaseReturnsEstimator):
+    """
+    Estimates the returns from the average of the rolling median over a `window` of
+    20 observations, by default.
+    """
+
     def __init__(self, returns_data=False, window=20):
         super().__init__(returns_data=returns_data)
         self.window = window
@@ -183,15 +226,25 @@ class RollingMedianReturns(BaseReturnsEstimator):
 
 
 class MarketImpliedReturns(BaseReturnsEstimator):
+    """
+    Market implied returns, estimate of the expected returns based on a benchmark
+    """
+
     def _set_expected_returns(self, X, y=None, **fit_params):
         """
-        This implementation
+        Based on this implementation:
+
         https://it.mathworks.com/help/finance/black-litterman-portfolio-optimization.html
+
         Parameters
         ----------
+        X: pd.DataFrame
+            prices or returns
+        y: pd.Series
+            Must be benchmark returns
+
+        Other Parameters
         **fit_params
-        X: prices or returns
-        y: must be benchmark returns
 
         Returns
         -------
@@ -203,17 +256,17 @@ class MarketImpliedReturns(BaseReturnsEstimator):
             y = y.pct_change().dropna()
         sigma = X.cov()
 
-        n = X.shape[1]
-        w = cp.Variable(shape=(n,), pos=True)
-        expr = 0.5 * cp.sum_squares(X.values @ w - y.values)
+        n_assets = X.shape[1]
+        weights = cp.Variable(shape=(n_assets,), pos=True)
+        expr = 0.5 * cp.sum_squares(X.values @ weights - y.values)
         problem = cp.Problem(
-            objective=cp.Minimize(expr=expr), constraints=[cp.sum(w) == 1]
+            objective=cp.Minimize(expr=expr), constraints=[cp.sum(weights) == 1]
         )
         problem.solve()
         sharpe_benchmark = y.mean() / y.std()
-        delta = sharpe_benchmark / np.sqrt(w.value.T @ sigma @ w.value)
-        self.pi = delta * sigma @ w.value
-        self.expected_returns_ = self.pi
+        delta = sharpe_benchmark / np.sqrt(weights.value.T @ sigma @ weights.value)
+        self.pi_ = delta * sigma @ weights.value
+        self.expected_returns_ = self.pi_
 
 
 all_returns_estimators = [

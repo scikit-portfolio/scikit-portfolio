@@ -1,4 +1,9 @@
+"""
+Some functions for the modeling of transaction costs in backtesting
+"""
+
 from typing import Tuple, Union, Sequence, Dict, Callable
+
 import numpy as np
 import pandas as pd
 

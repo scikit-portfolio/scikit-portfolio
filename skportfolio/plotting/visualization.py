@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 
 from skportfolio.backtest.backtester import Backtester
-from skportfolio import PortfolioEstimator
 
 
 def _validate_plotting_kwargs(**kwargs):
@@ -35,7 +34,7 @@ def _validate_plotting_kwargs(**kwargs):
 
 
 def plot_frontier(
-    ptf_estimator: PortfolioEstimator,
+    ptf_estimator: "PortfolioEstimator",
     prices_or_returns,
     benchmark=None,
     estimator_name: Optional[str] = None,
@@ -295,7 +294,7 @@ def pie_chart(weights: pd.Series, threshold: int = 12, ax=None, **kwargs):
 
 
 def risk_allocation_chart(
-    ptf_estimator: PortfolioEstimator,
+    ptf_estimator: "PortfolioEstimator",
     prices_or_returns,
     num_portfolios: int = 20,
     ax=None,

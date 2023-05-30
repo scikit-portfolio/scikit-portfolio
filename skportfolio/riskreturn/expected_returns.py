@@ -116,12 +116,13 @@ def median_historical_log_return(
     Parameters
     ----------
     prices_or_returns: pd.DataFrame
-        Provide either the prices or the returns, must be coherent with what is passed as returns_data.
+        Provide either the prices or the returns, must be coherent with returns_data
     returns_data: bool
         If passing prices, you need to set returns_data=False, otherwise returns_data=True
     frequency: int
-        How to annualize the returns, if frequency=1 you get the daily average returns, if frequency=252 you assume
-        returns on business days. If frequency=30.5 you assume monthly returns.
+        How to annualize the returns, if frequency=1 you get the daily average returns, if
+        frequency=252 you assume returns on business days. If frequency=30.5 you assume monthly
+        returns.
     Returns
     -------
     The annualized returns.

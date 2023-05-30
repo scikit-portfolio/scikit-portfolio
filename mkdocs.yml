@@ -24,9 +24,11 @@ theme:
     - navigation.top
 
 extra_javascript:
-  - javascripts/config.js
-  - https://polyfill.io/v3/polyfill.min.js?features=es6
-  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+  - 'https://polyfill.io/v3/polyfill.min.js?features=es6'
+  - 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js'
+
+extra_css:
+  - 'https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css'
 
 markdown_extensions:
   - attr_list
@@ -86,8 +88,10 @@ nav:
     - Backtesting: backtesting.md
   - Developing new methods:
     - Estimators: portfolio_estimator.md
-  - Docker: docker.md
-  - Datasets: datasets.md
+  - Docker:
+    - Deployment: docker.md
+  - Playing with data:
+    - Public datasets: datasets.md
   - API:
     - Mean variance frontier: efficient_frontier_api.md
     - Mean semivariance frontier: efficient_semivariance_api.md
@@ -98,3 +102,5 @@ nav:
     - Risk estimators: risk_api.md
     - Returns estimators: returns_api.md
     - Black-Litterman estimator: blacklitterman_api.md
+  - References:
+      - Books and papers: books_papers.md

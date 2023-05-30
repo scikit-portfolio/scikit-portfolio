@@ -1,3 +1,8 @@
+"""
+Base modulo defining the portfolio estimator base class used throughout the entire library and
+derived from the scikit-learn BaseEstimator
+"""
+
 from __future__ import annotations
 
 from abc import ABCMeta
@@ -27,7 +32,8 @@ class PortfolioEstimator(
 ):
     """
     The base class of all portfolio estimators.
-    It defines the predict method, which is common for all
+    It defines the predict method, which is common for all as well as the .fit and the .score
+    methods which are necessary to all derived classes.
     """
 
     @abstractmethod
@@ -121,18 +127,19 @@ class PortfolioEstimator(
         in the `.fit` argument `X`.
         Parameters
         ----------
-        returns_data
+        returns_data:
+            True if next calls to fit are providing returns rather than prices, False otherwise
 
         Returns
         -------
-
+        The current PortfolioEstimator instance
         """
         self.returns_data = returns_data
         return self
 
     def set_returns_estimator(self, rets_estimator: BaseReturnsEstimator):
         """
-        Modify the base returns estimator with a specified rets_est
+        Replace the current returns estimator with another one
 
         Parameters
         ----------
@@ -140,7 +147,7 @@ class PortfolioEstimator(
             The new returns estimator
         Returns
         -------
-        self
+        The current PortfolioEstimator instance
         """
         if not isinstance(rets_estimator, BaseReturnsEstimator):
             raise TypeError("Must set a base returns estimator")
@@ -149,7 +156,7 @@ class PortfolioEstimator(
 
     def set_risk_estimator(self, risk_estimator: BaseRiskEstimator):
         """
-        Modify the base risk estimator with a new risk estimator
+        Replace the current risk estimator with another one
 
         Parameters
         ----------
@@ -157,14 +164,20 @@ class PortfolioEstimator(
             The new risk estimator
         Returns
         -------
-        self
+        The current PortfolioEstimator instance
         """
         if not isinstance(risk_estimator, BaseRiskEstimator):
             raise TypeError("Must set a base risk estimator")
         self.risk_estimator = risk_estimator
         return self
 
-    def info(self):
+    def info(self) -> str:
+        """
+        Prints some information about the current PortfolioEstimator instance
+        Returns
+        -------
+        str
+        """
         out = f"Model name: {self.__class__.__name__}\n{pd.Series(self.get_params())}\n"
         out += "\nWeights"
         if self.weights_ is not None:

@@ -147,7 +147,7 @@ def covariance_glasso(
     returns_data=False,
     frequency=1,
     alpha=0.5,
-    max_iter: int = 10_000,
+    max_iter: int = 100_000,
 ) -> pd.DataFrame:
     """
     The GraphicalLasso estimator uses an l1 penalty to enforce sparsity on the precision matrix:
@@ -179,42 +179,16 @@ def correlation_rmt(
     """
     FinRMT uses Random Matrix Theory (RMT) to create a filtered correlation
     matrix from a set of financial time series price data, for example the
-    daily closing prices of the stocks in the S&P
-     Syntax
-    corr_rmt_filtered=FinRMT(priceTS)
-             Description
-    This function eigendecomposes a correlation matrix of time series
+    daily closing prices of the stocks in the S&P.
+
+    This function eigen-decomposes a correlation matrix of time series
     and splits it into three components, Crandom, Cgroup and Cmarket,
     according to techniques from literature (See, "Systematic Identification
     of Group Identification in Stock Markets, Kim & Jeong, (2008).") and
-    returns a filtered correlation matrix containging only the Cgroup
-    components.
-    The function is intended to be used in conjunction with a community
+    returns a filtered correlation matrix containing only the Cgroup
+    components. The function is intended to be used in conjunction with a community
     detection algorithm (such as the Louvain method) to allow for community
     detecion on time series based networks.
-                     Inputs arguments:
-    priceTS : an mxn matrix containing timeseries' of stock prices. Each column
-    should be a time series for one financial instrument and each row should
-    correspond to the value of each instrument at a point in time. For example
-    32.00   9.43   127.25   ...
-    32.07   9.48   126.98   ...
-    32.08   9.53   126.99   ...
-     ...    ...     ....    ...
-    No header columns or timestamp columns should be included
-             Outputs:
-    corr_rmt_filtered : The filtered correlation matrix. This matrix can be passed directly to
-    a community detection algorithm in place of the modularity matrix
-             Example:
-    ModularityMatrix = FinRMT(myPriceData)
-     ...
-    Communities = myCommunityDectionAlg(ModularityMatrix)
-
-    Issues & Comments
-    Note that the output of this function can serve as the Modularity
-    Matrix (Not the Adjacency matrix) for a generalized Community Detection
-    Algorithm. Specifically, one which does not rely on properties of the
-    Adjaceny Matrix to create the Modularity Matrix. The Louvain Method
-    and methods based on spectral decompositon are examples of such.
 
     Parameters
     ----------
@@ -468,6 +442,7 @@ def covariance_denoise_spectral(
     """
     Estimates the covariance matrix with spectral denoising approach.
     Please see the `denoise_covariance` method.
+
     Parameters
     ----------
     prices: pd.DataFrame
@@ -475,6 +450,7 @@ def covariance_denoise_spectral(
     frequency: int
     **kwargs
         denoise_method: str, default spectral
+
     Returns
     -------
     The spectrally denoised covariance matrix
@@ -498,6 +474,7 @@ def covariance_target_shrinkage_denoised(
     """
     Estimates the covariance matrix with shrinkage approach.
     Please see the `denoise_covariance` method.
+
     Parameters
     ----------
     prices: pd.DataFrame
@@ -506,6 +483,7 @@ def covariance_target_shrinkage_denoised(
     **kwargs
         kde_bwidth: float, default 0.01
         denoise_method: str, default target_shrink
+
     Returns
     -------
     pd.DataFrame
