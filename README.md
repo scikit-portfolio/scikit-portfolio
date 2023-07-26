@@ -18,7 +18,7 @@ pip install git+https://github.com/scikit-portfolio/scikit-portfolio
 # Getting started
 ## Optimize a minimum volatility portfolio on real prices data
 
-`scikit-portfolio` offers dozens of built-in portfolio optimization algorithsm and models called [PortfolioEstimators](portfolio_estimator.md).
+`scikit-portfolio` offers dozens of built-in portfolio optimization algorithsm and models called [PortfolioEstimators](docs/portfolio_estimator.md).
 Each estimator can be fitted to either equity prices or returns using its `.fit` method.
 
 Here is a simple example where we fit a `MinimumVolatility`  portfolio to some technological stock prices.
@@ -209,7 +209,7 @@ ax = MeanVarianceEfficientReturn().set_target_return(0.6).fit(X).plot_frontier(X
 
 ## Returns and risk estimators
 
-In general, when we talk about expected returns, we mean a variety of statistical estimators of the expected value of equity returns, such as mean historical returns, whereas when we talk about risk, we usually mean volatility estimators like sample [standard deviation of portfolio returns](efficient_frontier.md), or other more complex measures like the [conditional value at risk](efficient_cvar.md).
+In general, when we talk about expected returns, we mean a variety of statistical estimators of the expected value of equity returns, such as mean historical returns, whereas when we talk about risk, we usually mean volatility estimators like sample [standard deviation of portfolio returns](docs/efficient_frontier.md), or other more complex measures like the [conditional value at risk](docs/efficient_cvar.md).
 
 `scikit-portfolio` has devised a method to cope with the problem of assessing expected returns and or risk, using the same API as the `PortfolioEstimator`. 
 
@@ -264,7 +264,7 @@ Imagine in the previous example we have fitted the minimum volatility portfolio 
 How do we measure which portfolio method performs best out-of-sample, without getting trapped into the overfitting problem, or mixing training and testing data?
 
 This is known in the financial investment domain as the [backtesting](https://www.investopedia.com/terms/b/backtesting.asp) phase of the investment portfolio.
-The `scikit-portfolio` library, leaning on the well-established `scikit-learn` module for model selection, provides different methdos to split the data into `train` and `test`, adding new tools such as the very smart [`CombinatorialPurgedCrossValidation`](hyperparameters.md) methods.
+The `scikit-portfolio` library, leaning on the well-established `scikit-learn` module for model selection, provides different methdos to split the data into `train` and `test`, adding new tools such as the very smart [`CombinatorialPurgedCrossValidation`](docs/hyperparameters.md) methods.
 
 We here briefly show how to perform a 5-fold backtesting procedure, with the `portfolio_cross_validate` helper:  
  
@@ -349,7 +349,7 @@ The total number of samples for both training and test is counted in the last tw
 
 
 Note that it is also possible to manually iterate over the folds, use different data splitting strategies,  and use
-custom scoring functions, all provided in the [metrics](metrics.md) submodule.
+custom scoring functions, all provided in the [metrics](docs/metrics.md) submodule.
 If interested, please refer to the `skportfolio` and `sklearn` API for more details.
 
 ## Automatic parameters search (hyperparameters optimization)
