@@ -35,8 +35,6 @@ markdown_extensions:
   - admonition
   - footnotes
 
-  - toc:
-      permalink: true
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.details

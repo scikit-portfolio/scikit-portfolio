@@ -421,7 +421,7 @@ def cvar_historic(r: Union[pd.Series, pd.DataFrame], level: int = 5) -> float:
         # it is based on all the returns that are less than the historic var
         is_beyond = r <= -var_historic(r, level=level)
         return -r[is_beyond].mean()
-    elif isinstance(r, pd.DataFrame):
+    if isinstance(r, pd.DataFrame):
         return r.aggregate(cvar_historic, level=level)
     else:
         raise TypeError("Expected r to be a Series or DataFrame")
@@ -660,6 +660,19 @@ def number_effective_assets(weights: pd.Series) -> float:
     return 1.0 / (weights**2).sum()
 
 
+def mad_volatility(r: pd.Series) -> float:
+    """
+    Returns the mean absolute volatility as $1/T \sum_t |r_t|$
+    Parameters
+    ----------
+    r: pd.Series
+
+    Returns
+    -------
+    """
+    return r.abs().mean()
+
+
 def summary(
     r: pd.Series,
     frequency: int = APPROX_BDAYS_PER_YEAR,
@@ -728,4 +741,4 @@ def equity_curve(df: Union[pd.Series, pd.DataFrame], initial_value: float = 1):
     -------
     The equity curve. First value is set to initial_value
     """
-    return initial_value * (1 + df.pct_change().cumprod())
+    return initial_value * ((1 + df.pct_change()).cumprod())

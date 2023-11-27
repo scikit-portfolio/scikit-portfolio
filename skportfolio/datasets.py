@@ -91,8 +91,7 @@ def load_dataset(name, cache=True, data_home=None, **kws):
     if "date" in df.columns:
         df["date"] = pd.to_datetime(df["date"])
         return df.set_index("date")
-    else:
-        return df
+    return df
 
 
 def load_tech_stock_prices():
@@ -179,3 +178,11 @@ def load_dow_prices() -> pd.DataFrame:
     Pandas dataframe
     """
     return load_dataset("dowportfolio")
+
+
+def load_nasdaq_500_10_years() -> pd.DataFrame:
+    return load_dataset("nasdaq_500_10_years")
+
+
+def load_nasdaq_500_20_years() -> pd.DataFrame:
+    return load_dataset("nasdaq_500_20_years")
