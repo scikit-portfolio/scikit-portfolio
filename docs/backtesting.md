@@ -6,7 +6,6 @@ estimators shipped with it.
 In developing the backtesting of a portfolio strategy, you only need to define a couple of parameters that are fundamental
 for the run of the backtest.
 
-
 ```python
 import pandas as pd
 from skportfolio.backtest.backtester import Backtester
@@ -17,18 +16,18 @@ from skportfolio import sharpe_ratio
 # load some price data
 prices = load_dow_prices()
 # define the backtest strategy
-backtester=Backtester(
+backtester = Backtester(
     estimator=InverseVariance(),
     name="BestEstimatorStrategy",
     warmup_period=0,
     initial_weights=None,
     initial_portfolio_value=10_000,
-    rebalance_frequency=25,
-    window_size=None, # to have an expanding window approach
+    rebalance_frequency_or_signal=25,
+    window_size=None,  # to have an expanding window approach
     rates_frequency=252,
     risk_free_rate=0.00,
-    transaction_costs=(0.005,0.005),
-    score_fcn=sharpe_ratio # to sort the results based on the strategy Sharpe ratio
+    transaction_costs=(0.005, 0.005),
+    score_fcn=sharpe_ratio  # to sort the results based on the strategy Sharpe ratio
 )
 
 # run it on data
