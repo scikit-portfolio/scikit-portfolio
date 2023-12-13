@@ -109,7 +109,9 @@ class MeanHistoricalLinearReturns(BaseReturnsEstimator):
     """
 
     def _set_expected_returns(self, X, y=None, **fit_params):
-        self.expected_returns_ = mean_historical_return(X, self.returns_data)
+        self.expected_returns_ = mean_historical_return(
+            prices_or_returns=X, returns_data=self.returns_data
+        )
 
 
 class MeanHistoricalLogReturns(BaseReturnsEstimator):
@@ -119,8 +121,7 @@ class MeanHistoricalLogReturns(BaseReturnsEstimator):
 
     def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = mean_historical_log_return(
-            X,
-            self.returns_data,
+            prices_or_returns=X, returns_data=self.returns_data, frequency=1
         )
 
 
@@ -132,7 +133,7 @@ class CompoundedHistoricalLinearReturns(BaseReturnsEstimator):
 
     def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = expret.mean_historical_return(
-            X, self.returns_data, compounding=True
+            prices=X, returns_data=self.returns_data, compounding=True, frequency=1
         )
 
 
@@ -143,8 +144,9 @@ class CompoundedHistoricalLogReturns(BaseReturnsEstimator):
 
     def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = expret.mean_historical_return(
-            X,
-            self.returns_data,
+            prices=X,
+            returns_data=self.returns_data,
+            frequency=1,
             compounding=True,
             log_returns=True,
         )
@@ -156,7 +158,9 @@ class MedianHistoricalLinearReturns(BaseReturnsEstimator):
     """
 
     def _set_expected_returns(self, X, y=None, **fit_params):
-        self.expected_returns_ = median_historical_return(X, self.returns_data)
+        self.expected_returns_ = median_historical_return(
+            prices_or_returns=X, returns_data=self.returns_data, frequency=1
+        )
 
 
 class MedianHistoricalLogReturns(BaseReturnsEstimator):
@@ -165,7 +169,9 @@ class MedianHistoricalLogReturns(BaseReturnsEstimator):
     """
 
     def _set_expected_returns(self, X, y=None, **fit_params):
-        self.expected_returns_ = median_historical_log_return(X, self.returns_data)
+        self.expected_returns_ = median_historical_log_return(
+            prices_or_returns=X, returns_data=self.returns_data, frequency=1
+        )
 
 
 class EMAHistoricalReturns(BaseReturnsEstimator):
@@ -175,12 +181,19 @@ class EMAHistoricalReturns(BaseReturnsEstimator):
     Span set default to 60 rows.
     """
 
-    def __init__(self, returns_data=False, span=60):
+    def __init__(self, returns_data=False, compounding=False, span=60):
         super().__init__(returns_data)
         self.span = span
+        self.compounding = compounding
 
     def _set_expected_returns(self, X, y=None, **fit_params):
-        self.expected_returns_ = ema_historical_return(X, self.returns_data, self.span)
+        self.expected_returns_ = ema_historical_return(
+            prices_or_returns=X,
+            returns_data=self.returns_data,
+            frequency=1,
+            span=self.span,
+            compounding=self.compounding,
+        )
 
 
 class CAPMReturns(BaseReturnsEstimator):
@@ -203,9 +216,10 @@ class CAPMReturns(BaseReturnsEstimator):
     def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = capm_return(
             prices_or_returns=X,
-            benchmark=y,
             returns_data=self.returns_data,
+            frequency=1,
             risk_free_rate=self.risk_free_rate,
+            benchmark=y,
         )
 
 
@@ -221,7 +235,10 @@ class RollingMedianReturns(BaseReturnsEstimator):
 
     def _set_expected_returns(self, X, y=None, **fit_params):
         self.expected_returns_ = rolling_median_returns(
-            X, self.returns_data, self.window
+            prices_or_returns=X,
+            returns_data=self.returns_data,
+            frequency=1,
+            window=self.window,
         )
 
 
