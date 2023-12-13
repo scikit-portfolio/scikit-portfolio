@@ -177,6 +177,7 @@ def ema_historical_return(
     returns_data=False,
     frequency: int = 1,
     span: int = 60,
+    compounding: bool = False,
 ) -> pd.Series:
     """
     Returns the expected returns from exponential weighted moving average
@@ -193,12 +194,18 @@ def ema_historical_return(
         returns on business days. If frequency=30.5 you assume monthly returns.
     span: int
         Default three business months, approximately 60 business days.
+    compounding: bool
+        Whether to use returns compounding or not
     Returns
     -------
     The annualized returns.
     """
     return expret.ema_historical_return(
-        prices_or_returns, returns_data=returns_data, frequency=frequency, span=span
+        prices_or_returns,
+        returns_data=returns_data,
+        frequency=frequency,
+        span=span,
+        compounding=compounding,
     )
 
 
