@@ -124,6 +124,8 @@ class SubsetResampling(PortfolioEstimator):
     A stochastic method that randomly chooses a subset of assets from the universe building
     a new portfolio by averaging over many scenarios.
     https://blog.thinknewfound.com/2018/07/machine-learning-subset-resampling-and-portfolio-optimization/
+    Also based on this paper:
+    https://www.bengillen.com/uploads/1/2/3/8/123891022/subsets.pdf
     """
 
     def __init__(
