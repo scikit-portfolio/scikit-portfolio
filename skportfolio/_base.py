@@ -21,9 +21,7 @@ from skportfolio.riskreturn import BaseRiskEstimator
 
 def assert_is_prices(X: pd.DataFrame):
     if (X < 0).any().any():
-        raise ValueError(
-            "You are likely feeding returns and not prices. Positive reals are expected in the predict method."
-        )
+        raise ValueError("You are likely feeding returns and not prices.")
 
 
 class PortfolioEstimator(
@@ -57,24 +55,49 @@ class PortfolioEstimator(
             The current estimator
         """
 
-    def predict(self, X) -> pd.Series:
+    def predict(self, X):
         """
-        Applies the estimated weights to the prices to get the portfolio value.
-        In other words, generates the equity curve of the portfolio.
-
+        Extrapolates the future portfolio value (unnormalized equity curve) at
+        the  applying the fitted weights from the
+        .fit
+        method to the initial row of data and letting then the portfolio value evolve starting
+        from that point.
         Parameters
         ----------
-        X: pd.DataFrame
-            The prices expressed as a pandas dataframe
+        X
 
         Returns
         -------
-        pd.Series
-            The estimated portfolio value time series
+
         """
         check_is_fitted(self)
         assert_is_prices(X)
-        return X.dot(self.weights_).rename(str(self))
+
+        # Convert to NumPy array for faster computation
+        X_np = X.values
+        weights_np = np.array(self.weights_)
+
+        # Calculate returns and fill NaN values with 0.0
+        rets_np = np.diff(X_np, axis=0) / X_np[:-1]
+        # )  # Add zero row for initial day
+
+        # Calculate position for the initial day using dot product
+        position_0 = X_np[0, :].dot(weights_np)
+        initial_value = X_np[0, :].sum()
+
+        # Initialize positions and equity curve arrays
+        positions_np = np.zeros_like(X_np)
+        positions_np[0] = position_0
+        equity_curve_np = np.zeros(len(X))
+        equity_curve_np[0] = initial_value
+
+        # Vectorized computation of positions and equity curve
+        np.cumprod(1 + rets_np, axis=0, out=positions_np[1:])
+        positions_np[1:] *= positions_np[0]
+        equity_curve_np[1:] = positions_np[1:].sum(axis=1)
+
+        # Convert back to pandas Series for compatibility
+        return pd.Series(equity_curve_np, index=X.index, name=self.weights_.name)
 
     def score(self, X, y=None, **kwargs):
         """
