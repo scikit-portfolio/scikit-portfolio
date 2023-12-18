@@ -75,12 +75,12 @@ Note that the model is fitted using `X` and `y`, but the object **holds no refer
 `X.shape[0]` should be the same as `y.shape[0]` whenever `y` is necessary. Most portfolio methods don't need it.
 If this requisite is not met, an exception of type ValueError should be raised.
 `y` is almost always ignored. However, to make it possible to use the estimator as part of a pipeline.
-For the same reason, `fit_predict`, `fit_transform`, `score` and `partial_fit` methods need to accept a y argument in the second place if they are implemented.
+For the same reason, `score` and `partial_fit` methods need to accept a y argument in the second place if they are implemented.
 
 The method should return the object (`self`). This pattern is useful to be able to implement quick **one liners** in an IPython session such as:
 
 ```python
-prices_test_predicted = MinimumVolatility().partial_fit(prices_train).predict(prices_test)
+prices_test_predicted = MinimumVolatility().fit(prices_train).predict(prices_test)
 ```
 
 Depending on the nature of the algorithm, fit can sometimes also accept additional keywords arguments. However, any parameter that can have a value assigned prior to having access to the data should be an `__init__` keyword argument.

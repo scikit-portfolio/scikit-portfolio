@@ -22,6 +22,10 @@ from skportfolio.model_selection._model_selection import (
     ml_get_train_times,
     _get_number_of_backtest_paths,
     split_train_val_k_fold,
+    split_train_val_test_forward_chaining,
+    split_train_val_group_k_fold,
+    split_train_val_test_k_fold,
+    split_train_val_test_group_k_fold,
 )
 
 logger = getLogger(__name__)
@@ -147,16 +151,7 @@ class NoSplit(CrossValidator):
         yield indices, indices
 
 
-class WalkForwardFixed(TimeSeriesSplit, CrossValidator, metaclass=ABCMeta):
-    def split(self, X, y=None, groups=None):
-        if self.max_train_size is None:
-            raise ValueError(
-                "Fixed walk forward method requires `max_train_size` to be specified in initialization"
-            )
-        return super().split(X, y, groups)
-
-
-class SplitTrainFixed(CrossValidator):
+class WalkForwardRolling(CrossValidator, metaclass=ABCMeta):
     """
     A class to generate indices for training TimeSeries models splitting the training set
     It can be used both for generating train-test examples following a sliding windows approach
@@ -164,111 +159,30 @@ class SplitTrainFixed(CrossValidator):
     with the specific behaviour that the model uses labels y[i+1,i+2,...,i+num_y]
     """
 
-    def __init__(
-        self,
-        num_X: int,
-        num_y: int,
-        num_jumps: int,
-    ):
-        """
-        Parameters
-        ----------
-        num_X (int)   : Number of inputs X used at each training
-        num_y (int)  : Number of outputs y used at each training
-        num_jumps (int)    : Number of sequence samples to be ignored between (X,y) sets
-        """
-        self.num_X = num_X
-        self.num_y = num_y
-        self.num_jumps = num_jumps
+    def __init__(self, train_size: int, test_size: int, warmup: int = 0,
+                 gap:int =0, anchored:bool=False):
+        self.train_size = train_size
+        self.test_size = test_size
+        self.warmup = warmup
+        self.anchored = anchored
+        self.gap = gap
 
-    def split(
-        self,
-        X: Sequence[Any],
-        y: Optional[Sequence[Any]] = None,
-        groups: Optional[Sequence[Any]] = None,
-    ):
-        """
-        Returns sets to train a model or sets to be used as train-test pairs
-
-            i.e. X[0] = X[0], ..., X[numInputs]
-                 y[0] = X[numInputs+1], ..., X[numInputs+numOutputs]
-                 ...
-                 X[k] = X[k*numJumps], ..., X[k*numJumps+numInputs]
-                 y[k] = X[k*numJumps+numInputs+1], ..., X[k*numJumps+numInputs+numOutputs]
-
-        Parameters
-        ----------
-        X: Sequence
-        y: Optional[Sequence]
-        groups: Sequence
-
-        Yields
-        -------
-            X (2D array): Array of numInputs arrays.
-                          len(X[k]) = numInputs
-            y (2D array): Array of numOutputs arrays
-                          len(y[k]) = numOutputs
-        """
-        sequence = np.arange(len(X)).astype(int)
-
+    def split(self, X: Sequence, y: Optional[Sequence] = None, groups: Optional = None):
         if y is not None and len(y) != len(X):
             raise ValueError("Check y and X have same length")
-
-        if self.num_X + self.num_y > len(X):
-            warnings.warn(
-                "To have at least one X,y arrays, the sequence size needs to be bigger than numInputs+numOutputs"
-            )
-            yield sequence, sequence
-
-        for i in range(len(X)):
-            i = self.num_jumps * i
-            end_ix = i + self.num_X
-            # Once train data crosses time series length return
-            if end_ix + self.num_y > len(X):
-                break
-            yield sequence[i:end_ix], sequence[end_ix : end_ix + self.num_y]
-
-    def get_n_splits(self, X=None, y=None, groups=None):
-        return len(list(self.split(X, y, groups))[0])
-
-
-class SplitTrainMinTrain(CrossValidator):
-    """
-    Returns sets to train a model with variable input length
-        i.e. X[0] = sequence[0], ..., sequence[minSamplesTrain]
-            y[0] = sequence[0], ..., sequence[minSamplesTrain+numOutputs]
-            ...
-            X[k] = sequence[0], ..., sequence[k*numJumps+minSamplesTrain]
-            y[k] = sequence[0], ..., sequence[k*numJumps+minSamplesTrain+numOutputs]
-    """
-
-    def __init__(
-        self,
-        min_num_x: int,
-        num_y: int,
-        num_jumps: int,
-    ):
-        self.min_num_x = min_num_x
-        self.num_y = num_y
-        self.num_jumps = num_jumps
-
-    def split(self, X, y=None, groups=None):
-        i = 0
-        sequence = np.arange(len(X)).astype(int)
-        if self.min_num_x + self.num_y > len(sequence):
-            warnings.warn(
-                "To have at least one X,y arrays, the sequence size needs to be bigger than minSamplesTrain+numOutputs"
-            )
-            yield np.array([]), np.array([])
-
-        # Iterate through all validation splits
-        while 1:
-            end_ix = self.min_num_x + self.num_jumps * i
-            i += 1
-            # Once val data crosses time series length return
-            if (self.min_num_x + self.num_jumps * i + self.num_y) > len(sequence):
-                break
-            yield sequence[0:end_ix], sequence[end_ix : end_ix + self.num_y]
+        indices = np.arange(len(X))
+        for i in range(
+            self.train_size + self.warmup, len(X) - self.test_size, self.test_size
+        ):
+            if not self.anchored:
+                train_slice, test_slice = slice(
+                    i - self.train_size - self.warmup, i, 1
+                ), slice(self.gap + i - self.warmup, i + self.test_size+self.gap, 1)
+            else:
+                train_slice, test_slice = slice(
+                    0+ self.warmup, i, 1
+                ), slice(self.gap + i + self.warmup, i + self.test_size+self.gap, 1)
+            yield indices[train_slice], indices[test_slice]
 
 
 class SplitTrainValForwardChaining(CrossValidator):
@@ -303,6 +217,18 @@ class SplitTrainValFCKFold(CrossValidator):
         out_X, out_y, out_x_cv, out_y_cv = split_train_val_k_fold(
             X, self.num_X, self.num_y, self.num_jumps
         )
+        for x, y, xcv, ycv in zip(out_X, out_y, out_x_cv, out_y_cv):
+            yield x, y, xcv, ycv
+
+
+class SplitTrainValTestFcKFold(CrossValidator):
+    def __init__(self, num_X: int, num_y: int, num_jumps: int):
+        self.num_X = num_X
+        self.num_y = num_y
+        self.num_jumps = num_jumps
+
+    def split(self, X, y=None, groups=None):
+        out_X, out_y, out_x_cv, out_y_cv = sp(X, self.num_X, self.num_y, self.num_jumps)
         for x, y, xcv, ycv in zip(out_X, out_y, out_x_cv, out_y_cv):
             yield x, y, xcv, ycv
 
