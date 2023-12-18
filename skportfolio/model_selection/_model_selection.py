@@ -546,39 +546,36 @@ def split_train_val_k_fold(
         )
     return X, y, Xcv, ycv
 
-    def _generate_combinatorial_test_ranges(
-        n_test_splits, splits_indices: dict
-    ) -> list:
-        """
-        Using start and end indices of test splits from KFolds and number of
-        test_splits (self.n_test_splits), generates combinatorial test
-        ranges splits
 
-        Parameters
-        ----------
-        splits_indices: (dict)
-            Test fold integer index  [start test index, end test index]
+def _generate_combinatorial_test_ranges(n_test_splits, splits_indices: dict) -> list:
+    """
+    Using start and end indices of test splits from KFolds and number of
+    test_splits (self.n_test_splits), generates combinatorial test
+    ranges splits
 
-        Returns
-        -------
-        List of combinatorial test splits ([start index, end index])
-        """
+    Parameters
+    ----------
+    splits_indices: (dict)
+        Test fold integer index  [start test index, end test index]
 
-        # Possible test splits for each fold
-        combinatorial_splits = list(
-            combinations(list(splits_indices.keys()), n_test_splits)
-        )
-        combinatorial_test_ranges = (
-            []
-        )  # List of test indices formed from combinatorial splits
-        for combination in combinatorial_splits:
-            temp_test_indices = (
-                []
-            )  # Array of test indices for current split combination
-            for int_index in combination:
-                temp_test_indices.append(splits_indices[int_index])
-            combinatorial_test_ranges.append(temp_test_indices)
-        return combinatorial_test_ranges
+    Returns
+    -------
+    List of combinatorial test splits ([start index, end index])
+    """
+
+    # Possible test splits for each fold
+    combinatorial_splits = list(
+        combinations(list(splits_indices.keys()), n_test_splits)
+    )
+    combinatorial_test_ranges = (
+        []
+    )  # List of test indices formed from combinatorial splits
+    for combination in combinatorial_splits:
+        temp_test_indices = []  # Array of test indices for current split combination
+        for int_index in combination:
+            temp_test_indices.append(splits_indices[int_index])
+        combinatorial_test_ranges.append(temp_test_indices)
+    return combinatorial_test_ranges
 
 
 def ml_get_train_times(

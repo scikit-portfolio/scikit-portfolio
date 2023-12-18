@@ -76,7 +76,7 @@ Name: MinimumVolatility, dtype: float64
 It is easy also to visualize weights portfolio with the `.plot.bar()` method:
 
 ```python
-model.partial_fit(prices).weights_.plot.bar()
+model.fit(prices).weights_.plot.bar()
 ```
 
 ![min_vol_weights](imgs/min_vol_weights.svg)
@@ -114,19 +114,23 @@ Moreover, all portfolio estimators s can modify the `returns_data` parameter via
 	\begin{equation}
 	\sum_{i=1}^N w_i r_i(t) = \sum_{i=1}^N w_i \frac{P_i(t)-P_i(t-1)}{P_i(t-1)}
 	\end{equation}
-	This is the reason why the `PortfolioEstimator` class **does not have** a `.fit_predict` method.
-	
-You can fit a model with both prices or returns, but remember to predict **always** on prices and not on returns ⚠️.
 
+You can fit a model with both prices or returns, but remember to predict **always** on prices and not on returns ⚠️.
+Moreover, the `predict` assumes that the weights found in the `fit` phase, are applied at the first 
+row of the new data and then the portfolio is evolved row by row.
+
+These two snippeds have the same effect:
 ```python
-MinimumVolatility(returns_data=False).partial_fit(prices).predict(prices)
+MinimumVolatility(returns_data=False).fit(prices).predict(prices)
 ```
 is equivalent to:
 
 ```python
 returns = prices.pct_change().dropna()
-MinimumVolatility(returns_data=True).partial_fit(returns).predict(prices)
+MinimumVolatility(returns_data=True).fit(returns).predict(prices)
 ```
+Moreover, having the `.predict` method work on other data lets you understand how the 
+portfolio fitted on past data may behave on new data.
 
 <hr>
 
@@ -182,9 +186,9 @@ from skportfolio.datasets import load_tech_stock_prices
 
 X = load_tech_stock_prices()
 ax = MinimumVolatility(returns_data=False).fit(X).set_n_jobs(8).plot_frontier(X, num_portfolios=20,
-																			  risk_return_color='darkblue')
-ax = MeanVarianceEfficientReturn().set_target_return(0.6).partial_fit(X).plot_frontier(X, frontier_line_color=None,
-																					   risk_return_color='darkgreen')
+                                                                              risk_return_color='darkblue')
+ax = MeanVarianceEfficientReturn().set_target_return(0.6).fit(X).plot_frontier(X, frontier_line_color=None,
+                                                                                       risk_return_color='darkgreen')
 ```
 
 ## Returns and risk estimators
@@ -228,10 +232,10 @@ from skportfolio.datasets import load_tech_stock_prices
 
 prices = load_tech_stock_prices()
 model = MinimumVolatility(returns_data=True)
-print(model.set_returns_data(False).partial_fit(prices).weights_)
+print(model.set_returns_data(False).fit(prices).weights_)
 print(model)
-print(model.set_returns_estimator(MedianHistoricalLinearReturns()).set_risk_estimator(CovarianceExp()).partial_fit(
-	prices).weights_)
+print(model.set_returns_estimator(MedianHistoricalLinearReturns()).set_risk_estimator(CovarianceExp()).fit(
+    prices).weights_)
 print(model)
 ```
 

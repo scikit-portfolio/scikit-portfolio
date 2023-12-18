@@ -23,6 +23,7 @@ from .metrics import number_effective_assets
 from .metrics import omega_ratio
 from .metrics import portfolio_return
 from .metrics import portfolio_vol
+from .metrics import profit_factor
 from .metrics import semistd
 from .metrics import sharpe_ratio
 from .metrics import info_ratio

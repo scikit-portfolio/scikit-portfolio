@@ -100,7 +100,7 @@ returns = prices.pct_change().dropna()
 # fit portfolio directly on prices, with target_return set in initialization
 MeanVarianceEfficientReturn(target_return=0.05).fit(prices).weights_
 # or fit portfolio on returns, changing target return and applying weights on prices
-MeanVarianceEfficientReturn(returns_data=True).set_target_return(target_return=0.05).partial_fit(returns).predict(
+MeanVarianceEfficientReturn(returns_data=True).set_target_return(target_return=0.05).fit(returns).predict(
     prices)
 ```
 
@@ -132,7 +132,7 @@ returns = prices.pct_change().dropna()
 # fit portfolio directly on prices, with target_return set in initialization
 MeanVarianceEfficientRisk(target_return=0.05).fit(prices).weights_
 # or fit portfolio on returns, changing target return and applying weights on prices
-MeanVarianceEfficientRisk(returns_data=True).set_target_risk(target_return=0.05).partial_fit(returns).predict(prices)
+MeanVarianceEfficientRisk(returns_data=True).set_target_risk(target_return=0.05).fit(returns).predict(prices)
 ```
 
 ## Plotting the efficient frontier
