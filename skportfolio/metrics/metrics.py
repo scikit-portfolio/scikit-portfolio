@@ -251,7 +251,7 @@ def semistd(r: pd.Series) -> float:
 
 
 def sortino_ratio(
-    r: pd.Series, risk_free_rate: float = 0.0, frequency: int = 1
+    r: pd.Series, risk_free_rate: float = 0.0, period: str = "daily", frequency: int = 1
 ) -> float:
     """
     The Sortino ratio is an improvement of the Sharpe ratio.
@@ -270,7 +270,7 @@ def sortino_ratio(
     -------
 
     """
-    return ep.sortino_ratio(r, risk_free_rate, period="daily", annualization=frequency)
+    return ep.sortino_ratio(r, risk_free_rate, period=period, annualization=frequency)
 
 
 def calmar_ratio(r: pd.Series, period: str = "DAILY", frequency: int = 1) -> float:
@@ -685,6 +685,18 @@ def summary(
     Most of the metrics are annualized with the standard approach of multiplying by 252 or sqrt(252)
     depending on the metrics. However more complex calculations can be done, as explained in
     [this resource](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3054517).
+
+    Parameters
+    ----------
+    r: pd.Series
+        Portfolio returns
+    frequency: int
+        Can be used for annualization of metrics
+    risk_free_rate: float
+        To be used in Sharpe ratio, must be expressed in the same units as those of portfolio
+        returns
+    target_return: float
+        To be used in omega ratio calculation, same units as portfolio returns.
     """
     return pd.Series(
         {
@@ -742,3 +754,39 @@ def equity_curve(df: Union[pd.Series, pd.DataFrame], initial_value: float = 1):
     The equity curve. First value is set to initial_value
     """
     return initial_value * ((1 + df.pct_change()).cumprod())
+
+
+def profit_factor(r: pd.Series):
+    """
+    Calculate the profit factor of portfolio returns
+
+    The profit factor is defined as the ratio of total profits to total losses.
+
+    Parameters
+    ----------
+    r : pandas.Series
+        A pandas Series representing the returns of a trading strategy over time.
+
+    Returns
+    -------
+    float
+        The calculated profit factor.
+
+    Notes
+    -----
+    The profit factor is computed as the sum of positive returns divided by the absolute
+    sum of negative returns. If there are no negative returns, the result is set to NaN.
+
+    Examples
+    --------
+    >>> import pandas as pd
+    >>> import numpy as np
+    >>> returns = pd.Series([0.01, -0.02, 0.03, -0.01, 0.02])
+    >>> profit_factor_value = profit_factor(returns)
+
+    References
+    ----------
+    - https://analyzingalpha.com/profit-factor
+
+    """
+    return r[r > 0].sum() / (abs(r[r < 0].sum()) or np.nan)
