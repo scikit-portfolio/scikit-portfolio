@@ -1,7 +1,7 @@
 """
 Some functions for the modeling of transaction costs in backtesting
 """
-
+from functools import partial
 from typing import Tuple, Union, Sequence, Dict, Callable
 
 import numpy as np
@@ -17,6 +17,8 @@ TransactionCostsFcn = Callable[
     ],
     float,
 ]
+
+BacktestTransactionCosts = Union[float, Tuple[float, float], TransactionCostsFcn]
 
 
 def basic_percentage_fee(delta_pos, transaction_costs) -> Tuple[float, float]:
@@ -77,3 +79,32 @@ def variable_transaction_costs(
     buy_cost = buy.sum()
     sell_cost = sell.sum()
     return buy_cost, sell_cost
+
+
+def prepare_transaction_costs_function(
+    transaction_costs: BacktestTransactionCosts,
+) -> TransactionCostsFcn:
+    """
+    Creates a function to be called that computes the transaction costs
+
+    Parameters
+    ----------
+    transaction_costs: TransactionCosts
+
+    Returns
+    -------
+    """
+    if isinstance(transaction_costs, (float, int, tuple, list)):
+        return partial(basic_percentage_fee, transaction_costs=transaction_costs)
+    elif callable(transaction_costs):
+        return transaction_costs
+    else:
+        raise ValueError("'transaction_costs' is not a supported type")
+
+
+def prepare_buy_sell_costs() -> pd.DataFrame:
+    return pd.DataFrame(columns=["buy", "sell"], index=[], data=0.0)
+
+
+def prepare_turnover() -> pd.Series:
+    return pd.Series(index=[], data=0.0, name="turnover")
