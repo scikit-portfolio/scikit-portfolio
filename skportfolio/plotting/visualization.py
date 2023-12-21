@@ -410,11 +410,11 @@ def plot_backtest_strategy(
             ax=ax[0],
             cmap=kwargs.get("cmap", None),
         )
-    ax[0].legend(bbox_to_anchor=(1.05, 1.0), loc="upper left")
+    # ax[0].legend(bbox_to_anchor=(1.05, 1.0), loc="best")
     ax[0].set_title(f"Positions\nStrategy: {backtester.name}")
     if plot_rebalance_events:
         ymax = backtester.equity_curve_.max() if not normalize else 1.0
-        for d in backtester.rebalance_dates_:
+        for d in backtester.rebalance_events_:
             ax[0].plot_date(x=(d, d), y=(0, ymax), fmt="k-", linewidth=0.5)
             ax[1].plot_date(x=(d, d), y=(0, ymax), fmt="k-", linewidth=0.5)
             ax[0].text(
