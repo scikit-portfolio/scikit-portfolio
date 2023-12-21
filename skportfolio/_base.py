@@ -55,49 +55,51 @@ class PortfolioEstimator(
             The current estimator
         """
 
-    def predict(self, X):
+    def predict_proba(self, X):
         """
-        Extrapolates the future portfolio value (unnormalized equity curve) at
-        the  applying the fitted weights from the
-        .fit
-        method to the initial row of data and letting then the portfolio value evolve starting
-        from that point.
+        Predicts the asset positions and equity curve based on historical price data and predefined
+        weights.
+        Here the initial portfolio value is **always** hypothesized to be $1.
+        The asset positions are expressed in $, as well as the equity curve.
+
         Parameters
         ----------
-        X
+        X : pd.DataFrame
+            Historical price data with columns representing different assets and rows as timestamps.
 
         Returns
         -------
-
+        pd.DataFrame
+            DataFrame containing the calculated equity curve with the same structure as input 'X'.
         """
         check_is_fitted(self)
         assert_is_prices(X)
 
         # Convert to NumPy array for faster computation
-        X_np = X.values
-        weights_np = np.array(self.weights_)
-
+        prices_np: np.ndarray = X.values
         # Calculate returns and fill NaN values with 0.0
-        rets_np = np.diff(X_np, axis=0) / X_np[:-1]
-        # )  # Add zero row for initial day
+        returns_np: np.ndarray = X.pct_change().dropna().values
+        weights_np: np.ndarray = np.array(self.weights_)
 
-        # Calculate position for the initial day using dot product
-        position_0 = X_np[0, :].dot(weights_np)
-        initial_value = X_np[0, :].sum()
+        # Calculate position in currency units (dollars or euro for example) for the initial day
+        # using dot product. This value will be normalized at the end in order to start from 1
+        # unit of currency
+        position_0 = prices_np[0, :].dot(weights_np)
+        initial_value = prices_np[0, :].sum()
 
         # Initialize positions and equity curve arrays
-        positions_np = np.zeros_like(X_np)
-        positions_np[0] = position_0
-        equity_curve_np = np.zeros(len(X))
-        equity_curve_np[0] = initial_value
+        positions_np = np.zeros_like(prices_np)
+        positions_np[0, :] = position_0
 
         # Vectorized computation of positions and equity curve
-        np.cumprod(1 + rets_np, axis=0, out=positions_np[1:])
-        positions_np[1:] *= positions_np[0]
-        equity_curve_np[1:] = positions_np[1:].sum(axis=1)
+        np.cumprod(1.0 + returns_np, axis=0, out=positions_np[1:])
+        positions_np[1:, :] *= position_0
 
-        # Convert back to pandas Series for compatibility
-        return pd.Series(equity_curve_np, index=X.index, name=self.weights_.name)
+        positions_np /= initial_value
+        return pd.DataFrame(data=positions_np, index=X.index, columns=X.columns)
+
+    def predict(self, X):
+        return self.predict_proba(X).sum(1)
 
     def score(self, X, y=None, **kwargs):
         """

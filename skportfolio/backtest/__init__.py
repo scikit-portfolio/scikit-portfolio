@@ -1,1 +1,1 @@
-from .backtester import Backtester, BacktesterCrossVal
+from .backtester import Backtester, BacktesterCV
