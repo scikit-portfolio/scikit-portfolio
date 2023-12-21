@@ -419,3 +419,117 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
             "Total transaction costs $": self.buy_sell_costs_.sum().sum(),
         }
         return pd.Series(all_metrics)
+
+
+class BacktesterCV(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
+    """
+    It handles the logic of backtesting over multiple paths defined by
+    """
+
+    def __init__(
+        self,
+        estimator: Optional[PortfolioEstimator] = None,
+        cv: Optional["CrossValidator"] = None,
+        name: Optional[str] = None,
+        initial_weights: Optional[pd.Series] = None,
+        initial_portfolio_value: float = 10_000,
+        transaction_costs: BacktestTransactionCosts = 0.0,
+        # transactions_budget: float = 0.1,
+        risk_free_rate: float = 0.0,
+        cash_borrow_rate: float = 0.0,
+        rates_frequency: int = APPROX_DAYS_PER_YEAR,
+        scorer: BacktestScorer = None,
+        show_progress: bool = False,
+    ):
+        self.estimator = estimator
+        self.cv = cv
+        self.name = name
+        self.initial_weights = initial_weights
+        self.initial_portfolio_value = initial_portfolio_value
+        self.transaction_costs = transaction_costs
+        # self.transactions_budget = transactions_budget
+        self.risk_free_rate = risk_free_rate
+        self.cash_borrow_rate = cash_borrow_rate
+        self.rates_frequency = rates_frequency
+        self.scorer = scorer
+        self.show_progress = show_progress
+
+    def fit(self, X, y=None, **fit_params):
+        groups = fit_params.pop("") if "groups" in fit_params else None
+        n_samples, n_assets = X.shape
+        asset_names = X.columns.tolist()
+
+        # private variables conversion logic
+        # 1. define the rolling-expanding window size
+        # min_window_size, max_window_size = prepare_window(
+        #     self.window_size, n_samples=n_samples
+        # )
+        # 2. define the transaction cost functions starting from the user-provided
+        # transaction cost argument
+        transaction_costs_fcn = prepare_transaction_costs_function(
+            transaction_costs=self.transaction_costs
+        )
+        # 3. define the initial positions, either using the user-provided initial
+        # weights or by complete initialization
+        initial_positions = prepare_initial_positions(
+            initial_weights=self.initial_weights,
+            n_assets=n_assets,
+            initial_portfolio_value=self.initial_portfolio_value,
+            asset_names=asset_names,
+        )
+
+        # 4. define the scoring function starting from the user-provided scorer
+        self.score_fcn = prepare_score_fcn(score_fcn=self.scorer)
+
+        # 5. define the logics of buy and sell as well as the turnover
+        self.buy_sell_costs_ = prepare_buy_sell_costs()
+        self.turnover_ = prepare_turnover()
+
+        # Start fit / predict loop over the entire CV splits
+        previous_positions = self.initial_weights * self.initial_portfolio_value
+        for train_indices, test_indices in self.cv.split(X=X, y=y, groups=groups):
+            train_prices = X.iloc[train_indices, :]
+            test_prices = X.iloc[test_indices, :]
+            train_idx, test_idx = train_prices.index, test_prices.index
+            print(
+                f"Fitting {train_idx[0]}-{train_idx[-1]} (#{len(train_idx)} rows)- Estimating on"
+                f" {test_idx[0]}-"
+                f"{test_idx[-1]} # {len(test_idx)} rows"
+            )
+            # in the case the folds already start with test data it means we have to
+            # rely on initial weights as no previous rebalancing has been done before
+            # to populate the estimator weights_
+            if train_indices.size == 0:
+                self.estimator.weights_ = self.initial_weights
+            else:
+                # else we fit on training data
+                self.estimator.fit(train_prices, **fit_params)
+            # predict future positions
+            test_positions = self.estimator.predict_proba(test_prices)
+            # obtain the equity curves from the positions
+            test_equity = test_positions.sum(axis=1)
+
+            # Calculate transaction costs based on the change in positions
+            # position_changes = abs(test_positions - previous_positions)
+            # transaction_costs = transaction_costs_fcn(
+            #     position_changes * self.transaction_costs
+            # )
+            # # Subtract transaction costs from equity
+            # test_equity -= transaction_costs
+            # Update previous positions for the next iteration
+            previous_positions = test_positions.iloc[-1]
+
+            # concatenate results
+            self.positions_.append(test_positions)
+            self.equity_curve_.append(test_equity)
+            self.returns_.append(test_positions.pct_change().fillna(0.0))
+
+        # self.returns_ = pd.concat(self.returns_, axis=0).sort_index()
+        # # in this way the true positions are concatenated correctly
+        # # independently on the order of returns
+        # self.positions_ = (
+        #     self.returns_.add(1.0).cumprod(
+        #     axis=0)
+        # )
+        # self.equity_curve_ = self.returns_.add(1.0).cumprod().mean(axis=1)
+        return self
