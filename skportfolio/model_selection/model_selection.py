@@ -6,7 +6,7 @@ import warnings
 from abc import ABC, ABCMeta, abstractmethod
 from itertools import combinations
 from logging import getLogger
-from typing import Any, List, Optional, Sequence, Tuple
+from typing import Any, List, Optional, Sequence, Tuple, Iterator
 
 import numpy as np
 import pandas as pd
@@ -15,23 +15,21 @@ from sklearn.model_selection import TimeSeriesSplit
 from sklearn.utils import indexable
 from sklearn.utils.validation import _num_samples
 from tabulate import tabulate
-
 from skportfolio.model_selection._model_selection import (
-    split_train_val_forward_chaining,
     split_blocking_time_series,
     ml_get_train_times,
     _get_number_of_backtest_paths,
-    split_train_val_k_fold,
-    split_train_val_test_forward_chaining,
-    split_train_val_group_k_fold,
-    split_train_val_test_k_fold,
-    split_train_val_test_group_k_fold,
 )
+from skportfolio.backtest.rebalance import (
+    BacktestRebalancingFrequencyOrSignal,
+    prepare_rebalance_signal,
+)
+from skportfolio.backtest.rebalance import prepare_window, BacktestWindow
 
 logger = getLogger(__name__)
 
 
-def make_split_df(fold_generator, titles, columns=None):
+def make_split_df(fold_generator, titles, columns=None, silent=True):
     """
     Creates a visualizatin of our train-test split
     Parameters
@@ -47,8 +45,8 @@ def make_split_df(fold_generator, titles, columns=None):
     X = pd.DataFrame()
     mapping = {"train": "🟢", "test": "🔴", "cv_train": "🟩", "cv_test": "🟥"}
     for ith_fold, fold_values in enumerate(fold_generator):
-        for tit, vals in zip(titles, fold_values):
-            X.loc[f"Fold({ith_fold+1})", vals] = mapping[tit]
+        for title, vals in zip(titles, fold_values):
+            X.loc[ith_fold, vals] = mapping[title]
     X = X.fillna("").sort_index(axis=1)
     X.columns.name = "indices"
     X.index.name = "Folds"
@@ -56,10 +54,11 @@ def make_split_df(fold_generator, titles, columns=None):
         X = X.rename(
             columns=dict(zip(range(X.shape[1]), columns)),
         )
-    for tit, val in mapping.items():
-        X = X.assign(**{tit: (X == val).sum(1)})
-        if X[tit].nunique() > 1:
-            warnings.warn(f"Length uniformity not respected in {tit} set")
+    for title, val in mapping.items():
+        X = X.assign(**{title: (X == val).sum(1)})
+        if X[title].nunique() > 1 and not silent:
+            msg = f"Length uniformity not respected in '{title}' set"
+            warnings.warn(msg)
 
     return X, {v: k for k, v in mapping.items()}
 
@@ -123,10 +122,22 @@ class CrossValidator(ABC):
     def get_n_splits(self, X=None, y=None, groups=None):
         return len(list(self.split(X, y, groups))[0])
 
-    def visualize(self, X=None, y=None, titles: Tuple[str] = ("train", "test")):
-        viz, legend = make_split_df(self.split(X), titles=titles)
-        print({k: v for k, v in legend.items() if v in titles})
-        return viz
+    def visualize(
+        self,
+        X=None,
+        y=None,
+        **kwargs,
+    ):
+        viz, legend = make_split_df(
+            self.split(X, y, groups=kwargs.get("groups", None)),
+            titles=("train", "test"),
+        )
+        if "columns" in kwargs:
+            viz = viz.rename(
+                columns={i: kwargs["columns"][i] for i in range(len(viz.columns[:-4]))}
+            )
+        title = f"Cross validation table for {str(self)} train 🟢 test 🔴"
+        return viz.style.set_caption(title)
 
 
 class NoSplit(CrossValidator):
@@ -151,7 +162,7 @@ class NoSplit(CrossValidator):
         yield indices, indices
 
 
-class WalkForwardRolling(CrossValidator, metaclass=ABCMeta):
+class WalkForward(CrossValidator, metaclass=ABCMeta):
     """
     A class to generate indices for training TimeSeries models splitting the training set
     It can be used both for generating train-test examples following a sliding windows approach
@@ -159,8 +170,14 @@ class WalkForwardRolling(CrossValidator, metaclass=ABCMeta):
     with the specific behaviour that the model uses labels y[i+1,i+2,...,i+num_y]
     """
 
-    def __init__(self, train_size: int, test_size: int, warmup: int = 0,
-                 gap:int =0, anchored:bool=False):
+    def __init__(
+        self,
+        train_size: int,
+        test_size: int,
+        warmup: int = 0,
+        gap: int = 0,
+        anchored: bool = False,
+    ):
         self.train_size = train_size
         self.test_size = test_size
         self.warmup = warmup
@@ -174,68 +191,203 @@ class WalkForwardRolling(CrossValidator, metaclass=ABCMeta):
         for i in range(
             self.train_size + self.warmup, len(X) - self.test_size, self.test_size
         ):
+            # we exceeded the data limit, we stop otherwise the test set has different length
+            if i + self.test_size + self.gap > len(X):
+                break
+
             if not self.anchored:
                 train_slice, test_slice = slice(
                     i - self.train_size - self.warmup, i, 1
-                ), slice(self.gap + i - self.warmup, i + self.test_size+self.gap, 1)
+                ), slice(self.gap + i - self.warmup, i + self.test_size + self.gap, 1)
             else:
-                train_slice, test_slice = slice(
-                    0+ self.warmup, i, 1
-                ), slice(self.gap + i + self.warmup, i + self.test_size+self.gap, 1)
+                train_slice, test_slice = slice(0 + self.warmup, i, 1), slice(
+                    self.gap + i + self.warmup, i + self.test_size + self.gap, 1
+                )
             yield indices[train_slice], indices[test_slice]
 
 
-class SplitTrainValForwardChaining(CrossValidator):
+def group_slices_old(
+    change_indices: np.ndarray,
+):
     """
-    Splits data using forward chaining technique
+    Generator yielding slices of train and test indices with a blocking time series approach
+    There are no intersections
+    Parameters
+    ----------
+    change_indices: np.ndarray
+
+    Returns
+    -------
+
     """
+    # Initialize start index of the first group
+    start_idx = 0
 
-    def __init__(self, num_X: int, num_y: int, num_jumps: int):
-        self.num_X = num_X
-        self.num_y = num_y
-        self.num_jumps = num_jumps
+    # Iterate over the change indices to create pairs of slices
+    for i, train_end in enumerate(change_indices):
 
-    def split(self, X, y=None, groups=None):
-        out_X, out_y, out_x_cv, out_y_cv = split_train_val_forward_chaining(
-            X, self.num_X, self.num_y, self.num_jumps
+        # If it's not the last element, set the next start to the next change index
+        if i < len(change_indices) - 1:
+            next_train_start = change_indices[i + 1]
+        else:
+            # For the last group, set the next start to the end of the array
+            next_train_start = None
+
+        # Yield the pair of slices
+        yield slice(start_idx, train_end), slice(train_end, next_train_start)
+
+        # Update the start index for the next group
+        start_idx = train_end
+
+
+def group_slices(
+    change_indices: np.ndarray,
+    min_window_size: Optional[int] = None,
+    max_window_size: Optional[int] = None,
+):
+    """
+    Generator yielding slices of train and test indices with a blocking time series approach.
+    There are no intersections.
+
+    Parameters
+    ----------
+    change_indices : np.ndarray
+        Array of indices where the rebalance event occurs.
+    min_window_size : Optional[int]
+        Minimum size of the training or testing window.
+    max_window_size : Optional[int]
+        Maximum size of the training or testing window.
+
+    Returns
+    -------
+    Generator of (train_slice, test_slice) tuples.
+    """
+    # Iterate over the change indices to create pairs of slices
+    already_yielded = set()
+    for i, train_end in enumerate(change_indices):
+        # Ensure minimum window size is respected for the train set
+        train_start = max(
+            0,
+            train_end
+            - (max_window_size if max_window_size is not None else len(change_indices)),
         )
-        for x, y, xcv, ycv in zip(out_X, out_y, out_x_cv, out_y_cv):
-            yield x, y, xcv, ycv
-
-
-class SplitTrainValFCKFold(CrossValidator):
-    """
-    Splits data using forward chaining and K-Fold cross-validation
-    """
-
-    def __init__(self, num_X: int, num_y: int, num_jumps: int):
-        self.num_X = num_X
-        self.num_y = num_y
-        self.num_jumps = num_jumps
-
-    def split(self, X, y=None, groups=None):
-        out_X, out_y, out_x_cv, out_y_cv = split_train_val_k_fold(
-            X, self.num_X, self.num_y, self.num_jumps
+        train_end = max(
+            train_start + (min_window_size if min_window_size is not None else 0),
+            train_end,
         )
-        for x, y, xcv, ycv in zip(out_X, out_y, out_x_cv, out_y_cv):
-            yield x, y, xcv, ycv
+
+        # If it's not the last element, determine the end of the test set based on the next change index
+        if i < len(change_indices) - 1:
+            test_end = change_indices[i + 1]
+            # Ensure maximum window size is respected for the test set
+            if max_window_size is not None:
+                test_end = min(test_end, train_end + max_window_size)
+        else:
+            # For the last group, set the end of the test set to the end of the array
+            test_end = len(change_indices)
+
+        # Ensure minimum window size is respected for the test set
+        test_end = max(
+            train_end + (min_window_size if min_window_size is not None else 1),
+            test_end,
+        )
+
+        # Do not yield a new tuple if we've reached the end of the sequence
+        if train_end == len(change_indices) or test_end == len(change_indices):
+            break
+
+        # Yield the pair of slices
+        to_yield = (train_start, train_end), (train_end, test_end)
+        if to_yield not in already_yielded:
+            yield slice(*to_yield[0]), slice(*to_yield[1])
+        already_yielded.add(to_yield)
 
 
-class SplitTrainValTestFcKFold(CrossValidator):
-    def __init__(self, num_X: int, num_y: int, num_jumps: int):
-        self.num_X = num_X
-        self.num_y = num_y
-        self.num_jumps = num_jumps
+# class RebalanceSplitter(CrossValidator, metaclass=ABCMeta):
+#     """
+#     A class to create train/test splits to be used in a backtesting estimator.
+#     It follow the BlockingTimeSeriesSplit logic but it accepts a rebalance_signal array.
+#     It is supposed to be used by a BacktesterCV class, where the portfolio weights
+#     are computed at train and the portfolio evolution is applied by the .predict method.
+#     """
+#
+#     def __init__(
+#         self,
+#         rebalance_frequency_or_signal: BacktestRebalancingFrequencyOrSignal,
+#         window_size: BacktestWindow,
+#     ):
+#         self.rebalance_frequency_or_signal = rebalance_frequency_or_signal
+#         self.window_size = window_size
+#
+#     def split(
+#         self,
+#         X: Sequence[Any],
+#         y: Optional[Sequence[Any]] = None,
+#         groups: Optional[Sequence[Any]] = None,
+#     ):
+#         if not isinstance(X, (pd.Series, pd.DataFrame)):
+#             raise TypeError("Only dataframe or series with an index is accepted")
+#
+#         # Prepare the rebalance signal based on the provided frequency or signal
+#         rebalance_signal, _ = prepare_rebalance_signal(
+#             self.rebalance_frequency_or_signal, index=X.index
+#         )
+#
+#         indices = np.arange(len(X))
+#         change_indices = np.where(rebalance_signal)[0]
+#
+#         # Define default window sizes if none provided
+#
+#         min_window_size, max_window_size = prepare_window(
+#             window_size=self.window_size, n_samples=X.shape[0]
+#         )
+#         print(min_window_size, max_window_size)
+#
+#         for train_fold, test_fold in group_slices(
+#             change_indices=change_indices,
+#             min_window_size=min_window_size,
+#             max_window_size=max_window_size,
+#         ):
+#             yield indices[train_fold], indices[test_fold]
+class RebalanceSplitter(CrossValidator, metaclass=ABCMeta):
+    def __init__(self, rebalance_frequency_or_signal, window_size):
+        self.rebalance_frequency_or_signal = rebalance_frequency_or_signal
+        self.window_size = window_size
 
-    def split(self, X, y=None, groups=None):
-        out_X, out_y, out_x_cv, out_y_cv = sp(X, self.num_X, self.num_y, self.num_jumps)
-        for x, y, xcv, ycv in zip(out_X, out_y, out_x_cv, out_y_cv):
-            yield x, y, xcv, ycv
+    def split(
+        self,
+        X: Sequence[Any],
+        y: Optional[Sequence[Any]] = None,
+        groups: Optional[Sequence[Any]] = None,
+    ):
+        n_samples = X.shape[0]
+        min_window_size, max_window_size = prepare_window(
+            self.window_size, n_samples=n_samples
+        )
+
+        indices = np.arange(len(X))
+        rebalance_signal, rebalance_events = prepare_rebalance_signal(
+            self.rebalance_frequency_or_signal, index=X.index.to_series()
+        )
+        for idx in range(n_samples - 1):
+            next_idx = idx + 1
+            needs_rebalance = rebalance_signal.iloc[next_idx]
+            is_valid_window = next_idx >= min_window_size
+            if is_valid_window and needs_rebalance:
+                start_window = next_idx - max_window_size + 1
+                train_indices = slice(max(0, start_window), next_idx + 1)
+                test_indices = slice(next_idx + 1, next_idx + 2)
+                yield indices[train_indices], indices[
+                    slice(max(0, start_window) + 1 - next_idx, next_idx + 2)
+                ]
 
 
 class BlockingTimeSeriesSplit(CrossValidator):
     """
-    Implements the Blocking Time Series Split cross validation method
+    Implements the Blocking Time Series Split cross validation method.
+    It is the same as the RebalanceSplitter method, but it accepts different parameters
+    which may not be easy to apply in the context of a specific rebalance_signal.
+    Here for convenience.
     """
 
     def __init__(self, n_splits: int, train_test_ratio: float = 0.7):
@@ -246,34 +398,33 @@ class BlockingTimeSeriesSplit(CrossValidator):
         return split_blocking_time_series(X, self.n_splits, self.train_test_ratio)
 
 
-# class PurgedKFold(CrossValidator):
-#     """
-#     Extend KFold class to work with labels that span intervals
-#     The train is purged of observations overlapping test-label intervals
-#     Test set is assumed contiguous (shuffle = False), w/o training samples in between
-#     """
-#
-#     def __init__(self, pct_embargo=0.0):
-#         self.pct_embargo = pct_embargo
-#
-#     def split(self, X, y=None, groups=None):
-#         indices = np.arange(len(X))
-#         mbrg = int(len(X) * self.pct_embargo)
-#         test_starts = [
-#             (i[0], i[-1] + 1) for i in np.array_split(np.arange(len(X)), self.n_splits)
-#         ]
-#
-#         for i, j in test_starts:
-#             t0 = i  # start of test set
-#             test_indices = indices[i:j]
-#             maxT1Idx = indices.searchsorted(indices[test_indices].max())
-#             train_indices = indices.searchsorted(indices[indices <= t0])
-#             if maxT1Idx < len(X):  # right train (with embargo)
-#                 train_indices = np.concatenate(
-#                     (train_indices, indices[maxT1Idx + mbrg :])
-#                 )
-#             yield train_indices, test_indices
-#
+class PurgedKFold(CrossValidator):
+    """
+    Extend KFold class to work with labels that span intervals
+    The train is purged of observations overlapping test-label intervals
+    Test set is assumed contiguous (shuffle = False), w/o training samples in between
+    """
+
+    def __init__(self, n_splits: int = 5, pct_embargo: float = 0.0):
+        self.n_splits = n_splits
+        self.pct_embargo = pct_embargo
+
+    def split(self, X, y=None, groups=None):
+        indices = np.arange(len(X))
+        embargo = int(len(X) * self.pct_embargo)
+        test_starts = [
+            (i[0], i[-1] + 1) for i in np.array_split(np.arange(len(X)), self.n_splits)
+        ]
+        for i, j in test_starts:
+            t_0 = i  # start of test set
+            test_indices = indices[i:j]
+            max_t1_idx = indices.searchsorted(indices[test_indices].max())
+            train_indices = indices.searchsorted(indices[indices <= t_0])
+            if max_t1_idx < len(X):  # right train (with embargo)
+                train_indices = np.concatenate(
+                    (train_indices, indices[max_t1_idx + embargo :])
+                )
+            yield train_indices, test_indices
 
 
 class WindowedTestTimeSeriesSplit(TimeSeriesSplit, ABC):
@@ -477,3 +628,41 @@ class CombinatorialPurgedKFold(KFold, CrossValidator):
 
             self._fill_backtest_paths(train_indices, test_splits)
             yield np.array(train_indices), np.array(test_indices)
+
+
+class RebalanceSplitter2(CrossValidator):
+    def __init__(
+        self,
+        rebalance_frequency_or_signal: BacktestRebalancingFrequencyOrSignal,
+        window_size: BacktestWindow,
+    ):
+        self.rebalance_frequency_or_signal = rebalance_frequency_or_signal
+        self.window_size = window_size
+
+    def split(
+        self,
+        X: Sequence[Any],
+        y: Optional[Sequence[Any]] = None,
+        groups: Optional[Sequence[Any]] = None,
+    ) -> Iterator[Tuple[np.ndarray, np.ndarray]]:
+        n_samples = len(X)
+        min_window_size, max_window_size = prepare_window(
+            self.window_size, n_samples=n_samples
+        )
+        indices = np.arange(len(X))
+        rebalance_signal, rebalance_events = prepare_rebalance_signal(
+            self.rebalance_frequency_or_signal, index=X.index.to_series()
+        )
+        for idx in range(n_samples - 1):
+            next_idx = idx + 1
+            needs_rebalance = rebalance_signal.iloc[next_idx]
+            is_valid_window = next_idx >= min_window_size
+            if is_valid_window and needs_rebalance and idx > 0:
+                start_window = next_idx - max_window_size - 1
+                train_indices = slice(max(0, start_window), idx + 1)
+                test_indices = slice(idx, idx + 1)
+                # when there are both training and test, the user should concatenate them
+                yield indices[train_indices], indices[test_indices]
+            else:
+                # there are no new training data, we only let the user evolve the positions on the test
+                yield indices[slice(0, 0)], indices[slice(0, next_idx)]
