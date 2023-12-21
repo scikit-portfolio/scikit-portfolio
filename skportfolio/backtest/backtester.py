@@ -3,16 +3,15 @@ Implementation of a vectorial backtester taking a single portfolio estimator
 and other parameters as the rebalancing frequency and transaction costs, to produce
 an equity curve as result
 """
-from typing import Callable
 from typing import Union, Tuple, List, Optional
 
 import numpy as np  # type: ignore
 import pandas as pd  # type: ignore
 from sklearn.base import BaseEstimator  # type: ignore
 from sklearn.base import MetaEstimatorMixin, RegressorMixin
-from sklearn.model_selection import cross_validate
 from tqdm.auto import tqdm
 
+from skportfolio.backtest.rebalance import BacktestWindow, prepare_window
 from skportfolio._base import PortfolioEstimator
 from skportfolio._base import assert_is_prices
 from skportfolio._constants import APPROX_DAYS_PER_YEAR
@@ -22,98 +21,28 @@ from skportfolio.backtest.positions import (
     compute_row_returns,
 )
 from skportfolio.backtest.rebalance import (
+    prepare_rebalance_signal,
     BacktestRebalancingFrequencyOrSignal,
 )
-from skportfolio.backtest.rebalance import prepare_rebalance_signal
-from skportfolio.backtest.score import BacktestScorer
-from skportfolio.backtest.score import prepare_score_fcn
+from skportfolio.backtest.score import BacktestScorer, prepare_score_fcn
 from skportfolio.backtest.transaction_costs import (
     TransactionCostsFcn,
     BacktestTransactionCosts,
     prepare_buy_sell_costs,
     prepare_turnover,
+    prepare_transaction_costs_function,
 )
-from skportfolio.backtest.transaction_costs import prepare_transaction_costs_function
 from skportfolio.logger import get_logger
 from skportfolio.metrics import (
-    summary,
     annualize_rets,
     annualize_vol,
     sortino_ratio,
     maxdrawdown,
     profit_factor,
 )
-from skportfolio.metrics._scorer import _BasePortfolioScorer as BasePortfolioScorer
-from skportfolio.model_selection import CrossValidator
+
 
 logger = get_logger()
-
-BacktestWindow = Union[
-    int,
-    Tuple[int, Optional[int]],
-]
-
-
-def prepare_window(window_size: BacktestWindow, n_samples: int):
-    """
-    Converts the window_size parameter into a minimum and maximum window size
-    to be used to create the data windows
-
-    Parameters
-    ----------
-    window_size: Window
-        The minimum and maximum window size. Default None means expanding window.
-        Each time the backtesting engine calls a strategy rebalance function,
-        a window of asset price data (and possibly signal data) is passed to the
-        rebalance function. The rebalance function can then make trading and
-        allocation decisions based on a rolling window of market data. The window_size
-        property sets the size of these rolling windows.
-        Set the window in terms of time steps. The window determines the number of
-        rows of data from the asset price timetable that are passed to the
-        rebalance function.
-        The window_size property can be set in two ways. For a fixed-sized
-        rolling window of data (for example, "50 days of price history"), the
-        window_size property is set to a single scalar value
-        (N = 50). The software then calls the rebalance function with a price
-        timetable containing exactly N rows of rolling price data.
-        Alternatively, you can define the window_size property by using a
-        1-by-2 vector [min max]
-        that specifies the minimum and maximum size for an expanding window of data.
-        In this way, you can set flexible window sizes. For example:
-
-        [10, None] — At least 10 rows of data
-        [0, 50] — No more than 50 rows of data
-        [0, None] — All available data (that is, no minimum, no maximum): default
-        [20, 20] — Exactly 20 rows of data; equivalent to setting window_size to 20
-
-        The software does not call the rebalance function if the data is insufficient to
-        create a valid rolling window, regardless of the value of the RebalanceFrequency
-        property.
-        If the strategy does not require any price or signal data history, then you can
-        indicate that the rebalance function requires no data by setting the window_size
-         property to 0.
-    n_samples:
-        Number of samples in the dataframe
-
-    Returns
-    -------
-
-    """
-    if isinstance(window_size, (list, tuple)):
-        min_window_size = window_size[0]
-        max_window_size = window_size[1] if window_size[1] is not None else n_samples
-    elif isinstance(window_size, int):
-        # in case 0 is specified, add one for having at least one row of data,
-        # hence expanding window
-        min_window_size, max_window_size = (window_size, n_samples)
-    elif window_size is None:
-        min_window_size, max_window_size = (
-            0,
-            n_samples,
-        )
-    else:
-        raise ValueError("Not a supported window size specification")
-    return min_window_size, max_window_size
 
 
 class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
@@ -280,27 +209,6 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         -------
         self
         """
-        self.__reset__()
-        return self.fit_predict(X, y, **fit_params)
-
-    def fit(self, X, y=None, **fit_params) -> "Backtester":
-        """
-        Fit the backtester on a rolling-expanding window base to the data, rebalancing when
-        needed and keeping into account transaction costs.
-
-        Parameters
-        ----------
-        X: pd.DataFrame,
-            Prices dataframe.
-        y: pd.Series, default=None
-            Other benchmarks to be passed to the portfolio estimator method.
-            Useful when backtesting within the Black-Litterman framework where the market
-            implied returns are necessary.
-
-        Returns
-        -------
-        self
-        """
         if self.estimator is None:
             self.estimator = EquallyWeighted()
         assert_is_prices(X)
@@ -337,6 +245,7 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
             rebalance_frequency_or_signal=self.rebalance_frequency_or_signal,
             index=X.index,
         )
+
         # 5. define the scoring function starting from the user-provided scorer
         self.score_fcn = prepare_score_fcn(score_fcn=self.scorer)
 
@@ -359,6 +268,7 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
             iterable=range(n_samples - 1),
             desc=f"Backtesting {backtester_name}...",
             disable=not self.show_progress,
+            mininterval=1,
         ) as progress:
             for idx in progress:
                 # This forms the validation set, as we are using the available weights
@@ -391,6 +301,13 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
                     start_window = next_idx - max_window_size + 1
                     # having window_rows here boils down to selecting training data
                     window_rows = np.arange(max(0, start_window), next_idx + 1)
+                    # print(
+                    #     f"Fitting estimator on "
+                    #     f"{X.index[window_rows[0]].strftime('%Y-%m-%d')}:"
+                    #     f"{X.index[window_rows[-1]].strftime('%Y-%m-%d')} - "
+                    #     f"{window_rows[0]} - {window_rows[-1]} - "
+                    #     f"# {X.index[window_rows].shape[0]} rows"
+                    # )
                     end_asset_weights_new: pd.Series = self.estimator.fit(
                         X=X.iloc[window_rows, :][self._asset_names],
                         y=y.iloc[window_rows] if y is not None else None,
@@ -403,7 +320,7 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
                         delta_weights[self._asset_names] * end_portfolio_value
                     )
                     self.buy_sell_costs_.loc[end_date, :] = (buy_cost, sell_cost)
-                    end_portfolio_value -= buy_cost + sell_cost
+                    end_portfolio_value -= abs(buy_cost) + abs(sell_cost)
                     # update end_position after transaction fees
                     end_asset_weights = end_asset_weights_new
                 # needs to recompute the cash component
@@ -482,6 +399,7 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
         ann_ret = annualize_rets(self.returns_, frequency=252)
         ann_vol = annualize_vol(self.returns_, frequency=252)
         ann_sharpe = ann_ret / ann_vol
+        ann_sortino = sortino_ratio(self.returns_, frequency=252, period="daily")
 
         all_metrics = {
             "Annualized Sharpe ratio": ann_sharpe,
@@ -493,6 +411,7 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
             "Return [%]": return_pct * 100,
             "Annualized return [%]": ann_ret * 100,
             "Annualized volatility [%]": ann_vol * 100,
+            "Annualized Sortino [%]": ann_sortino * 100,
             "Avg drawdown [%]": (self.returns_ - self.returns_.cummax()).mean() * 100,
             "Max drawdown [%]": maxdrawdown(self.returns_) * 100,
             "Profit factor": profit_factor(self.returns_) * 100,
@@ -500,56 +419,3 @@ class Backtester(MetaEstimatorMixin, RegressorMixin, BaseEstimator):
             "Total transaction costs $": self.buy_sell_costs_.sum().sum(),
         }
         return pd.Series(all_metrics)
-
-        # return summary(self.returns_)
-
-    def plot(self, **kwargs):
-        from skportfolio.plotting.visualization import plot_backtest_strategy
-
-        plot_backtest_strategy(
-            backtester=self,
-            plot_rebalance_events=kwargs.get("plot_rebalance_events", False),
-            normalize=kwargs.get("normalize", False),
-            area=kwargs.get("area", True),
-            ax=kwargs.get("ax", None),
-        )
-
-
-class BacktesterCrossVal(BaseEstimator):
-    """
-    It handles the logic of backtesting over multiple paths defined by
-    """
-
-    def __init__(
-        self,
-        backtester: Backtester,
-        cv: CrossValidator,
-        scoring: Union[Callable, BasePortfolioScorer],
-        n_jobs: Optional[int] = None,
-        verbose: bool = False,
-    ):
-        self.backtester = backtester
-        self.cv = cv
-        self.scoring = scoring
-        self.n_jobs = n_jobs
-        self.verbose = verbose
-
-    def fit(self, X, y=None, **fit_params):
-        groups = fit_params.get("groups", None)
-        # This performs the cross-validation logic, but here we collect
-        # the equity curves and reconstruct them
-        self.cv_result_ = cross_validate(
-            estimator=self.backtester,
-            X=X,
-            y=y,
-            groups=groups,
-            scoring=self.scoring,
-            cv=self.cv,
-            n_jobs=self.n_jobs,
-            verbose=self.verbose,
-            fit_params=fit_params,
-            return_train_score=True,
-            return_estimator=True,
-        )
-
-        return self
