@@ -11,17 +11,29 @@ def prepare_initial_positions(
     asset_names: List[str],
 ) -> pd.Series:
     """
-    Computes the initial positions
+    Computes the initial positions in a portfolio based on given parameters.
 
     Parameters
     ----------
-    initial_weights
-    n_assets
-    initial_portfolio_value
-    asset_names
+    initial_weights : pd.Series
+        The initial weights assigned to each asset in the portfolio.
+    n_assets : int
+        The total number of assets in the portfolio.
+    initial_portfolio_value : float
+        The initial total value of the portfolio.
+    asset_names : List[str]
+        A list of asset names.
 
     Returns
     -------
+    pd.Series
+        A pandas Series representing the initial positions in the portfolio,
+        including cash and asset positions.
+
+    Raises
+    ------
+    ValueError
+        If the length of initial_weights is not equal to the number of assets.
     """
     if (
         isinstance(initial_weights, (np.ndarray, pd.Series))
@@ -49,18 +61,26 @@ def create_positions_series(
     portfolio_value: float,
 ) -> pd.Series:
     """
-    Utility function to define a position as a pd.Series
+    Utility function to define a position as a pandas Series.
 
     Parameters
     ----------
-    cash_weight: float
-    asset_weights: float
-    asset_names: List[str]
-    cash_name: str
-    portfolio_value: float
+    cash_weight : float
+        The weight assigned to the cash position in the portfolio.
+    asset_weights : Union[np.ndarray, List[float]]
+        The weights assigned to each asset in the portfolio.
+    asset_names : List[str]
+        A list of asset names.
+    cash_name : str
+        The name assigned to the cash position.
+    portfolio_value : float
+        The total value of the portfolio.
 
     Returns
     -------
+    pd.Series
+        A pandas Series representing the positions in the portfolio, including
+        cash and asset positions.
     """
     all_names = (cash_name, *asset_names)
     all_weights = (cash_weight, *asset_weights)
@@ -77,103 +97,30 @@ def compute_row_returns(
     margin_return: float,
 ):
     """
+    Computes the returns for each asset and cash position in the portfolio for a given time index.
 
     Parameters
     ----------
-    idx
-    asset_returns
-    start_positions
-    cash_return
-    margin_return
+    idx : int
+        The time index for which returns are computed.
+    asset_returns : pd.DataFrame
+        DataFrame containing historical returns for each asset.
+    start_positions : pd.Series
+        The initial positions in the portfolio at the beginning of the period.
+    cash_return : float
+        The return on the cash position.
+    margin_return : float
+        The return used for margin adjustments.
 
     Returns
     -------
-
+    pd.Series
+        A pandas Series representing the returns for each asset and cash position
+        in the portfolio for the specified time index.
     """
+
     cash_key = "CASH"
     cash_adjustment = margin_return if start_positions[cash_key] < 0 else cash_return
     return pd.concat(
         (pd.Series({cash_key: cash_adjustment}), asset_returns.iloc[idx, :]), axis=0
     ).add(1.0)
-
-
-from numba import jit
-
-
-@jit(nopython=True)
-def calculate_positions(
-    backtester_name,
-    asset_returns,
-    risk_free_rate,
-    cash_borrow_rate,
-    n_samples,
-    warmup_period,
-    min_window_size,
-    max_window_size,
-    rebalance_signal,
-    asset_names,
-    transaction_costs_fcn,
-    show_progress,
-    estimator,
-    X,
-    y,
-    fit_params,
-):
-    # Pre-allocate arrays for performance
-    turnover = np.zeros(n_samples)
-    buy_sell_costs = np.zeros((n_samples, 2))
-    returns = np.zeros(n_samples)
-    positions = np.zeros_like(asset_returns)
-
-    previous_positions = np.zeros_like(
-        asset_returns[0]
-    )  # Assuming this is initialized correctly outside the loop
-
-    with tqdm(
-            iterable=range(n_samples - 1),
-            desc=f"Backtesting {backtester_name}...",
-            disable=not show_progress,
-        ) as progress:
-    for idx in progress:
-        next_idx = idx + warmup_period + 1
-        start_positions = previous_positions
-        start_portfolio_value = start_positions.sum()
-
-        # Vectorized computation of row returns
-        row_returns = compute_row_returns(
-            idx, asset_returns, start_positions, risk_free_rate, cash_borrow_rate
-        )
-        end_positions = start_positions * row_returns
-        end_portfolio_value = end_positions.sum()
-        end_asset_weights = end_positions / end_portfolio_value
-
-        needs_rebalance = rebalance_signal[next_idx]
-        is_valid_window = next_idx >= min_window_size
-
-        if needs_rebalance and is_valid_window:
-            start_window = next_idx - max_window_size + 1
-            window_rows = np.arange(max(0, start_window), next_idx + 1)
-
-            # Assuming estimator.fit() is a costly operation and is already optimized
-            end_asset_weights_new = estimator.fit(
-                X.iloc[window_rows, :][asset_names],
-                y.iloc[window_rows] if y is not None else None,
-                **fit_params
-            ).weights_.copy()
-            delta_weights = end_asset_weights_new - end_asset_weights
-
-            turnover[next_idx] = np.abs(delta_weights).sum() * 0.5
-            buy_cost, sell_cost = transaction_costs_fcn(
-                delta_weights[asset_names] * end_portfolio_value
-            )
-            buy_sell_costs[next_idx, :] = (buy_cost, sell_cost)
-            end_portfolio_value -= buy_cost + sell_cost
-            end_asset_weights = end_asset_weights_new
-
-        end_asset_weights["CASH"] = 1.0 - end_asset_weights[asset_names].sum()
-        end_positions = end_portfolio_value * end_asset_weights
-        positions.append(end_positions)
-        returns[next_idx] = end_portfolio_value / start_portfolio_value - 1
-        previous_positions = end_positions
-
-    return positions, turnover, buy_sell_costs, returns
