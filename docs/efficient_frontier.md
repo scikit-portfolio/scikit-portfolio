@@ -49,7 +49,7 @@ MinimumVolatility().fit(prices).weights_
 MinimumVolatility(returns_data=True).fit(returns).predict(prices)
 ```
 
-Altenatively, one can modify the risk estimator. Rather than the `SampleCovariance`, other covariance estimators can be chosen, such as the weighted exponential moving average of covariance `CovarianceExp` (see the [returns and risk estimators section](returns.md#):
+Alternatively, one can modify the risk estimator. Rather than the `SampleCovariance`, other covariance estimators can be chosen, such as the weighted exponential removmoving average of covariance `CovarianceExp` (see the [returns and risk estimators section](returns.md#)):
 
 ```python
 from skportfolio import CovarianceExp
@@ -60,8 +60,8 @@ import pandas as pd
 
 prices = load_tech_stock_prices()
 # compare the two allocations between sample covariance and exponentially moving weighted average covariance with a span of 180 days
-w_sample_cov = MinimumVolatility(frequency=252).fit(prices).weights_.rename('Min Vol - sample covariance')
-w_cov_exp = MinimumVolatility(risk_estimator=CovarianceExp(frequency=252, span=180), frequency=252).fit(load_tech_stock_prices()).weights_.rename('MinVol-CovarianceExp')
+w_sample_cov = MinimumVolatility().fit(prices).weights_.rename('MinVol - Sample Covariance')
+w_cov_exp = MinimumVolatility(risk_estimator=CovarianceExp()).fit(load_tech_stock_prices()).weights_.rename('MinVol - CovarianceExp')
 pd.concat([w_sample_cov, w_cov_exp], axis=1).plot.bar()
 plt.grid(True)
 ```
