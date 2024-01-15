@@ -54,8 +54,6 @@ plugins:
   - mkdocstrings
   - autorefs
   - include
-  - mkapi
-
 
 nav:
   - Home: index.md
