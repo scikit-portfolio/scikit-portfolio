@@ -66,7 +66,7 @@ pd.concat([w_sample_cov, w_cov_exp], axis=1).plot.bar()
 plt.grid(True)
 ```
 
-![sample_cov_vs_cov_exp](imgs/minvol_sample_vs_covexp.svg)
+![sample_cov_vs_cov_exp](imgs/minvol_sample_vs_covexp.png)
 !!! note
 	In this example, the optimization problem is the same, but one can observe some differences in terms of allocation.
 	This is mainly due to the different covariance estimator.
@@ -129,10 +129,10 @@ from skportfolio.datasets import load_tech_stock_prices
 
 prices = load_tech_stock_prices()
 returns = prices.pct_change().dropna()
-# fit portfolio directly on prices, with target_return set in initialization
-MeanVarianceEfficientRisk(target_return=0.05).fit(prices).weights_
-# or fit portfolio on returns, changing target return and applying weights on prices
-MeanVarianceEfficientRisk(returns_data=True).set_target_risk(target_return=0.05).fit(returns).predict(prices)
+# fit portfolio directly on prices, with target_risk set in initialization
+MeanVarianceEfficientRisk(target_risk=0.05).fit(prices).weights_
+# or fit portfolio on returns, changing target risk and applying weights on prices
+MeanVarianceEfficientRisk(returns_data=True).set_target_risk(target_risk=0.05).fit(returns).predict(prices)
 ```
 
 ## Plotting the efficient frontier
@@ -155,21 +155,19 @@ Look at the method documentation for further information.
 
 ```python
 from skportfolio import MinimumVolatility, MeanVarianceEfficientRisk
+from skportfolio.plotting.visualization import plot_frontier
 from skportfolio.datasets import load_tech_stock_prices
 
 prices = load_tech_stock_prices()
 
-ax = MinimumVolatility().fit(prices).plot_frontier(prices, num_portfolios=20)
-ax = (
-    MeanVarianceEfficientRisk()
-    .plot_frontier(
-        prices,
-        num_portfolios=20,
-        show_assets=True,
-        show_only_portfolio=True,
-        ax=ax
+ax = plot_frontier(
+    ptf_estimator = MinimumVolatility(),
+    prices_or_returns = prices,
+    estimator_name = 'MinimumVolatility',
+    num_portfolios = 20,
+    show_assets=True,
     )
-)
+
 ```
 
 The result is the following:
